@@ -1,17 +1,32 @@
 import { type NextPage } from "next";
 import { useSession } from 'next-auth/react';
-import { redirect } from "next/navigation";
 import { useRouter } from "next/router";
+import { useEffect } from 'react';
 
 const Account: NextPage = () => {
     const { data: sessionData } = useSession();
     const router = useRouter();
 
-    if(!sessionData) {
-        console.log("redirecting...")
-        router.push("/login")
-        return <h3>Redirecting...</h3>;
-    }
+    useEffect(() => {
+        if(!sessionData) {
+            console.log("redirecting...");
+            // The code below uses IIFE (Immediately Invoked Function Expression)
+            // to create an async context. This is to handle the TypeScript handle
+            // promises error. But this did not resolve the issue.
+            // (async () => {
+            //     await router.push("/login");
+            // })();
+
+            router.push("/login")
+                .then(() => {
+                    console.log("navigation handled");
+                })
+                .catch((error) => {
+                    console.error("Error during navigation redirect", error);
+                })
+        }
+    }, [sessionData])
+    
 
     return(
         <>
