@@ -11,6 +11,7 @@ COPY prisma ./
 # Install dependencies based on the preferred package manager
 
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml\* ./
+COPY .env ./
 
 RUN \
  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
@@ -24,9 +25,11 @@ RUN \
 FROM --platform=linux/amd64 node:16-alpine3.17 AS builder
 ARG DATABASE_URL
 ARG NEXT_PUBLIC_CLIENTVAR
+ARG ENV_FILE
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+COPY --from=deps /app/.env ./
 
 # ENV NEXT_TELEMETRY_DISABLED 1
 
@@ -55,6 +58,7 @@ COPY --from=builder /app/package.json ./package.json
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/.env ./
 
 USER nextjs
 EXPOSE 3000
