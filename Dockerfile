@@ -27,7 +27,6 @@ ARG NEXT_PUBLIC_CLIENTVAR
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-COPY --from=deps /app/.env ./
 
 # ENV NEXT_TELEMETRY_DISABLED 1
 
