@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from "next/router";
 import { useEffect } from 'react';
 
-// This is a test.
+
 const Account: NextPage = () => {
     const { data: sessionData } = useSession();
     const router = useRouter();
