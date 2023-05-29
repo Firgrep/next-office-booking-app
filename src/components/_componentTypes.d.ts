@@ -7,5 +7,5 @@ interface DateType {
 }
 
 interface RoomType {
-    roomId: String | null;
+    roomId: string | null;
 }

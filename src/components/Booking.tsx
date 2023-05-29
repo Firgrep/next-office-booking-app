@@ -11,11 +11,16 @@ export const Booking: React.FC<bookingProps> = () => {
         dateTime: null,
     });
     const [ room, setRoom ] = useState<RoomType>({
-        roomId: null
-    })
+        roomId: null,
+    });
 
-    const rooms = api.booking.getRooms.useQuery().data;
-    console.log(rooms);
+    const rooms: undefined | any[] = api.booking.getRooms.useQuery().data;
+    const bookings = api.booking.getRoomBookings.useQuery({
+        roomId: room.roomId
+    }).data;
+
+    
+    console.log("bookings: ", bookings);
 
     return (
         <section>
@@ -23,11 +28,16 @@ export const Booking: React.FC<bookingProps> = () => {
                 rooms={rooms}
                 setRoom={setRoom}
             />
-            {room.roomId && <div className="">{room.roomId}</div>}
-            <Calendar 
-                date={date}
-                setDate={setDate}
-            />
+            {bookings ? (
+            <>
+                <div className="bg-sky-500">{room.roomId}</div>
+                <Calendar 
+                    // !TODO pass bookings into calendar and build display of existing bookings
+                    date={date}
+                    setDate={setDate}
+                />
+            </>
+            ) : (<div style={{height: "500px"}}></div>)}
         </section>
     );
 };
