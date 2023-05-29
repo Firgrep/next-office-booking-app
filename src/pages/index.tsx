@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 // import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { Calendar } from '../components/Calendar';
+import { Booking } from "~/components/Booking";
 
 import { api } from "~/utils/api";
 import { BtnAccount } from "../components/BtnAccount";
@@ -24,7 +24,7 @@ const Home: NextPage = () => {
             Create the <span className="text-[hsl(280,100%,70%)]">Rokni Office</span> App
           </h1>
 
-          <Calendar></Calendar>
+          <Booking></Booking>
 
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">

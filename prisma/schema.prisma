@@ -49,6 +49,7 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    subscribed    DateTime?
     role          Role      @default(BASIC)
     accounts      Account[]
     sessions      Session[]
@@ -57,7 +58,6 @@ model User {
 
 enum Role {
     BASIC
-    PAID
     ADMIN
 }
 
@@ -69,10 +69,24 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
+model Room {
+    id          String    @id @default(cuid())
+    name        String
+    capacity    Int
+    description String?
+    bookings    Booking[]
+}
+
 model Booking {
-    id     String   @id @default(cuid())
-    userId String
-    time   DateTime
-    room   String
-    user   User     @relation(fields: [userId], references: [id])
+    id        String   @id @default(cuid())
+    userId    String
+    startTime DateTime
+    endTime   DateTime
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
+    room      Room     @relation(fields: [roomId], references: [id])
+    roomId    String
+
+    @@unique([roomId, startTime, endTime])
 }

@@ -1,24 +1,19 @@
-import React, {useState} from 'react';
+import React from 'react';
 import ReactCalendar from 'react-calendar';
 import {add, format} from "date-fns";
 import { CLOSING_TIME, INTERVAL, OPENING_TIME } from '~/constants/config';
 //import { useSession } from 'next-auth/react';
 
-interface calendarProps {}
-
-interface DateType {
-    justDate: Date | null;
-    dateTime: Date | null;
+type calendarProps = {
+    date: DateType,
+    setDate: React.Dispatch<React.SetStateAction<DateType>>
 }
 
-export const Calendar: React.FC<calendarProps> = () => {
-    //const { data: sessionData } = useSession();
-    const [ date, setDate ] = useState<DateType>({
-        justDate: null,
-        dateTime: null,
-    });
 
-    console.log(date.dateTime);
+export const Calendar: React.FC<calendarProps> = ({date, setDate}) => {
+    //const { data: sessionData } = useSession();
+
+    // console.log(date.dateTime);
 
     const getTimes = () => {
         if(!date.justDate) return;
@@ -39,7 +34,7 @@ export const Calendar: React.FC<calendarProps> = () => {
 
     const times = getTimes();
     const testDate = new Date(2023, 5, 27);
-    console.log("getting month ", testDate.getMonth());
+    // console.log("getting month ", testDate.getMonth());
 
     return (
         <>
