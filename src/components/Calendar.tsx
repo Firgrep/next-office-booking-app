@@ -5,15 +5,15 @@ import { CLOSING_TIME, INTERVAL, OPENING_TIME } from '~/constants/config';
 //import { useSession } from 'next-auth/react';
 
 type calendarProps = {
+    bookings: undefined | any[],
     date: DateType,
     setDate: React.Dispatch<React.SetStateAction<DateType>>
 }
 
-
-export const Calendar: React.FC<calendarProps> = ({date, setDate}) => {
+export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => {
     //const { data: sessionData } = useSession();
 
-    // console.log(date.dateTime);
+    console.log("bookings from calendar comp: \n", bookings);
 
     const getTimes = () => {
         if(!date.justDate) return;
@@ -35,6 +35,8 @@ export const Calendar: React.FC<calendarProps> = ({date, setDate}) => {
     const times = getTimes();
     const testDate = new Date(2023, 5, 27);
     // console.log("getting month ", testDate.getMonth());
+    
+    // !TODO Add display in the hours of the day of the booking. 
 
     return (
         <>
@@ -46,12 +48,30 @@ export const Calendar: React.FC<calendarProps> = ({date, setDate}) => {
                     // showWeekNumbers={true}
                     // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <p>It's Sunday!</p> : null}
                     // tileContent={<div><p>test</p><p>test</p></div>}
-                    tileContent={({ activeStartDate, date, view }) => 
-                        view === 'month' &&
-                        date.getFullYear() === testDate.getFullYear() && 
-                        (date.getMonth() + 1) === testDate.getMonth() && 
-                        date.getDate() === testDate.getDate() ?
-                        <div><p>MEETING!</p><p>MEETING!</p><p>MEETING!</p></div> : null}
+                    tileContent={({ activeStartDate, date, view }) => {
+                        if (view === "month") {
+                            const hasBooking = bookings?.some(booking => 
+                                booking.startTime.getFullYear() === date.getFullYear() &&
+                                booking.startTime.getMonth() === date.getMonth() &&
+                                booking.startTime.getDate() === date.getDate()    
+                            );
+
+                            if (hasBooking) {
+                                return(
+                                    <div className="flex justify-center">
+                                        <div className="mt-2 bg-yellow-500 w-1/3">&nbsp;</div>
+                                    </div>
+                                )
+                                
+                            }
+                        }
+
+                        return(
+                            <div className="flex justify-center">
+                                <div className="mt-2 bg-green-500 w-1/3">&nbsp;</div>
+                            </div>
+                        )
+                    }}
                     onClickDay={(date) => setDate((prev) => ({ ...prev, justDate: date}))}
                 />
 
@@ -82,5 +102,5 @@ export const Calendar: React.FC<calendarProps> = ({date, setDate}) => {
                 ) : (<div style={{height: "200px"}}></div>)}
             </div>
         </>
-    )
-}
+    );
+};

@@ -1,3 +1,4 @@
+import { ChangeEvent } from "react";
 
 type selectRoomsProps = {
     rooms: undefined | any[],
@@ -6,7 +7,7 @@ type selectRoomsProps = {
 
 export const SelectRooms: React.FC<selectRoomsProps> = ({rooms, setRoom}) => {
 
-    const handleRoomSelection = (e: any) => {
+    const handleRoomSelection = (e: ChangeEvent<HTMLSelectElement>) => {
         setRoom((prev) => ({ ...prev, roomId: e.target.value}))
     };
 
