@@ -14,9 +14,14 @@ export const Booking: React.FC<bookingProps> = () => {
         roomId: null,
     });
 
-    const rooms: undefined | any[] = api.booking.getRooms.useQuery().data;
+    const rooms: undefined | any[] = api.booking.getRooms.useQuery(undefined, {
+        refetchOnWindowFocus: false,
+    }).data;
+
     const bookings: undefined | null | any[] = api.booking.getRoomBookings.useQuery({
         roomId: room.roomId
+    }, {
+        refetchOnWindowFocus: false,
     }).data;
 
 
@@ -26,7 +31,7 @@ export const Booking: React.FC<bookingProps> = () => {
                 rooms={rooms}
                 setRoom={setRoom}
             />
-            {bookings ? (
+            {(bookings) ? (
             <>
                 <Calendar 
                     bookings={bookings}

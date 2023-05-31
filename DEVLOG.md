@@ -1,3 +1,4 @@
+### Comparing dates in javascript (added to blog)
 In my date comparsion callback function in the Calendar React component, I was trying to compare two date datatypes directly.
 
 ```js

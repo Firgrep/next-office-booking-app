@@ -13,8 +13,6 @@ type calendarProps = {
 export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => {
     //const { data: sessionData } = useSession();
 
-    console.log("bookings from calendar comp: \n", bookings);
-
     const getTimes = () => {
         if(!date.justDate) return;
 
@@ -33,10 +31,6 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => 
     };
 
     const times = getTimes();
-    const testDate = new Date(2023, 5, 27);
-    // console.log("getting month ", testDate.getMonth());
-    
-    // !TODO Add display in the hours of the day of the booking. 
 
     return (
         <>
@@ -45,9 +39,6 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => 
                     minDate={new Date()}
                     className="REACT-CALENDAR p-2"
                     view="month"
-                    // showWeekNumbers={true}
-                    // tileContent={({ activeStartDate, date, view }) => view === 'month' && date.getDay() === 0 ? <p>It's Sunday!</p> : null}
-                    // tileContent={<div><p>test</p><p>test</p></div>}
                     tileContent={({ activeStartDate, date, view }) => {
                         if (view === "month") {
                             const hasBooking = bookings?.some(booking => 
@@ -62,7 +53,6 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => 
                                         <div className="mt-2 bg-yellow-500 w-1/3">&nbsp;</div>
                                     </div>
                                 )
-                                
                             }
                         }
 
@@ -80,26 +70,53 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => 
                         {times?.map((time, i) => (
                             <div 
                                 key={`time-${i}`}
-                                className="flex rounded-sm bg-gray-100 p-2 mr-3 mt-5 mb-5"
                             >
-                                <button
-                                    className="items-middle" 
-                                    type="button"
-                                    onClick={() => setDate((prev) => ({ ...prev, dateTime: time }))}
-                                >
-                                    {format(time, 'kk:mm')}
-                                </button>
+                                {(bookings?.some( booking => 
+                                    booking.startTime.getFullYear() === time.getFullYear() &&
+                                    booking.startTime.getMonth() === time.getMonth() &&
+                                    booking.startTime.getDate() === time.getDate() &&
+                                    booking.startTime.getHours() === time.getHours()) 
+                                ) ? (
+                                    <button 
+                                        className="flex rounded-sm bg-red-500 p-2 mr-3 mt-5 mb-5"
+                                        type="button"
+                                        disabled
+                                    >
+                                        {format(time, 'kk:mm')}
+                                    </button>
+                                ) : (
+
+                                    // !TODO
+                                    // !TODO work out how to add book button via daisy indicator
+
+                                    <button className={`flex rounded-sm p-5 mr-3 mt-5 mb-5 ${(
+                                        date.dateTime?.getFullYear() === time.getFullYear() &&
+                                        date.dateTime?.getMonth() === time.getMonth() &&
+                                        date.dateTime?.getDate() === time.getDate() &&
+                                        date.dateTime?.getHours() === time.getHours()
+                                        ) ? (
+                                            "bg-yellow-500"     
+                                        ) : (       
+                                            "bg-gray-100" 
+                                        )}`}
+                                        type="button"
+                                        onClick={() => setDate((prev) => ({ ...prev, dateTime: time }))}
+                                    >
+                                        {format(time, 'kk:mm')}
+                                    </button>
+                                )}
                             </div>
                         ))}
-                        {/* <button
-                            className="rounded-sm bg-red-500 p-2"
-                            type="button"
-                            onClick={() => setDate((prev) => ({ ...prev, justDate: null }))}
-                        >
-                            Back
-                        </button> */}
                     </div>
                 ) : (<div style={{height: "200px"}}></div>)}
+
+                <div className="indicator">
+                    <div className="indicator-item indicator-bottom">
+                        <button className="btn btn-primary">Apply</button>
+                    </div> 
+                    <button className="bg-gray-100 p-10 btn"><span className="text-slate-600">Testing button test</span></button>
+                </div>
+                
             </div>
         </>
     );

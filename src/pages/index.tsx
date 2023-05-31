@@ -8,7 +8,7 @@ import { api } from "~/utils/api";
 import { BtnAccount } from "../components/BtnAccount";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const hello = api.example.hello.useQuery({ text: "from tRPC" }, {refetchOnWindowFocus: false,});
 
   return (
     <>
