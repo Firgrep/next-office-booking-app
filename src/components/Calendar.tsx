@@ -56,6 +56,14 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => 
                             }
                         }
 
+                        const yesterday = new Date();
+                        yesterday.setDate(yesterday.getDate() - 1); 
+                        if (date < yesterday) {
+                            return(
+                                <div></div>
+                            )
+                        }
+
                         return(
                             <div className="flex justify-center">
                                 <div className="mt-2 bg-green-500 w-1/3">&nbsp;</div>
@@ -78,7 +86,7 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => 
                                     booking.startTime.getHours() === time.getHours()) 
                                 ) ? (
                                     <button 
-                                        className="flex rounded-sm bg-red-500 p-2 mr-3 mt-5 mb-5"
+                                        className="flex rounded-sm bg-red-500 p-5 mr-3 mt-5 mb-5"
                                         type="button"
                                         disabled
                                     >
@@ -88,14 +96,14 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => 
 
                                     // !TODO
                                     // !TODO work out how to add book button via daisy indicator
-
+                                    
                                     <button className={`flex rounded-sm p-5 mr-3 mt-5 mb-5 ${(
                                         date.dateTime?.getFullYear() === time.getFullYear() &&
                                         date.dateTime?.getMonth() === time.getMonth() &&
                                         date.dateTime?.getDate() === time.getDate() &&
                                         date.dateTime?.getHours() === time.getHours()
                                         ) ? (
-                                            "bg-yellow-500"     
+                                            "bg-yellow-500 indicator"     
                                         ) : (       
                                             "bg-gray-100" 
                                         )}`}
