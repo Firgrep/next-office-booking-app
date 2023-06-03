@@ -3,12 +3,14 @@ import { ChangeEvent } from "react";
 type selectRoomsProps = {
     rooms: undefined | any[],
     setRoom: React.Dispatch<React.SetStateAction<RoomType>>
+    setDate: React.Dispatch<React.SetStateAction<DateType>>
 }
 
-export const SelectRooms: React.FC<selectRoomsProps> = ({rooms, setRoom}) => {
+export const SelectRooms: React.FC<selectRoomsProps> = ({rooms, setRoom, setDate}) => {
 
     const handleRoomSelection = (e: ChangeEvent<HTMLSelectElement>) => {
-        setRoom((prev) => ({ ...prev, roomId: e.target.value}))
+        setRoom((prev) => ({ ...prev, roomId: e.target.value}));
+        setDate((prev) => ({ ...prev, justDate: null, dateTime: null}));
     };
 
     return(

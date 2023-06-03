@@ -19,13 +19,16 @@ export const bookingRouter = createTRPCRouter({
                 }
             })) : (null);
         }),
-    // book: publicProcedure
-    //     .input(z.object({ roomId: z.string() }))
-    //     .query(({ ctx }) => {
-    //         return ctx.prisma.booking.create({
-    //             data: {
-                    
-    //             }
-    //         })
-    //     })
+    createBooking: publicProcedure
+        .input(z.object({ roomId: z.string(), startTime: z.date(), endTime: z.date(), userId: z.string() }))
+        .mutation(({ ctx, input }) => {
+            return ctx.prisma.booking.create({
+                data: {
+                    roomId: input.roomId,
+                    startTime: input.startTime,
+                    endTime: input.endTime, 
+                    userId: input.userId
+                }
+            })
+        }),
 })

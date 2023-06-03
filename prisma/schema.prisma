@@ -73,6 +73,9 @@ model Room {
     id          String    @id @default(cuid())
     name        String
     capacity    Int
+    interval    Int
+    openingTime Int
+    closingTime Int
     description String?
     bookings    Booking[]
 }
