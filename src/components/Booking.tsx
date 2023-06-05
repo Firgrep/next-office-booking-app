@@ -11,18 +11,22 @@ interface bookingProps {}
 export const Booking: React.FC<bookingProps> = () => {
     const { data: sessionData } = useSession();
     const utils = api.useContext();
+
     const { data: rooms } = api.booking.getRooms.useQuery(undefined, {
         refetchOnWindowFocus: false,
     });
-
+    
     const [ date, setDate ] = useState<DateType>({
         justDate: null,
         dateTime: null,
     });
+    
     const [ room, setRoom ] = useState<RoomType>({
         roomId: null
     });
-
+    
+    const selectedRoom = rooms?.find(roomToCheck => roomToCheck.id === room.roomId);
+    
     const bookings: undefined | null | any[] = api.booking.getRoomBookings.useQuery({
         roomId: room.roomId
     }, {
@@ -35,15 +39,6 @@ export const Booking: React.FC<bookingProps> = () => {
         }
     });
 
-    // const createBookingMutation = useMutation('createBooking', {
-    //     async run(input) {
-    //         return api.booking.createBooking(input);
-    //     },
-    //     onSuccess() {
-            
-    //     },
-    // });
-
     const handleBooking = (startTime: Date ) => {
         if (!sessionData) {
             console.log("No session data");
@@ -54,7 +49,7 @@ export const Booking: React.FC<bookingProps> = () => {
             return;
         }
 
-        const selectedRoom = rooms?.find(roomToCheck => roomToCheck.id === room.roomId)
+        // const selectedRoom = rooms?.find(roomToCheck => roomToCheck.id === room.roomId)
 
         if (!selectedRoom) {
             console.log("Failed to find selected room");
@@ -101,6 +96,7 @@ export const Booking: React.FC<bookingProps> = () => {
             {(bookings) ? (
             <>
                 <Calendar 
+                    selectedRoom={selectedRoom}
                     bookings={bookings}
                     date={date}
                     setDate={setDate}
@@ -115,7 +111,7 @@ export const Booking: React.FC<bookingProps> = () => {
                     <p className="bg-gray-100 p-5 m-5 text-center">
                         You have chosen a {rooms && rooms?.find(roomToCheck => roomToCheck.id === room.roomId)?.interval || <span>Error_in_booking_comp</span>}-min booking at the time 
                         <br></br> 
-                        {format(date.dateTime, `EEEE kk:mm, MMM, yyyy`)}
+                        {format(date.dateTime, `EEEE kk:mm, MMMM do, yyyy`)}
                     </p>
                     <button 
                         className="btn btn-primary" 

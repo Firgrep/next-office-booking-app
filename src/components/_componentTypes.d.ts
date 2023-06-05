@@ -9,3 +9,11 @@ interface DateType {
 interface RoomType {
     roomId: string | null;
 }
+
+interface Window {
+    modal_confirm_delete: { [key: string]: HTMLDialogElement | undefined };
+}
+
+interface SelectedRoomType {
+    name: string | undefined;
+}

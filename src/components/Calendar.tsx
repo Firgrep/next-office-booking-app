@@ -1,25 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactCalendar from 'react-calendar';
 import {add, format} from "date-fns";
 import { CLOSING_TIME, MAIN_ROOM_INTERVAL, OPENING_TIME } from '~/constants/config';
-//import { useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 type calendarProps = {
+    selectedRoom: undefined | SelectedRoomType,
     bookings: undefined | any[],
     date: DateType,
     setDate: React.Dispatch<React.SetStateAction<DateType>>
 }
 
-export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => {
-    //const { data: sessionData } = useSession();
+export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, selectedRoom}) => {
+    const { data: sessionData } = useSession();
+
+    const handleOpenModal = (id: number) => {
+        const modalElement = document.getElementById(`modal_confirm_delete_${id}`) as HTMLDialogElement;
+        
+        const handleModalClick = (e: MouseEvent, modalElement: HTMLDialogElement) => {
+            const dialogDimensions = modalElement.getBoundingClientRect();
+            if (
+                e.clientX < dialogDimensions.left ||
+                e.clientX > dialogDimensions.right ||
+                e.clientY < dialogDimensions.top ||
+                e.clientY > dialogDimensions.bottom
+            ) {
+                modalElement.close();
+                modalElement.removeEventListener("click", e => handleModalClick(e, modalElement));
+            }
+        };
+        
+        if (modalElement) {
+            modalElement.showModal();
+            modalElement.addEventListener("click", e => handleModalClick(e, modalElement));
+        }
+    };
+
+    const handleCloseModal = (id: number) => {
+        const modalElement = document.getElementById(`modal_confirm_delete_${id}`) as HTMLDialogElement;
+        if (modalElement) {
+            modalElement.close();
+        }
+    };
 
     const getTimes = () => {
         if(!date.justDate) return;
 
         const {justDate} = date;
 
+        // !TODO consider change opening and closing time to room from database!
         const beginning = add(justDate, { hours: OPENING_TIME });
         const end = add(justDate, { hours: CLOSING_TIME });
+        // !TODO change interval to room from database!
         const interval = MAIN_ROOM_INTERVAL;
 
         const times = [];
@@ -85,13 +117,49 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate}) => 
                                     booking.startTime.getDate() === time.getDate() &&
                                     booking.startTime.getHours() === time.getHours()) 
                                 ) ? (
+                                    (bookings?.some( booking =>
+                                        booking.userId === sessionData?.user.id)
+                                    ) ? (
+                                    <>
+                                        <div className="indicator">
+                                            <div className="indicator-item indicator-top">
+                                                <button 
+                                                    className="btn btn-circle btn-sm btn-error"
+                                                    type="button"
+                                                    onClick={() => handleOpenModal(i)}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                </button>
+                                            </div>
+                                            <button 
+                                                className="flex rounded-sm bg-green-500 hover:bg-red-700 p-5" 
+                                                type="button"
+                                                onClick={() => handleOpenModal(i)}
+                                                data-title="Click to cancel booking"
+                                            >   
+                                                {format(time, 'kk:mm')}
+                                            </button>
+                                        </div>
+
+                                        <dialog id={`modal_confirm_delete_${i}`} className="backdrop:bg-slate-600/[.5]">
+                                            <form method="dialog">
+                                                <h3 className="font-bold text-lg text-center">Cancel booking?</h3>
+                                                <p className="py-4">Confirm cancellation of
+                                                    <span className="font-medium"> {selectedRoom && selectedRoom.name} </span> 
+                                                    booking on 
+                                                    <span className="font-medium"> {format(time, `EEEE, MMMM do, yyyy, kk:mm`)}</span>?</p>
+                                                <button type="button" onClick={() => handleCloseModal(i)}>close</button>
+                                            </form>
+                                        </dialog>
+                                    </>
+                                    ) : (
                                     <button 
                                         className="flex rounded-sm bg-red-500 p-5"
                                         type="button"
                                         disabled
                                     >
                                         {format(time, 'kk:mm')}
-                                    </button>
+                                    </button>)
                                 ) : (
                                     <button className={`flex rounded-sm p-5 ${(
                                         date.dateTime?.getFullYear() === time.getFullYear() &&

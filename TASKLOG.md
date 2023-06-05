@@ -1,0 +1,1 @@
+* build the delete booking route and hook it up to the frontend. _MAKE SURE_ that the router checks if its the correct user that belongs to the booking.  
