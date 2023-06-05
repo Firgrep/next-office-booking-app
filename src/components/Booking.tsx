@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SelectRooms } from "./SelectRooms";
 import { Calendar } from "./Calendar";
 import { api } from "~/utils/api";
@@ -10,7 +10,10 @@ interface bookingProps {}
 
 export const Booking: React.FC<bookingProps> = () => {
     const { data: sessionData } = useSession();
-    const booking = api.booking.createBooking.useMutation();
+    const utils = api.useContext();
+    const { data: rooms } = api.booking.getRooms.useQuery(undefined, {
+        refetchOnWindowFocus: false,
+    });
 
     const [ date, setDate ] = useState<DateType>({
         justDate: null,
@@ -20,16 +23,26 @@ export const Booking: React.FC<bookingProps> = () => {
         roomId: null
     });
 
-    const rooms: undefined | any[] = api.booking.getRooms.useQuery(undefined, {
-        refetchOnWindowFocus: false,
-    }).data;
-
     const bookings: undefined | null | any[] = api.booking.getRoomBookings.useQuery({
         roomId: room.roomId
     }, {
         refetchOnWindowFocus: false,
     }).data;
 
+    const booking = api.booking.createBooking.useMutation({
+        onSuccess() {
+            utils.booking.invalidate();
+        }
+    });
+
+    // const createBookingMutation = useMutation('createBooking', {
+    //     async run(input) {
+    //         return api.booking.createBooking(input);
+    //     },
+    //     onSuccess() {
+            
+    //     },
+    // });
 
     const handleBooking = (startTime: Date ) => {
         if (!sessionData) {
@@ -56,7 +69,25 @@ export const Booking: React.FC<bookingProps> = () => {
             endTime: endTime,
             roomId: room.roomId,
         });
-    }
+
+        setDate((prev) => ({ ...prev, dateTime: null}));
+    };
+
+    useEffect(() => {
+        if (booking.isSuccess) {
+            const handleClick = () => {
+                booking.reset();
+            }
+            window.addEventListener("click", () => {
+                handleClick();
+            });
+            return () => {
+                window.removeEventListener("click", () => {
+                    handleClick();
+                });
+            };
+        }
+    }, [booking.isSuccess]);
 
 
     return (
@@ -77,9 +108,15 @@ export const Booking: React.FC<bookingProps> = () => {
             </>
             ) : (<div style={{height: "500px"}}></div>)}
 
+            {booking.isSuccess && <p className="bg-green-500">Success! Successfully booked!</p>}   
+
             {date.dateTime ? (
                 <div className="flex flex-col justify-center items-center mt-5 min-h-[200px] w-full">
-                    <p className="bg-gray-100 p-5 m-5 text-center">You have chosen a {rooms?.find(roomToCheck => roomToCheck.id === room.roomId).interval}-min booking at the time <br></br> {format(date.dateTime, `EEEE kk:mm, MMM, yyyy`)}</p>
+                    <p className="bg-gray-100 p-5 m-5 text-center">
+                        You have chosen a {rooms && rooms?.find(roomToCheck => roomToCheck.id === room.roomId)?.interval || <span>Error_in_booking_comp</span>}-min booking at the time 
+                        <br></br> 
+                        {format(date.dateTime, `EEEE kk:mm, MMM, yyyy`)}
+                    </p>
                     <button 
                         className="btn btn-primary" 
                         type="button" 
@@ -88,7 +125,6 @@ export const Booking: React.FC<bookingProps> = () => {
                     >
                         Book
                     </button>
-                    {booking.isSuccess && <p className="bg-green-500">Success! Successfully booked!</p>}
                     {booking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {booking.error.message}</p>}
                 </div>
             ) : (<div style={{height: "200px"}}></div>)}
