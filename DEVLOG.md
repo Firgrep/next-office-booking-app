@@ -30,3 +30,9 @@ const hasBooking = bookings?.some(booking =>
 This appeared like a more concise and readable code, but then the chatbot mentioned that this was a more expensive operation (though for small datasets the performance hit is neglibable, but at this stage I was theoretically intruiged), and inquired further as to why this is a more expensive operation.
 
 I learned then that date objects are basically made up of numbers and a function that extracts numbers is much more cost efficient than one that takes those numbers and converts them to strings (and then makes sure that these adhere to the ISO 8601 string representation) and returns the processed string. I opted then to keep my initial code since, while code aesthetic is important, I don't think it should come before code functionality. 
+
+### Generics
+Generics in types - Multiple generics in types/types
+
+You can use generics in types to make them more flexible. It turns them into a kind of function, which can return different types depending on what you pass in.
+https://www.typescriptlang.org/docs/handbook/2/generics.html

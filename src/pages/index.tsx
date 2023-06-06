@@ -1,13 +1,14 @@
-import { type NextPage } from "next";
 import Head from "next/head";
-// import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Booking } from "~/components/Booking";
-
 import { api } from "~/utils/api";
 import { BtnAccount } from "../components/BtnAccount";
+import Layout from "~/components/Layout";
+import { type NextPageWithLayout } from "./_app";
+import { type ReactElement } from 'react';
 
-const Home: NextPage = () => {
+
+const Home: NextPageWithLayout = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" }, {refetchOnWindowFocus: false,});
 
   return (
@@ -35,6 +36,14 @@ const Home: NextPage = () => {
         </div>
       </main>
     </>
+  );
+};
+
+Home.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <Layout>
+      {page}
+    </Layout>
   );
 };
 

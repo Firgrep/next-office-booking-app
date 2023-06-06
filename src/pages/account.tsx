@@ -1,13 +1,14 @@
-import { type NextPage } from "next";
 import { useSession } from 'next-auth/react';
 import Link from "next/link";
 import { BtnSignIn } from "~/components/BtnSignIn";
-
+import Layout from "~/components/Layout";
+import { type NextPageWithLayout } from "./_app";
+import { type ReactElement } from 'react';
 // import { useRouter } from "next/router";
 // import { useEffect } from 'react';
 
 
-const Account: NextPage = () => {
+const Account: NextPageWithLayout = () => {
     const { data: sessionData } = useSession();
     // const router = useRouter();
 
@@ -32,5 +33,13 @@ const Account: NextPage = () => {
         </>
     )
 }
+
+Account.getLayout = function getLayout(page: ReactElement) {
+    return (
+      <Layout>
+        {page}
+      </Layout>
+    );
+};
 
 export default Account;
