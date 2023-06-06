@@ -27,19 +27,25 @@ export const Booking: React.FC<bookingProps> = () => {
     
     const selectedRoom = rooms?.find(roomToCheck => roomToCheck.id === room.roomId);
     
-    const bookings: undefined | null | any[] = api.booking.getRoomBookings.useQuery({
+    const { data: bookings } = api.booking.getRoomBookings.useQuery({
         roomId: room.roomId
     }, {
         refetchOnWindowFocus: false,
-    }).data;
+    });
 
-    const booking = api.booking.createBooking.useMutation({
+    const createBooking = api.booking.createBooking.useMutation({
         onSuccess() {
             utils.booking.invalidate();
         }
     });
 
-    const handleBooking = (startTime: Date ) => {
+    const deleteBooking = api.booking.deleteBooking.useMutation({
+        onSuccess() {
+            utils.booking.invalidate();
+        }
+    });
+
+    const handleCreateBooking = (startTime: Date ) => {
         if (!sessionData) {
             console.log("No session data");
             return;
@@ -56,9 +62,9 @@ export const Booking: React.FC<bookingProps> = () => {
             return;
         }
 
-        const endTime = add(startTime, {minutes: selectedRoom.interval})
+        const endTime = add(startTime, {minutes: selectedRoom.interval});
 
-        booking.mutate({
+        createBooking.mutate({
             userId: sessionData.user.id,
             startTime: startTime,
             endTime: endTime,
@@ -68,21 +74,61 @@ export const Booking: React.FC<bookingProps> = () => {
         setDate((prev) => ({ ...prev, dateTime: null}));
     };
 
+    const handleDeleteBooking = (bookingStartTime: Date) => {
+        const booking = bookings?.find(booking => 
+            booking.startTime.getFullYear() === bookingStartTime.getFullYear() &&
+            booking.startTime.getMonth() === bookingStartTime.getMonth() &&
+            booking.startTime.getDate() === bookingStartTime.getDate() &&
+            booking.startTime.getHours() === bookingStartTime.getHours() &&
+            booking.startTime.getMinutes() === bookingStartTime.getMinutes()
+        );
+
+        if (!booking) {
+            console.log("No booking found in handleDeleteBooking");
+            return;
+        }
+        
+        try {
+            deleteBooking.mutate({
+                bookingId: booking.id,
+                bookingUserId: booking.userId,
+            });
+        } catch (error: any) {
+            console.log(error);
+        }
+    };
+
     useEffect(() => {
-        if (booking.isSuccess) {
-            const handleClick = () => {
-                booking.reset();
+        if (createBooking.isSuccess) {
+            const handleCreateBookingClick = () => {
+                createBooking.reset();
             }
             window.addEventListener("click", () => {
-                handleClick();
+                handleCreateBookingClick();
             });
             return () => {
                 window.removeEventListener("click", () => {
-                    handleClick();
+                    handleCreateBookingClick();
                 });
             };
         }
-    }, [booking.isSuccess]);
+    }, [createBooking.isSuccess]);
+
+    useEffect(() => {
+        if (deleteBooking.isSuccess) {
+            const handleDeleteBookingClick = () => {
+                deleteBooking.reset();
+            }
+            window.addEventListener("click", () => {
+                handleDeleteBookingClick();
+            });
+            return () => {
+                window.removeEventListener("click", () => {
+                    handleDeleteBookingClick();
+                });
+            };
+        }
+    }, [deleteBooking.isSuccess]);
 
 
     return (
@@ -100,11 +146,15 @@ export const Booking: React.FC<bookingProps> = () => {
                     bookings={bookings}
                     date={date}
                     setDate={setDate}
+                    handleDeleteBooking={handleDeleteBooking}
                 />
             </>
             ) : (<div style={{height: "500px"}}></div>)}
 
-            {booking.isSuccess && <p className="bg-green-500">Success! Successfully booked!</p>}   
+            {createBooking.isSuccess && <p className="bg-green-500">Success! Successfully booked!</p>}   
+            {deleteBooking.isSuccess && <p className="bg-green-500">Success! Booking successfully cancelled.</p>}
+
+            {deleteBooking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {deleteBooking.error.message}</p>}
 
             {date.dateTime ? (
                 <div className="flex flex-col justify-center items-center mt-5 min-h-[200px] w-full">
@@ -116,12 +166,12 @@ export const Booking: React.FC<bookingProps> = () => {
                     <button 
                         className="btn btn-primary" 
                         type="button" 
-                        onClick={() => date.dateTime ? handleBooking(date.dateTime) : console.log("Datetime null")}
-                        disabled={booking.isLoading}
+                        onClick={() => date.dateTime ? handleCreateBooking(date.dateTime) : console.log("Datetime null")}
+                        disabled={createBooking.isLoading}
                     >
                         Book
                     </button>
-                    {booking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {booking.error.message}</p>}
+                    {createBooking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {createBooking.error.message}</p>}
                 </div>
             ) : (<div style={{height: "200px"}}></div>)}
         </section>

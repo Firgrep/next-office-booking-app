@@ -4,6 +4,7 @@ import {
     publicProcedure,
     protectedProcedure
 } from "~/server/api/trpc";
+import { TRPCError } from '@trpc/server';
 
 export const bookingRouter = createTRPCRouter({
     getRooms: publicProcedure.query(({ ctx }) => {
@@ -29,6 +30,22 @@ export const bookingRouter = createTRPCRouter({
                     endTime: input.endTime, 
                     userId: input.userId
                 }
-            })
+            });
+        }),
+    deleteBooking: publicProcedure
+        .input(z.object({ bookingId: z.string(), bookingUserId: z.string() }))
+        .mutation(({ ctx, input }) => {
+            if (ctx.session?.user.id !== input.bookingUserId) {
+                console.log("CTX User ID does not match booking User ID");
+                throw new TRPCError({ 
+                    code: 'BAD_REQUEST',
+                    message: 'Logged user ID does not match User ID on target booking',
+                });
+            }
+            return ctx.prisma.booking.delete({
+                where: {
+                    id: input.bookingId,
+                }
+            });
         }),
 })

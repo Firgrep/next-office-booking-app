@@ -1,1 +1,3 @@
-* build the delete booking route and hook it up to the frontend. _MAKE SURE_ that the router checks if its the correct user that belongs to the booking.  
+* build booking full for the day indicator on calendar
+
+* when changing rooms on the calendar, the previous room is not de-selected

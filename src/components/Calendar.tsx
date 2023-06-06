@@ -8,10 +8,11 @@ type calendarProps = {
     selectedRoom: undefined | SelectedRoomType,
     bookings: undefined | any[],
     date: DateType,
-    setDate: React.Dispatch<React.SetStateAction<DateType>>
+    setDate: React.Dispatch<React.SetStateAction<DateType>>,
+    handleDeleteBooking: Function,
 }
 
-export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, selectedRoom}) => {
+export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, selectedRoom, handleDeleteBooking}) => {
     const { data: sessionData } = useSession();
 
     const handleOpenModal = (id: number) => {
@@ -124,7 +125,7 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                                         <div className="indicator">
                                             <div className="indicator-item indicator-top">
                                                 <button 
-                                                    className="btn btn-circle btn-sm btn-error"
+                                                    className="btn btn-circle btn-sm bg-red-500 border-solid border-2 border-red-600"
                                                     type="button"
                                                     onClick={() => handleOpenModal(i)}
                                                 >
@@ -148,7 +149,14 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                                                     <span className="font-medium"> {selectedRoom && selectedRoom.name} </span> 
                                                     booking on 
                                                     <span className="font-medium"> {format(time, `EEEE, MMMM do, yyyy, kk:mm`)}</span>?</p>
-                                                <button type="button" onClick={() => handleCloseModal(i)}>close</button>
+                                                <button
+                                                    type="button"
+                                                    className="btn bg-sky-500"
+                                                    onClick={() => handleDeleteBooking(time)}
+                                                >
+                                                    Confirm Cancellation
+                                                </button>
+                                                <button type="button" onClick={() => handleCloseModal(i)}>Close</button>
                                             </form>
                                         </dialog>
                                     </>
