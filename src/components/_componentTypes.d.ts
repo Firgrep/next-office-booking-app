@@ -16,4 +16,7 @@ interface Window {
 
 interface SelectedRoomType {
     name: string | undefined;
+    interval: number;
+    openingTime: number;
+    closingTime: number;
 }

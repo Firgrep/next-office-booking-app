@@ -11,7 +11,7 @@ export const BtnAccount: React.FC = () => {
             <Link
                 href="/account"
             >
-                <button style={{backgroundColor: "white", padding: "20px"}}>
+                <button className="bg-white p-3 hover:bg-yellow-500">
                     Account
                 </button>
             </Link>

@@ -49,11 +49,9 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
 
         const {justDate} = date;
 
-        // !TODO consider change opening and closing time to room from database!
-        const beginning = add(justDate, { hours: OPENING_TIME });
-        const end = add(justDate, { hours: CLOSING_TIME });
-        // !TODO change interval to room from database!
-        const interval = MAIN_ROOM_INTERVAL;
+        const beginning = add(justDate, { hours: selectedRoom?.openingTime });
+        const end = add(justDate, { hours: selectedRoom?.closingTime });
+        const interval = selectedRoom?.interval;
 
         const times = [];
         for (let i = beginning; i <= end; i = add(i, {minutes: interval})) {
@@ -65,6 +63,8 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
 
     const times = getTimes();
 
+    console.log(date.dateTime);
+    
     return (
         <>
             <div>
