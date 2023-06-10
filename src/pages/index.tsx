@@ -20,6 +20,8 @@ const Home: NextPageWithLayout = () => {
         The <span className="text-slate-500">Rokni Office</span> App
       </h1>
 
+      <ProductDisplay />
+
       <div className="flex flex-col items-center gap-2">
         <p className="text-2xl text-white">
           {hello.data ? hello.data.greeting : "Loading tRPC query..."}
@@ -43,3 +45,21 @@ export default Home;
 //   undefined, // no input
 //   { enabled: sessionData?.user !== undefined },
 // );
+
+const ProductDisplay: React.FC = () => (
+  <section>
+    <div className="product">
+      <div className="description">
+        <h3>Starter plan</h3>
+        <h5>$20.00 / month</h5>
+      </div>
+    </div>
+    <form action="/create-checkout-session" method="POST">
+      {/* Add a hidden field with the lookup_key of your Price */}
+      <input type="hidden" name="lookup_key" value="full_sub" />
+      <button id="checkout-and-portal-button" type="submit">
+        Checkout
+      </button>
+    </form>
+  </section>
+);

@@ -26,6 +26,7 @@
     "react": "18.2.0",
     "react-calendar": "^4.2.1",
     "react-dom": "18.2.0",
+    "stripe": "^12.9.0",
     "superjson": "1.12.2",
     "zod": "^3.21.4"
   },

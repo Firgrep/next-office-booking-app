@@ -2,7 +2,7 @@ import { useSession } from 'next-auth/react';
 import Link from "next/link";
 import { BtnSignIn } from "~/components/BtnSignIn";
 import Layout from "~/components/Layout";
-import { type NextPageWithLayout } from "./_app";
+import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from 'react';
 import { Booking } from '~/components/Booking';
 // import { useRouter } from "next/router";
