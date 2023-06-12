@@ -5,27 +5,33 @@ import Layout from "~/components/Layout";
 import { type NextPageWithLayout } from "../_app";
 import { type ReactElement } from 'react';
 import { Booking } from '~/components/Booking';
-// import { useRouter } from "next/router";
-// import { useEffect } from 'react';
+import { api } from '~/utils/api';
+import { type GetServerSidePropsContext } from 'next';
+import { getServerAuthSession } from '~/server/auth';
 
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+    const session = await getServerAuthSession(ctx);
+
+    if (!session) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            },
+        };
+    }
+
+    return {
+        props: {},
+    };
+};
 
 const Account: NextPageWithLayout = () => {
-    const { data: sessionData } = useSession();
-    // const router = useRouter();
-
-    if(!sessionData) {
-        return (
-            <article className="bg-white flex flex-col items-center justify-center p-4">
-                <Link href="/" className="text-blue-500 hover:underline">BACK</Link>
-                <p>You need to be signed in to view this page</p>
-                <BtnSignIn></BtnSignIn> 
-            </article>
-        )
-    }
 
     return(
         <>
-            <Booking />
+            <Link href="/account/billing">Go to Billing</Link>
         </>
     )
 }

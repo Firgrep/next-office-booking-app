@@ -19,6 +19,7 @@ import { type Session } from "next-auth";
 
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
+import { stripe } from "../stripe";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -38,6 +39,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     prisma,
+    stripe,
   };
 };
 

@@ -6,9 +6,9 @@ import { format, add } from 'date-fns';
 import { useSession } from "next-auth/react";
 
 
-interface bookingProps {}
+interface BookingProps {}
 
-export const Booking: React.FC<bookingProps> = () => {
+export const Booking: React.FC<BookingProps> = () => {
     const { data: sessionData } = useSession();
     const utils = api.useContext();
 

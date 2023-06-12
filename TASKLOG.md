@@ -1,3 +1,5 @@
+* build webhook for stripe
+
 * build booking full for the day indicator on calendar
 
 * fix calendar bug with phone booths, wrong display (logic error or frontend??)

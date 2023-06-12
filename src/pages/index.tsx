@@ -1,5 +1,4 @@
 import Head from "next/head";
-import { Booking } from "~/components/Booking";
 import { api } from "~/utils/api";
 import Layout from "~/components/Layout";
 import { type NextPageWithLayout } from "./_app";

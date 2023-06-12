@@ -1,3 +1,5 @@
+// * Types local to frontend components. For app-wide types, see src/types/
+
 /**
  * Used in Booking and Calendar components
  */
