@@ -98,3 +98,16 @@ model Booking {
 
     @@unique([roomId, startTime, endTime])
 }
+
+model StripeEvent {
+    id               String   @id @unique
+    api_version      String?
+    data             Json
+    request          Json?
+    type             String
+    object           String
+    account          String?
+    created          DateTime
+    livemode         Boolean
+    pending_webhooks Int
+}

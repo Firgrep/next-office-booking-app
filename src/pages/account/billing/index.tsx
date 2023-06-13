@@ -6,6 +6,7 @@ import Layout from "~/components/Layout";
 import { NextPageWithLayout } from "~/pages/_app";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
+import { BillingForm } from "~/components/BillingForm";
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -26,25 +27,57 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 };
 
 const Billing: NextPageWithLayout = () => {
-    const { data: userSubscriptionData } = api.subscription.getUserSubscriptionPlan.useQuery(undefined, {refetchOnWindowFocus: false,});
-    const { data: isCanceled } = api.subscription.checkUserStripeCancellation.useQuery(
+    const { 
+        data: userSubscriptionPlan, 
+        isLoading: userSubscriptionPlanLoading, 
+        isError: userSubscriptionPlanError 
+    } = api.stripe.getUserSubscriptionPlan.useQuery(
+        undefined, {refetchOnWindowFocus: false,});
+
+    const { 
+        data: isCanceled, 
+        isLoading: stripeIsCancelledLoading, 
+        isError: stripeIsCancelledError 
+    } = api.stripe.checkUserStripeCancellation.useQuery(
         {
-            isPro: userSubscriptionData?.isPro, 
-            stripeSubscriptionId: userSubscriptionData?.stripeCustomerId
+            isPro: userSubscriptionPlan?.isPro, 
+            stripeSubscriptionId: userSubscriptionPlan?.stripeCustomerId
         },
         {
             refetchOnWindowFocus: false,
         }
     );
         
-    console.log(isCanceled);
+    console.log("is cancelled?: ", isCanceled);
 
+    if (userSubscriptionPlanError || stripeIsCancelledError) {
+        return(
+            <div>
+                <h3>Page error</h3>
+            </div>
+        )
+    }
+
+    
     return(
-        <>
-            <p>Billing page</p>
-            <p className="text-black">{userSubscriptionData?.description}</p>
+        <section>
             
-        </>
+            
+            <p>Billing page</p>
+            <p className="text-black">{userSubscriptionPlan?.description}</p>
+            {userSubscriptionPlanLoading && (
+                <h1>Loading user data...</h1>
+            )}
+            {userSubscriptionPlan &&
+            typeof isCanceled === "boolean" && (
+                <BillingForm 
+                    userSubscriptionPlan={{
+                        ...userSubscriptionPlan,
+                        isCanceled
+                    }}
+                />
+            )}
+        </section>
     );
 };
 
