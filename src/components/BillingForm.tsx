@@ -2,22 +2,58 @@
 
 import { useState } from "react";
 import { type UserSubscriptionPlan } from "~/types";
+import { api } from "~/utils/api";
 
-interface BillingFormProps {
+interface BillingFormProps extends React.HTMLAttributes<HTMLFormElement> {
     userSubscriptionPlan: UserSubscriptionPlan & {
         isCanceled: boolean
     }
 }
 
-export const BillingForm: React.FC<BillingFormProps> = () => {
+export const BillingForm: React.FC<BillingFormProps> = ({
+    userSubscriptionPlan,
+}) => {
     const [ isLoading, setIsLoading ] = useState<boolean>(false);
+    const { mutateAsync: createStripeSession } = api.stripe.createBillingOrCheckoutSession.useMutation();
 
-    // TODO build loading, form function, etc
+    async function onSubmit(event: React.FormEvent) {
+        event.preventDefault();
+        setIsLoading(!isLoading);
+
+        const { url } = await createStripeSession();
+
+        if (!url) {
+            return console.log("Error: no URL");
+        }
+
+        if (url) {
+            window.location.href = url;
+        }
+    }
     
     return (
-        <form>
-            <h3>Subscription Plan</h3>
+        <form className="bg-green-500" onSubmit={onSubmit} >
+            <h3>Billing form</h3>
+            <p>{userSubscriptionPlan.description}</p>
 
+            <button
+                type="submit"
+                className="btn"
+                disabled={isLoading}   
+            >
+                {isLoading && (
+                    <p className="animate-spin">Ø</p>
+                )}
+                {userSubscriptionPlan.isPro ? "Manage Subscription" : "Upgrade to PRO"}
+            </button>
+            {userSubscriptionPlan.isPro ? (
+                <p className="rounded-full text-xs font-medium">
+                    {userSubscriptionPlan.isCanceled 
+                        ? "Your plan will be canceled on "
+                        : "Your plan renews on "}
+                    {userSubscriptionPlan.stripeCurrentPeriodEnd}.
+                </p>
+            ) : null}
         </form>
     )
 };

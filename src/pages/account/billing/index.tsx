@@ -41,7 +41,7 @@ const Billing: NextPageWithLayout = () => {
     } = api.stripe.checkUserStripeCancellation.useQuery(
         {
             isPro: userSubscriptionPlan?.isPro, 
-            stripeSubscriptionId: userSubscriptionPlan?.stripeCustomerId
+            stripeSubscriptionId: userSubscriptionPlan?.stripeSubscriptionId
         },
         {
             refetchOnWindowFocus: false,
