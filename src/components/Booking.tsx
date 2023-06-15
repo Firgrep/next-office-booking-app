@@ -11,7 +11,7 @@ interface BookingProps {}
 /**
  * Container component for booking-related logic. Holds the states and handler functions
  * for nested booking components like SelectRooms and Calendar.
- * @desc Takes no props. Fetches everything it needs from context-wide hooks and APIs. 
+ * @description Takes no props. Fetches everything it needs from context-wide hooks and APIs. 
  */
 export const Booking: React.FC<BookingProps> = () => {
     const { data: sessionData } = useSession();

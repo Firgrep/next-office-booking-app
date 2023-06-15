@@ -5,10 +5,16 @@ import {
     protectedProcedure
 } from "~/server/api/trpc";
 import { TRPCError } from '@trpc/server';
-import { flexPayPlan, proPlan } from "~/constants/subscriptions";
+import { 
+    flexPayPlan, 
+    proPlan,
+    plusPlanConference, 
+    plusPlanPhone, 
+    basicPlan 
+} from "~/constants/subscriptions";
 import { getOrCreateStripeCustomerIdForUser } from "~/server/stripe/stripeWebhookHandlers";
 import { env } from "~/env.mjs";
-import { UserSubscriptionPlan } from "~/types";
+import { SubscriptionPlan, UserSubscriptionPlan } from "~/types";
 import { PrismaClient } from "@prisma/client";
 
 
@@ -39,24 +45,71 @@ const getUserSubscription = async ({
     }
 
     let isPro: boolean;
+    let isPlusConference: boolean;
+    let isPlusPhone: boolean;
+    let isBasic: boolean;
 
+    let plan: SubscriptionPlan;
+
+    // Given the app has many different subscriptions, first the user is 
+    // checked if any valid subscriptions exist. 
     if (
         user?.stripePriceId &&
         user?.stripeCurrentPeriodEnd &&
         user.stripeCurrentPeriodEnd.getTime() + 86_400_000 > Date.now()
     ) {
-        isPro = true;
+        // If valid subscription exists, the type of subscription is checked.
+        switch (user.stripePriceId) {
+            case env.STRIPE_PRO_MONTHLY_PLAN_ID:
+                isPro = true; // ! Exclusive true
+                isPlusConference = false;
+                isPlusPhone = false;
+                isBasic = false;
+                plan = proPlan;
+                break;
+            case env.STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID:
+                isPro = false;
+                isPlusConference = true; // ! Exclusive true
+                isPlusPhone = false;
+                isBasic = false;
+                plan = plusPlanConference;
+                break;
+            case env.STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID:
+                isPro = false;
+                isPlusConference = false;
+                isPlusPhone = true; // ! Exclusive true
+                isBasic = false;
+                plan = plusPlanPhone;
+                break;
+            case env.STRIPE_BASIC_MONTHLY_PLAN_ID:
+                isPro = false;
+                isPlusConference = false;
+                isPlusPhone = false;
+                isBasic = true; // ! Exclusive true
+                plan = basicPlan;
+            default:
+                isPro = false;
+                isPlusConference = false;
+                isPlusPhone = false;
+                isBasic = false;
+                plan = flexPayPlan;
+        }
     } else {
         isPro = false;
+        isPlusConference = false;
+        isPlusPhone = false;
+        isBasic = false;
+        plan = flexPayPlan;
     }
 
-    const plan = isPro ? proPlan : flexPayPlan;
-    
     return {
         ...user,
         ...plan,
         stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd?.getTime(),
         isPro,
+        isPlusConference,
+        isPlusPhone,
+        isBasic
     };
 };
 

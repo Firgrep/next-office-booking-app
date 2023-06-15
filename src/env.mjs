@@ -28,6 +28,9 @@ export const env = createEnv({
     STRIPE_API_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string(),
     STRIPE_PRO_MONTHLY_PLAN_ID: z.string().min(1),
+    STRIPE_BASIC_MONTHLY_PLAN_ID: z.string().min(1),
+    STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID: z.string().min(1),
+    STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID: z.string().min(1),
   },
 
   /**
@@ -55,5 +58,8 @@ export const env = createEnv({
     STRIPE_API_KEY: process.env.STRIPE_API_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     STRIPE_PRO_MONTHLY_PLAN_ID: process.env.STRIPE_PRO_MONTHLY_PLAN_ID,
+    STRIPE_BASIC_MONTHLY_PLAN_ID: process.env.STRIPE_BASIC_MONTHLY_PLAN_ID,
+    STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID: process.env.STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID,
+    STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID: process.env.STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID,
   },
 });
