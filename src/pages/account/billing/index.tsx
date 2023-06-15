@@ -1,6 +1,4 @@
 import { type GetServerSidePropsContext } from "next";
-import Link from "next/link";
-import { BtnSignIn } from "~/components/BtnSignIn";
 import { ReactElement } from "react";
 import Layout from "~/components/Layout";
 import { NextPageWithLayout } from "~/pages/_app";
@@ -26,13 +24,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
 };
 
-const Billing: NextPageWithLayout = () => {
+const BillingPage: NextPageWithLayout = () => {
     const { 
         data: userSubscriptionPlan, 
         isLoading: userSubscriptionPlanLoading, 
         isError: userSubscriptionPlanError 
-    } = api.stripe.getUserSubscriptionPlan.useQuery(
-        undefined, {refetchOnWindowFocus: false,});
+    } = api.stripe.getUserSubscriptionPlan.useQuery();
 
     const { 
         data: isCanceled, 
@@ -42,14 +39,9 @@ const Billing: NextPageWithLayout = () => {
         {
             isPro: userSubscriptionPlan?.isPro, 
             stripeSubscriptionId: userSubscriptionPlan?.stripeSubscriptionId
-        },
-        {
-            refetchOnWindowFocus: false,
         }
     );
         
-    console.log("is cancelled?: ", isCanceled);
-
     if (userSubscriptionPlanError || stripeIsCancelledError) {
         return(
             <div>
@@ -57,10 +49,9 @@ const Billing: NextPageWithLayout = () => {
             </div>
         )
     }
-
     
     return(
-        <section>
+        <>
             
             
             <p>Billing page</p>
@@ -77,11 +68,11 @@ const Billing: NextPageWithLayout = () => {
                     }}
                 />
             )}
-        </section>
+        </>
     );
 };
 
-Billing.getLayout = function getLayout(page: ReactElement) {
+BillingPage.getLayout = function getLayout(page: ReactElement) {
     return (
         <Layout>
             {page}
@@ -89,4 +80,4 @@ Billing.getLayout = function getLayout(page: ReactElement) {
     );
 };
 
-export default Billing;
+export default BillingPage;

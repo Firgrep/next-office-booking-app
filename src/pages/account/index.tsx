@@ -31,7 +31,12 @@ const Account: NextPageWithLayout = () => {
 
     return(
         <>
-            <Link href="/account/billing">Go to Billing</Link>
+            <Link href="/account/booking">
+                <button className="btn">Go to Booking</button>
+            </Link>
+            <Link href="/account/billing">
+                <button className="btn">Go to Billing</button>
+            </Link>
         </>
     )
 }

@@ -8,13 +8,20 @@ import { useSession } from "next-auth/react";
 
 interface BookingProps {}
 
+/**
+ * Container component for booking-related logic. Holds the states and handler functions
+ * for nested booking components like SelectRooms and Calendar.
+ * @desc Takes no props. Fetches everything it needs from context-wide hooks and APIs. 
+ */
 export const Booking: React.FC<BookingProps> = () => {
     const { data: sessionData } = useSession();
     const utils = api.useContext();
-
-    const { data: rooms } = api.booking.getRooms.useQuery(undefined, {
-        refetchOnWindowFocus: false,
-    });
+    const { data: rooms } = api.booking.getRooms.useQuery();
+    const { 
+        data: userSubscriptionPlan, 
+        isLoading: userSubscriptionPlanLoading, 
+        isError: userSubscriptionPlanError 
+    } = api.stripe.getUserSubscriptionPlan.useQuery();
     
     const [ date, setDate ] = useState<DateType>({
         justDate: null,
@@ -29,8 +36,6 @@ export const Booking: React.FC<BookingProps> = () => {
     
     const { data: bookings } = api.booking.getRoomBookings.useQuery({
         roomId: room.roomId
-    }, {
-        refetchOnWindowFocus: false,
     });
 
     const createBooking = api.booking.createBooking.useMutation({
@@ -163,14 +168,22 @@ export const Booking: React.FC<BookingProps> = () => {
                         <br></br> 
                         {format(date.dateTime, `EEEE kk:mm, MMMM do, yyyy`)}
                     </p>
-                    <button 
-                        className="btn btn-primary" 
-                        type="button" 
-                        onClick={() => date.dateTime ? handleCreateBooking(date.dateTime) : console.log("Datetime null")}
-                        disabled={createBooking.isLoading}
-                    >
-                        Book
-                    </button>
+                    {userSubscriptionPlan?.isPro ? (
+                        <button 
+                            className="btn btn-primary" 
+                            type="button" 
+                            onClick={() => date.dateTime ? handleCreateBooking(date.dateTime) : console.log("Datetime null")}
+                            disabled={createBooking.isLoading}
+                        >
+                            Book
+                        </button>
+                    ) : (
+                        <button
+                            className="btn btn-primary"
+                        >
+                            You are not PRO! You must buy this booking!
+                        </button>
+                    )}
                     {createBooking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {createBooking.error.message}</p>}
                 </div>
             ) : (<div style={{height: "200px"}}></div>)}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { type UserSubscriptionPlan } from "~/types";
 import { api } from "~/utils/api";
+import { formatDate } from "~/utils/utils";
 
 interface BillingFormProps extends React.HTMLAttributes<HTMLFormElement> {
     userSubscriptionPlan: UserSubscriptionPlan & {
@@ -14,7 +15,12 @@ export const BillingForm: React.FC<BillingFormProps> = ({
     userSubscriptionPlan,
 }) => {
     const [ isLoading, setIsLoading ] = useState<boolean>(false);
-    const { mutateAsync: createStripeSession } = api.stripe.createBillingOrCheckoutSession.useMutation();
+    const utils = api.useContext();
+    const { mutateAsync: createStripeSession } = api.stripe.createBillingOrCheckoutSession.useMutation({
+        onSuccess() {
+            utils.stripe.invalidate();
+        }
+    });
 
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
@@ -51,7 +57,7 @@ export const BillingForm: React.FC<BillingFormProps> = ({
                     {userSubscriptionPlan.isCanceled 
                         ? "Your plan will be canceled on "
                         : "Your plan renews on "}
-                    {userSubscriptionPlan.stripeCurrentPeriodEnd}.
+                    {formatDate(userSubscriptionPlan.stripeCurrentPeriodEnd)}.
                 </p>
             ) : null}
         </form>
