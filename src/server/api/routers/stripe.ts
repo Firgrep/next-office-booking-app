@@ -253,4 +253,67 @@ export const stripeRouter = createTRPCRouter({
             }
             throw new Error("Could not authenticate user for billing procedure.");
         }),
+    createSubscriptionCheckoutSession: protectedProcedure
+        .input(
+            z
+                .object({
+                    subTier: z.enum(['pro', 'basic', 'plusConference', 'plusPhone']),
+                }))
+        .mutation(async ({ctx, input}) => {
+            const baseUrl = getBaseUrl(ctx.req);
+            const { prisma, stripe } = ctx;
+
+            const customerId = await getOrCreateStripeCustomerIdForUser({
+                prisma,
+                stripe,
+                userId: ctx.session.user?.id
+            })
+
+            if (!customerId) {
+                throw new Error("Could not create customer");
+            }
+
+            const purchase = {
+                price: "",
+                quantity: 1,
+            }
+
+            switch (input.subTier) {
+                case "pro":
+                    purchase.price = env.STRIPE_PRO_MONTHLY_PLAN_ID;
+                    break;
+                case "plusConference":
+                    purchase.price = env.STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID;
+                    break;
+                case "plusPhone":
+                    purchase.price = env.STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID;
+                    break;
+                case "basic":
+                    purchase.price = env.STRIPE_BASIC_MONTHLY_PLAN_ID;
+                    break;
+                default:
+                    throw new Error("No subTier matches any case in checkout route");
+            }
+            
+            const stripeSession = await ctx.stripe.checkout.sessions.create({
+                customer: customerId,
+                client_reference_id: ctx.session.user?.id,
+                payment_method_types: ["card"],
+                mode: "subscription",
+                line_items: [ purchase ],
+                success_url: `${baseUrl}/account/billing`,
+                cancel_url: `${baseUrl}/account/billing`,
+                subscription_data: {
+                    metadata: {
+                        userId: ctx.session.user?.id,
+                    },
+                },
+            });
+
+            if (!stripeSession) {
+                throw new Error("Could not create checkout session");
+            }
+
+            return { url: stripeSession.url };
+        })
 });
