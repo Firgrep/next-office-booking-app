@@ -16,9 +16,30 @@ import { getOrCreateStripeCustomerIdForUser } from "~/server/stripe/stripeWebhoo
 import { env } from "~/env.mjs";
 import { SubscriptionPlan, UserSubscriptionPlan } from "~/types";
 import { PrismaClient } from "@prisma/client";
+import { NextApiRequest } from "next/types";
 
 
-const getUserSubscription = async ({
+const getBaseUrl = (req: NextApiRequest) => {
+    const baseUrl = 
+        env.NODE_ENV === "development"
+            ? `http://${req.headers.host ?? "localhost:3000"}`
+            : `https://${req.headers.host ?? env.NEXTAUTH_URL}`;
+    return baseUrl;
+};
+
+const checkUserSubscriptionPlan = (userSubscriptionPlan: UserSubscriptionPlan): boolean => {
+    if (userSubscriptionPlan.isPro ||
+        userSubscriptionPlan.isBasic ||
+        userSubscriptionPlan.isPlusConference ||
+        userSubscriptionPlan.isPlusPhone
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+const getUserSubscriptionDetails = async ({
     prisma,
     userId
 }: {
@@ -116,7 +137,7 @@ const getUserSubscription = async ({
 export const stripeRouter = createTRPCRouter({
     getUserSubscriptionPlan: protectedProcedure
         .query(async ({ ctx }): Promise<UserSubscriptionPlan> => {
-            return getUserSubscription({ prisma: ctx.prisma, userId: ctx.session.user.id});
+            return getUserSubscriptionDetails({ prisma: ctx.prisma, userId: ctx.session.user.id});
         }),
     checkUserStripeCancellation: protectedProcedure
         .input(
@@ -148,7 +169,7 @@ export const stripeRouter = createTRPCRouter({
                     ? `http://${req.headers.host ?? "localhost:3000"}`
                     : `https://${req.headers.host ?? env.NEXTAUTH_URL}`;
 
-            const userSubscriptionPlan = await getUserSubscription({ prisma: ctx.prisma, userId: ctx.session.user.id});
+            const userSubscriptionPlan = await getUserSubscriptionDetails({ prisma: ctx.prisma, userId: ctx.session.user.id});
 
             // If the user is on the pro plan, create a portal session to manage subscription.
             if (userSubscriptionPlan.isPro && userSubscriptionPlan.stripeCustomerId) {
@@ -212,5 +233,24 @@ export const stripeRouter = createTRPCRouter({
             }
 
             return { url: stripeSession.url };
-        })
+        }),
+    createBillingSession: protectedProcedure
+        .mutation(async ({ ctx }) => {
+            const baseUrl = getBaseUrl(ctx.req);
+            const userSubscriptionPlan = await getUserSubscriptionDetails({ prisma: ctx.prisma, userId: ctx.session.user.id});
+            
+            if (checkUserSubscriptionPlan(userSubscriptionPlan) && userSubscriptionPlan.stripeCustomerId) {
+                const stripeSession = await ctx.stripe.billingPortal.sessions.create({
+                    customer: userSubscriptionPlan.stripeCustomerId,
+                    return_url: `${baseUrl}/account/billing`,
+                });
+
+                if (!stripeSession) {
+                    throw new Error("Could not create billing portal session");
+                }
+
+                return { url: stripeSession.url };
+            }
+            throw new Error("Could not authenticate user for billing procedure.");
+        }),
 });

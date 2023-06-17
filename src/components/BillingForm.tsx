@@ -61,5 +61,5 @@ export const BillingForm: React.FC<BillingFormProps> = ({
                 </p>
             ) : null}
         </form>
-    )
+    );
 };
