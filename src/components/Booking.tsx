@@ -4,16 +4,16 @@ import { Calendar } from "./Calendar";
 import { api } from "~/utils/api";
 import { format, add } from 'date-fns';
 import { useSession } from "next-auth/react";
+import { BtnBook } from "./BtnBook";
+import { sleep } from "~/utils/utils";
 
-
-interface BookingProps {}
 
 /**
  * Container component for booking-related logic. Holds the states and handler functions
  * for nested booking components like SelectRooms and Calendar.
  * @description Takes no props. Fetches everything it needs from context-wide hooks and APIs. 
  */
-export const Booking: React.FC<BookingProps> = () => {
+export const Booking: React.FC = () => {
     const { data: sessionData } = useSession();
     const utils = api.useContext();
     const { data: rooms } = api.booking.getRooms.useQuery();
@@ -31,6 +31,9 @@ export const Booking: React.FC<BookingProps> = () => {
     const [ room, setRoom ] = useState<RoomType>({
         roomId: null
     });
+
+    const [ isCreateBookingSuccess, setIsCreateBookingSuccess ] = useState<boolean>(false);
+    const [ isDeleteBookingSuccess, setIsDeleteBookingSuccess ] = useState<boolean>(false);
     
     const selectedRoom = rooms?.find(roomToCheck => roomToCheck.id === room.roomId);
     
@@ -40,17 +43,19 @@ export const Booking: React.FC<BookingProps> = () => {
 
     const createBooking = api.booking.createBooking.useMutation({
         onSuccess() {
+            setIsCreateBookingSuccess(true);
             utils.booking.invalidate();
         }
     });
 
     const deleteBooking = api.booking.deleteBooking.useMutation({
         onSuccess() {
+            setIsDeleteBookingSuccess(true);
             utils.booking.invalidate();
         }
     });
 
-    const handleCreateBooking = (startTime: Date ) => {
+    const handleCreateBooking = async (startTime: Date ) => {
         if (!sessionData) {
             console.log("No session data");
             return;
@@ -76,6 +81,7 @@ export const Booking: React.FC<BookingProps> = () => {
             roomId: room.roomId,
         });
 
+        await sleep(1000);
         setDate((prev) => ({ ...prev, dateTime: null}));
     };
 
@@ -103,10 +109,11 @@ export const Booking: React.FC<BookingProps> = () => {
         }
     };
 
+
     useEffect(() => {
-        if (createBooking.isSuccess) {
+        if (isCreateBookingSuccess) {
             const handleCreateBookingClick = () => {
-                createBooking.reset();
+                setIsCreateBookingSuccess(false);
             }
             window.addEventListener("click", () => {
                 handleCreateBookingClick();
@@ -117,12 +124,12 @@ export const Booking: React.FC<BookingProps> = () => {
                 });
             };
         }
-    }, [createBooking.isSuccess]);
+    }, [isCreateBookingSuccess]);
 
     useEffect(() => {
-        if (deleteBooking.isSuccess) {
+        if (isDeleteBookingSuccess) {
             const handleDeleteBookingClick = () => {
-                deleteBooking.reset();
+                setIsDeleteBookingSuccess(false);
             }
             window.addEventListener("click", () => {
                 handleDeleteBookingClick();
@@ -133,7 +140,7 @@ export const Booking: React.FC<BookingProps> = () => {
                 });
             };
         }
-    }, [deleteBooking.isSuccess]);
+    }, [isDeleteBookingSuccess]);
 
 
     return (
@@ -156,8 +163,8 @@ export const Booking: React.FC<BookingProps> = () => {
             </>
             ) : (<div style={{height: "500px"}}></div>)}
 
-            {createBooking.isSuccess && <p className="bg-green-500">Success! Successfully booked!</p>}   
-            {deleteBooking.isSuccess && <p className="bg-green-500">Success! Booking successfully cancelled.</p>}
+            {isCreateBookingSuccess && <p className="bg-green-500">Success! Successfully booked!</p>}   
+            {isDeleteBookingSuccess && <p className="bg-green-500">Success! Booking successfully cancelled.</p>}
 
             {deleteBooking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {deleteBooking.error.message}</p>}
 
@@ -168,22 +175,13 @@ export const Booking: React.FC<BookingProps> = () => {
                         <br></br> 
                         {format(date.dateTime, `EEEE kk:mm, MMMM do, yyyy`)}
                     </p>
-                    {userSubscriptionPlan?.isPro ? (
-                        <button 
-                            className="btn btn-primary" 
-                            type="button" 
-                            onClick={() => date.dateTime ? handleCreateBooking(date.dateTime) : console.log("Datetime null")}
-                            disabled={createBooking.isLoading}
-                        >
-                            Book
-                        </button>
-                    ) : (
-                        <button
-                            className="btn btn-primary"
-                        >
-                            You are not PRO! You must buy this booking!
-                        </button>
-                    )}
+                    <BtnBook 
+                        userSubscriptionPlan={userSubscriptionPlan}
+                        date={date}
+                        handleCreateBooking={handleCreateBooking}
+                        createBookingIsLoading={createBooking.isLoading}
+                        room={room}
+                    />
                     {createBooking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {createBooking.error.message}</p>}
                 </div>
             ) : (<div style={{height: "200px"}}></div>)}

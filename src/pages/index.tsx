@@ -19,8 +19,6 @@ const Home: NextPageWithLayout = () => {
         The <span className="text-slate-500">Rokni Office</span> App
       </h1>
 
-      <ProductDisplay />
-
       <div className="flex flex-col items-center gap-2">
         <p className="text-2xl text-white">
           {hello.data ? hello.data.greeting : "Loading tRPC query..."}

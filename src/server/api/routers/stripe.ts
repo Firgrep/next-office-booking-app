@@ -164,7 +164,7 @@ export const stripeRouter = createTRPCRouter({
                 return { url: stripeSession.url };
             }
 
-            // If the user is on the flexPay plan, create a checkout sessiont to upgrade.
+            // If the user is on the flexPay plan, create a checkout session to upgrade.
             const customerId = await getOrCreateStripeCustomerIdForUser({
                 prisma,
                 stripe,
@@ -183,6 +183,18 @@ export const stripeRouter = createTRPCRouter({
                 line_items: [
                     {
                         price: env.STRIPE_PRO_MONTHLY_PLAN_ID,
+                        quantity: 1,
+                    },
+                    {
+                        price: env.STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID,
+                        quantity: 1,
+                    },
+                    {
+                        price: env.STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID,
+                        quantity: 1,
+                    },
+                    {
+                        price: env.STRIPE_BASIC_MONTHLY_PLAN_ID,
                         quantity: 1,
                     }
                 ],

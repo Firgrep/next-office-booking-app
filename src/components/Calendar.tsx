@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import ReactCalendar from 'react-calendar';
 import {add, format} from "date-fns";
-import { CLOSING_TIME, MAIN_ROOM_INTERVAL, OPENING_TIME } from '~/constants/config';
 import { useSession } from 'next-auth/react';
+
 
 type calendarProps = {
     selectedRoom: undefined | SelectedRoomType,
@@ -12,6 +12,10 @@ type calendarProps = {
     handleDeleteBooking: Function,
 }
 
+/**
+ * Calendar component is meant to be used with Booking component. Generates to view a calendar and daily hours
+ * based on the selected room input. Returns to parent the selected date.
+ */
 export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, selectedRoom, handleDeleteBooking}) => {
     const { data: sessionData } = useSession();
 
@@ -62,8 +66,6 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
     };
 
     const times = getTimes();
-
-    console.log(date.dateTime);
     
     return (
         <>

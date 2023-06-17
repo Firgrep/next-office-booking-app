@@ -1,4 +1,5 @@
-import { ChangeEvent } from "react";
+import { type ChangeEvent } from "react";
+
 
 type selectRoomsProps = {
     rooms: undefined | any[],
@@ -6,6 +7,9 @@ type selectRoomsProps = {
     setDate: React.Dispatch<React.SetStateAction<DateType>>
 }
 
+/**
+ * SelectRooms component is meant to be used with Booking component. It selects the room. Any new selection will reset the date.
+ */
 export const SelectRooms: React.FC<selectRoomsProps> = ({rooms, setRoom, setDate}) => {
 
     const handleRoomSelection = (e: ChangeEvent<HTMLSelectElement>) => {

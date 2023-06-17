@@ -1,6 +1,6 @@
-import React from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+
 
 export const BtnAccount: React.FC = () => {
     const { data: sessionData } = useSession();
