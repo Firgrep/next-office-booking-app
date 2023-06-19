@@ -2,7 +2,7 @@ import { type PrismaClient } from "@prisma/client";
 import { type Stripe } from 'stripe';
 
 
-interface getOrCreateStripeCustomerIdForUserObject {
+interface GetOrCreateStripeCustomerIdForUserObject {
     stripe: Stripe,
     prisma: PrismaClient,
     userId: string,
@@ -12,7 +12,7 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     stripe,
     prisma,
     userId,
-}: getOrCreateStripeCustomerIdForUserObject) => {
+}: GetOrCreateStripeCustomerIdForUserObject) => {
     const user = await prisma.user.findUnique({
         where: {
             id: userId,
@@ -50,7 +50,7 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     }
 };
 
-interface handleInvoicePaidObject {
+interface HandleInvoicePaidObject {
     event: Stripe.Event;
     stripe: Stripe;
     prisma: PrismaClient;
@@ -60,7 +60,7 @@ export const handleInvoicePaid = async ({
     event,
     stripe,
     prisma,
-}: handleInvoicePaidObject) => {
+}: HandleInvoicePaidObject) => {
     const invoice = event.data.object as Stripe.Invoice;
     const subscriptionId = invoice.subscription;
     const subscription = await stripe.subscriptions.retrieve(
@@ -78,7 +78,7 @@ export const handleInvoicePaid = async ({
     });
 };
 
-interface handleSubscriptionCreatedOrUpdatedObject {
+interface HandleSubscriptionCreatedOrUpdatedObject {
     event: Stripe.Event;
     prisma: PrismaClient;
 }
@@ -86,7 +86,7 @@ interface handleSubscriptionCreatedOrUpdatedObject {
 export const handleSubscriptionCreatedOrUpdated = async({
     event,
     prisma
-}: handleSubscriptionCreatedOrUpdatedObject) => {
+}: HandleSubscriptionCreatedOrUpdatedObject) => {
     const subscription = event.data.object as Stripe.Subscription;
     const userId = subscription.metadata.userId;
 
@@ -103,7 +103,7 @@ export const handleSubscriptionCreatedOrUpdated = async({
     });
 };
 
-interface handleSubscriptionCanceledObject {
+interface HandleSubscriptionCanceledObject {
     event: Stripe.Event;
     prisma: PrismaClient;
 }
@@ -111,7 +111,7 @@ interface handleSubscriptionCanceledObject {
 export const handleSubscriptionCanceled = async ({
     event,
     prisma
-}: handleSubscriptionCanceledObject) => {
+}: HandleSubscriptionCanceledObject) => {
     const subscription = event.data.object as Stripe.Subscription;
     const userId = subscription.metadata.userId;
 
@@ -123,6 +123,28 @@ export const handleSubscriptionCanceled = async ({
             stripeCurrentPeriodEnd: null,
             stripeSubscriptionId: null,
             stripePriceId: null,
+        },
+    });
+};
+
+interface HandleCustomerIdDeletedOject {
+    event: Stripe.Event;
+    prisma: PrismaClient;
+}
+
+export const handleCustomerIdDeleted = async ({
+    event,
+    prisma
+}: HandleCustomerIdDeletedOject) => {
+    const subscription = event.data.object as Stripe.Subscription;
+    const userId = subscription.metadata.userId;
+
+    await prisma.user.update({
+        where: {
+            id: userId,
+        },
+        data: {
+            stripeCustomerId: null,
         },
     });
 };

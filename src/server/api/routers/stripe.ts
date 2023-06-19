@@ -108,6 +108,7 @@ const getUserSubscriptionDetails = async ({
                 isPlusPhone = false;
                 isBasic = true; // ! Exclusive true
                 plan = basicPlan;
+                break;
             default:
                 isPro = false;
                 isPlusConference = false;
@@ -263,10 +264,17 @@ export const stripeRouter = createTRPCRouter({
             const baseUrl = getBaseUrl(ctx.req);
             const { prisma, stripe } = ctx;
 
+            if(!ctx.session.user?.id) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "User not found"
+                })
+            }
+
             const customerId = await getOrCreateStripeCustomerIdForUser({
                 prisma,
                 stripe,
-                userId: ctx.session.user?.id
+                userId: ctx.session.user.id
             })
 
             if (!customerId) {
@@ -315,5 +323,59 @@ export const stripeRouter = createTRPCRouter({
             }
 
             return { url: stripeSession.url };
+        }),
+    updateSubscription: protectedProcedure
+        .input(
+            z
+                .object({
+                    subUpdate: z.enum(['toPro', 'toBasic', 'toPlusConference', 'toPlusPhone']),
+                }))
+        .mutation(async ({ ctx, input }) => {
+            const { prisma, stripe } = ctx;
+
+            const userSubscriptionPlan = await getUserSubscriptionDetails({
+                prisma,
+                userId: ctx.session.user?.id
+            })
+
+            if (!userSubscriptionPlan) {
+                throw new Error("Could not get subscription data from database");
+            }
+
+            const subscription = await stripe.subscriptions.retrieve(userSubscriptionPlan.stripeSubscriptionId);
+
+            if (subscription.cancel_at_period_end === true) {
+                throw new TRPCError({
+                    code: 'PRECONDITION_FAILED',
+                    message: 'Subscription must not be cancelled in order to update it.',
+                });
+            }
+
+            const updatedItem = {
+                price: ""
+            }
+
+            switch (input.subUpdate) {
+                case "toPro":
+                    updatedItem.price = env.STRIPE_PRO_MONTHLY_PLAN_ID;
+                    break;
+                case "toPlusConference":
+                    updatedItem.price = env.STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID;
+                    break;
+                case "toPlusPhone":
+                    updatedItem.price = env.STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID;
+                    break;
+                case "toBasic":
+                    updatedItem.price = env.STRIPE_BASIC_MONTHLY_PLAN_ID;
+                    break;
+                default:
+                    throw new Error("No subUpdate matches any case in checkout route");
+            }
+
+            stripe.subscriptions.update(subscription.id, {
+                cancel_at_period_end: false,
+                proration_behavior: 'always_invoice',
+                items: [ updatedItem ]
+            });
         })
 });

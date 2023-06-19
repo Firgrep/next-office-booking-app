@@ -4,7 +4,7 @@ import Layout from "~/components/Layout";
 import { NextPageWithLayout } from "~/pages/_app";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
-import { BillingForm } from "~/components/BillingForm";
+import { Billing } from "~/components/Billing";
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -31,6 +31,7 @@ const BillingPage: NextPageWithLayout = () => {
         isError: userSubscriptionPlanError 
     } = api.stripe.getUserSubscriptionPlan.useQuery();
 
+    // TODO fix to cover all sub types
     const { 
         data: isCanceled, 
         isLoading: stripeIsCancelledLoading, 
@@ -54,14 +55,14 @@ const BillingPage: NextPageWithLayout = () => {
         <>
             
             
-            <p>Billing page</p>
+            <h2>Billing page</h2>
             <p className="text-black">{userSubscriptionPlan?.description}</p>
             {userSubscriptionPlanLoading && (
                 <h1>Loading user data...</h1>
             )}
             {userSubscriptionPlan &&
             typeof isCanceled === "boolean" && (
-                <BillingForm 
+                <Billing 
                     userSubscriptionPlan={{
                         ...userSubscriptionPlan,
                         isCanceled
