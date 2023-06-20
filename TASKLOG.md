@@ -1,4 +1,4 @@
-* build webhook for stripe
+* fix refresh on ui when sub update runs on the webhook
 
 * build booking full for the day indicator on calendar
 

@@ -351,8 +351,11 @@ export const stripeRouter = createTRPCRouter({
                 });
             }
 
+            const existingSubscriptionItemPrice = subscription.items.data[0]?.id;
+
             const updatedItem = {
-                price: ""
+                price: "",
+                quantity: 1,
             }
 
             switch (input.subUpdate) {
@@ -375,7 +378,12 @@ export const stripeRouter = createTRPCRouter({
             stripe.subscriptions.update(subscription.id, {
                 cancel_at_period_end: false,
                 proration_behavior: 'always_invoice',
-                items: [ updatedItem ]
+                items: [
+                {
+                    id: existingSubscriptionItemPrice,
+                    deleted: true,
+                },
+                updatedItem ],
             });
         })
 });

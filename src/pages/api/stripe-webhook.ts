@@ -11,6 +11,7 @@ import {
 } from '../../server/stripe/stripeWebhookHandlers';
 import { stripe } from '../../server/stripe/stripeClient';
 
+
 export const config = {
     api: {
         bodyParser: false,
@@ -48,6 +49,7 @@ export default async function handler(
                     });
                     break;
                 case "customer.subscription.updated":
+                    // Used when user downgrades or upgrades their subscription
                     await handleSubscriptionCreatedOrUpdated({
                         event, prisma,
                     });
