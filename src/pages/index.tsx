@@ -18,6 +18,8 @@ const Home: NextPageWithLayout = () => {
       <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
         The <span className="text-slate-500">Rokni Office</span> App
       </h1>
+      <span className="loading loading-bars loading-lg"></span>Bar
+      <button className="btn">Daisy Test</button>
 
       <div className="flex flex-col items-center gap-2">
         <p className="text-2xl text-white">

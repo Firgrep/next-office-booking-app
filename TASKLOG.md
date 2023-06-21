@@ -1,4 +1,6 @@
-* fix refresh on ui when sub update runs on the webhook
+* block all user interaction on billing page until update refetch completes. 
+
+* fix iscancelled to include all paid sub types
 
 * build booking full for the day indicator on calendar
 
