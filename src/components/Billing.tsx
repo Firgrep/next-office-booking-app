@@ -79,14 +79,14 @@ interface BtnUpdateSubscriptionProps {
     subTierToUpdate: UpdateSubTier
     btnText: string
     setGetUserSubPlanQueryIntervalMs: React.Dispatch<React.SetStateAction<number | false>>
-    getUserSubPlanQueryIntervalMs: number | false;
+    btnDisabled: boolean
 }
 
 const BtnUpdateSubscription: React.FC<BtnUpdateSubscriptionProps> = ({
     subTierToUpdate, 
     btnText, 
     setGetUserSubPlanQueryIntervalMs,
-    getUserSubPlanQueryIntervalMs 
+    btnDisabled 
 }) => {
     const { isLoading: updateIsLoading, mutateAsync: updateSubscriptionProcedure } = api.stripe.updateSubscription.useMutation({
         onSuccess() {
@@ -94,21 +94,16 @@ const BtnUpdateSubscription: React.FC<BtnUpdateSubscriptionProps> = ({
         }
     });
 
-    function isNumber(value: number | false): value is number {
-        return typeof value === "number";
-    }
-
-    const disabled: boolean = isNumber(getUserSubPlanQueryIntervalMs) && getUserSubPlanQueryIntervalMs > 0;
 
     return (
         <button
-            className="w-fit cursor-pointer rounded-md bg-blue-500 px-5 py-2 text-lg font-semibold text-white shadow-sm duration-150 hover:bg-blue-600"
+            className="btn"
             onClick={async () => {
                 await updateSubscriptionProcedure({subUpdate: subTierToUpdate});
             }}
-            disabled={updateIsLoading || disabled}
+            disabled={updateIsLoading || btnDisabled}
         >
-            {disabled 
+            {btnDisabled 
                 ? <><span className="loading loading-bars loading-md"></span><span>&nbsp;Processing...</span></>
                 : `${btnText} ${subTierToUpdate}`}
         </button>
@@ -137,13 +132,13 @@ interface BillingProps extends React.HTMLAttributes<HTMLFormElement> {
         isCanceled: boolean
     };
     setGetUserSubPlanQueryIntervalMs: React.Dispatch<React.SetStateAction<number | false>>
-    getUserSubPlanQueryIntervalMs: number | false;
+    btnDisabled: boolean;
 }
 
 export const Billing: React.FC<BillingProps> = ({
     userSubscriptionPlan,
     setGetUserSubPlanQueryIntervalMs,
-    getUserSubPlanQueryIntervalMs
+    btnDisabled
 }) => {
     if (userSubscriptionPlan.isPro) {
         return(
@@ -158,19 +153,19 @@ export const Billing: React.FC<BillingProps> = ({
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPlusConference}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Downgrade to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPlusPhone}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Downgrade to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toBasic}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Downgrade to"
                 />
             </>
@@ -188,19 +183,19 @@ export const Billing: React.FC<BillingProps> = ({
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPro}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Upgrade to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPlusPhone}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Change to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toBasic}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Downgrade to"
                 />
             </>
@@ -218,19 +213,19 @@ export const Billing: React.FC<BillingProps> = ({
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPro}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Upgrade to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPlusConference}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Change to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toBasic}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Downgrade to"
                 />
             </>
@@ -248,19 +243,19 @@ export const Billing: React.FC<BillingProps> = ({
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPro}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Upgrade to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPlusPhone}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Change to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toBasic}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Downgrade to"
                 />
             </>
@@ -278,19 +273,19 @@ export const Billing: React.FC<BillingProps> = ({
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPro}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Upgrade to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPlusConference}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Upgrade to"
                 />
                 <BtnUpdateSubscription
                     subTierToUpdate={UpdateSubTier.toPlusPhone}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                     btnText="Upgrade to"
                 />
             </>

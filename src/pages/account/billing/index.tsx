@@ -28,6 +28,7 @@ const BillingPage: NextPageWithLayout = () => {
     const [ getUserSubPlanQueryIntervalMs, setGetUserSubPlanQueryIntervalMs ] = useState<number | false>(false);
     const [ userSubscriptionPlanCopy, setUserSubscriptionPlanCopy ] = useState<object>({});
     const [ userSubPlanQueryRetries, setUserSubPlanQueryRetries ] = useState<number>(0);
+    const utils = api.useContext();
     const { 
         data: userSubscriptionPlan, 
         isLoading: userSubscriptionPlanLoading, 
@@ -63,12 +64,17 @@ const BillingPage: NextPageWithLayout = () => {
                 setGetUserSubPlanQueryIntervalMs(false);
                 setUserSubPlanQueryRetries(0);
                 setUserSubscriptionPlanCopy(userSubscriptionPlan);
+                utils.stripe.getUserSubscriptionPlan.invalidate();
+                utils.stripe.checkUserStripeCancellation.invalidate();
                 return;
             }
 
-            // The refetch has no new sub plan from the db, so it continues based on the interval.
-            setUserSubPlanQueryRetries(prevCount => prevCount + 1)
-            console.log(`no change ... count: ${userSubPlanQueryRetries}`)
+            // The refetch has no new sub plan from the db, so it continues based on the interval. But only count this if refetch is active. 
+            if (getUserSubPlanQueryIntervalMs !== false) {
+                setUserSubPlanQueryRetries(prevCount => prevCount + 1)
+                console.log(`no change ... count: ${userSubPlanQueryRetries}`)
+            }
+            console.log("loop complete")
         },
     });
 
@@ -83,6 +89,12 @@ const BillingPage: NextPageWithLayout = () => {
             stripeSubscriptionId: userSubscriptionPlan?.stripeSubscriptionId
         }
     );
+
+    function isNumber(value: number | false): value is number {
+        return typeof value === "number";
+    }
+
+    const btnDisabled: boolean = isNumber(getUserSubPlanQueryIntervalMs) && getUserSubPlanQueryIntervalMs > 0;
         
     if (userSubscriptionPlanError || stripeIsCancelledError) {
         return(
@@ -107,7 +119,7 @@ const BillingPage: NextPageWithLayout = () => {
                         isCanceled
                     }}
                     setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    getUserSubPlanQueryIntervalMs={getUserSubPlanQueryIntervalMs}
+                    btnDisabled={btnDisabled}
                 />
             )}
         </>
