@@ -1,6 +1,9 @@
-* block all user interaction on billing page until update refetch completes. 
+* block all user interaction on billing page until update refetch completes.CHECK THIS
+* SPLIT BILLING COMPONENTS INTO SEPARATE FILES! test after
+* fix all cases to display appropriately based on cancellation
+* TODO switch out with a reusable component
 
-* fix iscancelled to include all paid sub types
+* make dashboard UI
 
 * build booking full for the day indicator on calendar
 

@@ -144,11 +144,12 @@ export const stripeRouter = createTRPCRouter({
         .input(
             z
                 .object({
-                    isPro: z.boolean().nullish().optional(),
                     stripeSubscriptionId: z.string().nullish().optional(),
                 }))
         .query(async ({ctx, input}) => {
-            if (!input.isPro || !input.stripeSubscriptionId) {
+            if (
+                !input.stripeSubscriptionId
+            ) {
                 return false;
             }
 

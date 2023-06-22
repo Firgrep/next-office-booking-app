@@ -1,10 +1,16 @@
 import { type GetServerSidePropsContext } from "next";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import Layout from "~/components/Layout";
 import { NextPageWithLayout } from "~/pages/_app";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
 import { Billing } from "~/components/Billing";
+import { 
+    BillingProvider, 
+    useBillingDisabledUpdate, 
+    useBillingQueryInterval, 
+    useBillingQueryIntervalUpdate 
+} from "~/components/BillingContext";
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -24,11 +30,18 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
 };
 
+/**
+ * * Layout function for BillingPage includes Billing Ctx Provider. See bottom of file.
+ */
 const BillingPage: NextPageWithLayout = () => {
-    const [ getUserSubPlanQueryIntervalMs, setGetUserSubPlanQueryIntervalMs ] = useState<number | false>(false);
-    const [ userSubscriptionPlanCopy, setUserSubscriptionPlanCopy ] = useState<object>({});
+    // const [ getUserSubPlanQueryIntervalMs, setGetUserSubPlanQueryIntervalMs ] = useState<number | false>(false);
+    const billingQueryInterval = useBillingQueryInterval();
+    const setBillingQueryInterval = useBillingQueryIntervalUpdate();
     const [ userSubPlanQueryRetries, setUserSubPlanQueryRetries ] = useState<number>(0);
-    const utils = api.useContext();
+    // TODO remove after testing
+    // const utils = api.useContext();
+    const setBillingDisabled = useBillingDisabledUpdate();
+
     const { 
         data: userSubscriptionPlan, 
         isLoading: userSubscriptionPlanLoading, 
@@ -37,19 +50,13 @@ const BillingPage: NextPageWithLayout = () => {
 
         // Query will begin to refetch once interval value set to other than false.
         // This will first be triggered when a user hits an update component nested below.
-        refetchInterval: getUserSubPlanQueryIntervalMs,
-        onSuccess: () => {
-
-            // On first render, a copy of the sub plan will be set to state.
-            if (userSubscriptionPlanCopy && Object.keys(userSubscriptionPlanCopy).length === 0) {
-                console.log("setting the first user sub plan to state");
-                setUserSubscriptionPlanCopy(userSubscriptionPlan);
-                return;
-            }
+        refetchInterval: billingQueryInterval,
+        onSuccess: (newData) => {
 
             // After 60 attempts, terminate the process. 
             if (userSubPlanQueryRetries > 60) {
-                setGetUserSubPlanQueryIntervalMs(false);
+                // TODO fire off some sort of error message or notification to the front, asking the user to do a manual refresh?
+                setBillingQueryInterval(false);
                 setUserSubPlanQueryRetries(0);
                 return;
             }
@@ -59,22 +66,19 @@ const BillingPage: NextPageWithLayout = () => {
             // sub plan, at which point it differs from the one in state and this re-renders the page and kicks off 
             // the code below: setting the interval to false (turning it off) and replacing the sub plan in the state 
             // with the new one, allowing the user to update sub plan again to another.  
-            if (JSON.stringify(userSubscriptionPlanCopy) !== JSON.stringify(userSubscriptionPlan)) {
-                console.log("setting interval to false...");
-                setGetUserSubPlanQueryIntervalMs(false);
+            if (JSON.stringify(newData) !== JSON.stringify(userSubscriptionPlan)) {
+                setBillingQueryInterval(false);
                 setUserSubPlanQueryRetries(0);
-                setUserSubscriptionPlanCopy(userSubscriptionPlan);
-                utils.stripe.getUserSubscriptionPlan.invalidate();
-                utils.stripe.checkUserStripeCancellation.invalidate();
+                // TODO after thorough testing, remove below
+                // utils.stripe.getUserSubscriptionPlan.invalidate();
+                // utils.stripe.checkUserStripeCancellation.invalidate();
                 return;
             }
 
             // The refetch has no new sub plan from the db, so it continues based on the interval. But only count this if refetch is active. 
-            if (getUserSubPlanQueryIntervalMs !== false) {
+            if (billingQueryInterval !== false) {
                 setUserSubPlanQueryRetries(prevCount => prevCount + 1)
-                console.log(`no change ... count: ${userSubPlanQueryRetries}`)
             }
-            console.log("loop complete")
         },
     });
 
@@ -85,7 +89,6 @@ const BillingPage: NextPageWithLayout = () => {
         isError: stripeIsCancelledError 
     } = api.stripe.checkUserStripeCancellation.useQuery(
         {
-            isPro: userSubscriptionPlan?.isPro, 
             stripeSubscriptionId: userSubscriptionPlan?.stripeSubscriptionId
         }
     );
@@ -94,8 +97,16 @@ const BillingPage: NextPageWithLayout = () => {
         return typeof value === "number";
     }
 
-    const btnDisabled: boolean = isNumber(getUserSubPlanQueryIntervalMs) && getUserSubPlanQueryIntervalMs > 0;
-        
+    useEffect(() => {
+        // Ctx Control for page interactions. During updates, buttons should be disabled.
+        if (isNumber(billingQueryInterval) && billingQueryInterval > 0) {
+            setBillingDisabled(true);
+        } else {
+            setBillingDisabled(false);
+        }
+    }, [billingQueryInterval]);
+
+    // RENDERS
     if (userSubscriptionPlanError || stripeIsCancelledError) {
         return(
             <div>
@@ -118,8 +129,6 @@ const BillingPage: NextPageWithLayout = () => {
                         ...userSubscriptionPlan,
                         isCanceled
                     }}
-                    setGetUserSubPlanQueryIntervalMs={setGetUserSubPlanQueryIntervalMs}
-                    btnDisabled={btnDisabled}
                 />
             )}
         </>
@@ -128,9 +137,11 @@ const BillingPage: NextPageWithLayout = () => {
 
 BillingPage.getLayout = function getLayout(page: ReactElement) {
     return (
-        <Layout>
-            {page}
-        </Layout>
+        <BillingProvider>
+            <Layout>
+                {page}
+            </Layout>
+        </BillingProvider>
     );
 };
 
