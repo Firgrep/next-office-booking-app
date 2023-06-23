@@ -5,14 +5,17 @@ import { type ReactElement, ReactNode } from "react";
 import { SessionProvider } from "next-auth/react";
 import { api } from "~/utils/api";
 
+// STYLES - globals.css  always goes on top
 import "~/styles/globals.css";
 import "~/styles/Calendar.css";
 import "~/styles/Data-title.css";
+import "react-toastify/dist/ReactToastify.css";
 
+
+// RootLayout Setup for Nextjs Pages Router. See https://nextjs.org/docs/pages/building-your-application/routing/pages-and-layouts 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
-
 type AppPropsWithLayout<P = {}> = AppProps & {
   Component: NextPageWithLayout<P>;
 };

@@ -11,7 +11,7 @@ import {
     plusPlanConference, 
     plusPlanPhone, 
     basicPlan 
-} from "~/constants/subscriptions";
+} from "~/constants/server/subscriptions";
 import { getOrCreateStripeCustomerIdForUser } from "~/server/stripe/stripeWebhookHandlers";
 import { env } from "~/env.mjs";
 import { SubscriptionPlan, UserSubscriptionPlan } from "~/types";

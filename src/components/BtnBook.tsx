@@ -3,7 +3,7 @@ import {
     CONFERENCE_ROOM_ID, 
     PHONE_BOOTH_A_ID, 
     PHONE_BOOTH_B_ID
-} from "~/constants/rooms";
+} from "~/constants/client/rooms";
 
 
 interface BtnBookProps {

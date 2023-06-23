@@ -1,6 +1,6 @@
 import { type GetServerSidePropsContext } from "next";
 import { ReactElement, useEffect, useState } from "react";
-import Layout from "~/components/Layout";
+import RootLayout from "~/components/RootLayout";
 import { NextPageWithLayout } from "~/pages/_app";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
@@ -11,6 +11,8 @@ import {
     useBillingQueryInterval, 
     useBillingQueryIntervalUpdate 
 } from "~/components/BillingContext";
+import { useErrorToast, useSubUpdateSuccessToast, useSuccessToast } from "~/components/ToastContext";
+import AccountLayout from "~/components/AccountLayout";
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -30,10 +32,17 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     };
 };
 
+function isNumber(value: number | false): value is number {
+    return typeof value === "number";
+}
+
 /**
  * * Layout function for BillingPage includes Billing Ctx Provider. See bottom of file.
  */
 const BillingPage: NextPageWithLayout = () => {
+    const toastSubUpdateSuccess = useSubUpdateSuccessToast();
+    const toastError = useErrorToast();
+    // TODO remove after testing
     // const [ getUserSubPlanQueryIntervalMs, setGetUserSubPlanQueryIntervalMs ] = useState<number | false>(false);
     const billingQueryInterval = useBillingQueryInterval();
     const setBillingQueryInterval = useBillingQueryIntervalUpdate();
@@ -55,7 +64,7 @@ const BillingPage: NextPageWithLayout = () => {
 
             // After 60 attempts, terminate the process. 
             if (userSubPlanQueryRetries > 60) {
-                // TODO fire off some sort of error message or notification to the front, asking the user to do a manual refresh?
+                toastError();
                 setBillingQueryInterval(false);
                 setUserSubPlanQueryRetries(0);
                 return;
@@ -67,9 +76,11 @@ const BillingPage: NextPageWithLayout = () => {
             // the code below: setting the interval to false (turning it off) and replacing the sub plan in the state 
             // with the new one, allowing the user to update sub plan again to another.  
             if (JSON.stringify(newData) !== JSON.stringify(userSubscriptionPlan)) {
+                if (isNumber(billingQueryInterval) && billingQueryInterval > 0) { // Condition to ensure toast runs only after user interaction.
+                    toastSubUpdateSuccess();
+                }
                 setBillingQueryInterval(false);
                 setUserSubPlanQueryRetries(0);
-                // TODO after thorough testing, remove below
                 // utils.stripe.getUserSubscriptionPlan.invalidate();
                 // utils.stripe.checkUserStripeCancellation.invalidate();
                 return;
@@ -93,10 +104,6 @@ const BillingPage: NextPageWithLayout = () => {
         }
     );
 
-    function isNumber(value: number | false): value is number {
-        return typeof value === "number";
-    }
-
     useEffect(() => {
         // Ctx Control for page interactions. During updates, buttons should be disabled.
         if (isNumber(billingQueryInterval) && billingQueryInterval > 0) {
@@ -117,8 +124,7 @@ const BillingPage: NextPageWithLayout = () => {
     
     return(
         <>
-            <h2>Billing page</h2>
-            <p className="text-black">{userSubscriptionPlan?.description}</p>
+            <h2 className="text-lg">Billing page</h2>
             {userSubscriptionPlanLoading && (
                 <h1>Loading user data...</h1>
             )}
@@ -138,9 +144,11 @@ const BillingPage: NextPageWithLayout = () => {
 BillingPage.getLayout = function getLayout(page: ReactElement) {
     return (
         <BillingProvider>
-            <Layout>
-                {page}
-            </Layout>
+            <RootLayout>
+                <AccountLayout>
+                    {page}
+                </AccountLayout>
+            </RootLayout>
         </BillingProvider>
     );
 };

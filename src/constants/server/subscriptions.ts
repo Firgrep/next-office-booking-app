@@ -1,6 +1,8 @@
 import { env } from "~/env.mjs"
 import { type SubscriptionPlan } from "~/types"
 
+// * File must NOT be accessed (or include items which are) by client-side.
+// * This is becauese env. variables are contained here.
 
 export const proPlan: SubscriptionPlan = {
     name: "Pro Plan",

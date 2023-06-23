@@ -1,7 +1,8 @@
 import { type GetServerSidePropsContext } from "next";
 import { ReactElement } from "react";
+import AccountLayout from "~/components/AccountLayout";
 import { Booking } from "~/components/Booking";
-import Layout from "~/components/Layout";
+import RootLayout from "~/components/RootLayout";
 import { NextPageWithLayout } from "~/pages/_app";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/utils/api";
@@ -35,9 +36,11 @@ const BookingPage: NextPageWithLayout = () => {
 
 BookingPage.getLayout = function getLayout(page: ReactElement) {
     return (
-        <Layout>
-            {page}
-        </Layout>
+        <RootLayout>
+            <AccountLayout>
+                {page}
+            </AccountLayout>
+        </RootLayout>
     );
 };
 

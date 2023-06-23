@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { api } from "~/utils/api";
-import Layout from "~/components/Layout";
+import RootLayout from "~/components/RootLayout";
 import { type NextPageWithLayout } from "./_app";
 import { type ReactElement } from 'react';
 
@@ -18,8 +18,6 @@ const Home: NextPageWithLayout = () => {
       <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
         The <span className="text-slate-500">Rokni Office</span> App
       </h1>
-      <span className="loading loading-bars loading-lg"></span>Bar
-      <button className="btn">Daisy Test</button>
 
       <div className="flex flex-col items-center gap-2">
         <p className="text-2xl text-white">
@@ -32,9 +30,9 @@ const Home: NextPageWithLayout = () => {
 
 Home.getLayout = function getLayout(page: ReactElement) {
   return (
-    <Layout>
+    <RootLayout>
       {page}
-    </Layout>
+    </RootLayout>
   );
 };
 
