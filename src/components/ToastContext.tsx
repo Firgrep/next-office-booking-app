@@ -1,26 +1,28 @@
 import React, { type ReactNode, createContext, useContext } from "react";
 import { 
-    showGenericErrorToast,
+    showErrorToast,
     showGenericSuccessToast,
     showSubscriptionUpdateSuccessToast,
 } from "./Toasts";
 
-const GenericErrorToastCtx = createContext<() => void>(() => {});
-const GenericSuccessToastCtx = createContext<() => void>(() => {});
+const ErrorToastCtx = createContext<(text?: string) => void>(() => {});
+const SuccessToastCtx = createContext<(text?: string) => void>(() => {});
 const SubscriptionUpdateSuccessToastCtx = createContext<() => void>(() => {});
 
 /**
  * Call to send generic error notification.
+ * @param text - Optional string for custom message.
  */
 export function useErrorToast() {
-    return useContext(GenericErrorToastCtx);
+    return useContext(ErrorToastCtx);
 };
 
 /**
  * Call to send generic success notification.
+ * @param text - Optional string for custom message.
  */
 export function useSuccessToast() {
-    return useContext(GenericSuccessToastCtx);
+    return useContext(SuccessToastCtx);
 };
 
 /**
@@ -40,12 +42,12 @@ export function useSubUpdateSuccessToast() {
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
     return(
-        <GenericErrorToastCtx.Provider value={showGenericErrorToast}>
-            <GenericSuccessToastCtx.Provider value={showGenericSuccessToast}>
+        <ErrorToastCtx.Provider value={showErrorToast}>
+            <SuccessToastCtx.Provider value={showGenericSuccessToast}>
                 <SubscriptionUpdateSuccessToastCtx.Provider value={showSubscriptionUpdateSuccessToast}>
                     { children }
                 </SubscriptionUpdateSuccessToastCtx.Provider>
-            </GenericSuccessToastCtx.Provider>
-        </GenericErrorToastCtx.Provider>
+            </SuccessToastCtx.Provider>
+        </ErrorToastCtx.Provider>
     );
 };

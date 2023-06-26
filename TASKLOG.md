@@ -1,8 +1,10 @@
-* block all user interaction on billing page until update refetch completes.CHECK THIS
-* fix all cases to display appropriately based on cancellation
-* TODO switch out with a reusable component
+# Build functionality with rooms linked to user
+# build individual booking purchases
+
 
 * make dashboard UI
+
+* block all user interaction on billing page until update refetch completes.CHECK THIS
 
 * build booking full for the day indicator on calendar
 

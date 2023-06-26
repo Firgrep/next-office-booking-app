@@ -6,7 +6,7 @@ import { BtnSubscriptionCheckout } from "./BtnSubscriptionCheckout";
 import { BtnUpdateSubscription } from "./BtnUpdateSubscription";
 import { PeriodEndDisplay } from "./PeriodEndDisplay";
 import { SubTier, UpdateSubTier } from "../constants/client/subscriptionTiers";
-
+import { Alert } from "./Alert";
 
 interface BillingProps extends React.HTMLAttributes<HTMLFormElement> {
     userSubscriptionPlan: UserSubscriptionPlan & {
@@ -14,7 +14,6 @@ interface BillingProps extends React.HTMLAttributes<HTMLFormElement> {
     };
 }
 
-// TODO fix all cases to display appropriately based on cancellation
 /**
  * Container component for billing-related logic. Renders appropriate components based on
  * user subscription tier or unsubscribed. 
@@ -23,6 +22,8 @@ interface BillingProps extends React.HTMLAttributes<HTMLFormElement> {
 export const Billing: React.FC<BillingProps> = ({
     userSubscriptionPlan,
 }) => {
+    const upgradeSubString = "To upgrade your subscription, please renew it first."
+
     if (userSubscriptionPlan.isPro) {
         return(
             <>
@@ -34,8 +35,7 @@ export const Billing: React.FC<BillingProps> = ({
                     stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
                 />
                 {userSubscriptionPlan.isCanceled ? (
-                    // TODO switch out with a reusable component
-                    <p>Your subscription has been cancelled.</p>
+                    <Alert text={upgradeSubString} />
                 ) : (
                     <>
                         <BtnUpdateSubscription
@@ -64,18 +64,24 @@ export const Billing: React.FC<BillingProps> = ({
                     isCanceled={userSubscriptionPlan.isCanceled}
                     stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
                 />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toPro}
-                    btnText="Upgrade to"
-                />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toPlusPhone}
-                    btnText="Change to"
-                />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toBasic}
-                    btnText="Downgrade to"
-                />
+                {userSubscriptionPlan.isCanceled ? (
+                    <Alert text={upgradeSubString} />
+                ) : (
+                    <>
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toPro}
+                            btnText="Upgrade to"
+                        />
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toPlusPhone}
+                            btnText="Change to"
+                        />
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toBasic}
+                            btnText="Downgrade to"
+                        />
+                    </>
+                )}
             </>
         );
     } else if (userSubscriptionPlan.isPlusPhone) {
@@ -88,18 +94,24 @@ export const Billing: React.FC<BillingProps> = ({
                     isCanceled={userSubscriptionPlan.isCanceled}
                     stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
                 />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toPro}
-                    btnText="Upgrade to"
-                />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toPlusConference}
-                    btnText="Change to"
-                />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toBasic}
-                    btnText="Downgrade to"
-                />
+                {userSubscriptionPlan.isCanceled ? (
+                    <Alert text={upgradeSubString} />
+                ) : (
+                    <>
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toPro}
+                            btnText="Upgrade to"
+                        />
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toPlusConference}
+                            btnText="Change to"
+                        />
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toBasic}
+                            btnText="Downgrade to"
+                        />
+                    </>
+                )}
             </>
         );
     } else if (userSubscriptionPlan.isPlusConference) {
@@ -112,18 +124,24 @@ export const Billing: React.FC<BillingProps> = ({
                     isCanceled={userSubscriptionPlan.isCanceled}
                     stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
                 />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toPro}
-                    btnText="Upgrade to"
-                />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toPlusPhone}
-                    btnText="Change to"
-                />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toBasic}
-                    btnText="Downgrade to"
-                />
+                {userSubscriptionPlan.isCanceled ? (
+                    <Alert text={upgradeSubString} />
+                ) : (
+                    <>
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toPro}
+                            btnText="Upgrade to"
+                        />
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toPlusPhone}
+                            btnText="Change to"
+                        />
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toBasic}
+                            btnText="Downgrade to"
+                        />
+                    </>
+                )}
             </>
         );
     } else if (userSubscriptionPlan.isBasic) {
@@ -136,18 +154,24 @@ export const Billing: React.FC<BillingProps> = ({
                     isCanceled={userSubscriptionPlan.isCanceled}
                     stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
                 />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toPro}
-                    btnText="Upgrade to"
-                />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toPlusConference}
-                    btnText="Upgrade to"
-                />
-                <BtnUpdateSubscription
-                    subTierToUpdate={UpdateSubTier.toPlusPhone}
-                    btnText="Upgrade to"
-                />
+                {userSubscriptionPlan.isCanceled ? (
+                    <Alert text={upgradeSubString} />
+                ) : (
+                    <>
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toPro}
+                            btnText="Upgrade to"
+                        />
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toPlusConference}
+                            btnText="Upgrade to"
+                        />
+                        <BtnUpdateSubscription
+                            subTierToUpdate={UpdateSubTier.toPlusPhone}
+                            btnText="Upgrade to"
+                        />
+                    </>
+                )}
             </>
         );
     } else {

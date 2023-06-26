@@ -8,6 +8,7 @@ import { format, add } from 'date-fns';
 import { useSession } from "next-auth/react";
 import { BtnBook } from "./BtnBook";
 import { sleep } from "~/utils/utils";
+import { useErrorToast, useSuccessToast } from "./ToastContext";
 
 
 /**
@@ -16,8 +17,11 @@ import { sleep } from "~/utils/utils";
  * @description Takes no props. Fetches everything it needs from context-wide hooks and APIs. 
  */
 export const Booking: React.FC = () => {
+    const toastError = useErrorToast();
+    const toastSuccess = useSuccessToast();
     const { data: sessionData } = useSession();
     const utils = api.useContext();
+    
     const { data: rooms } = api.booking.getRooms.useQuery();
     const { 
         data: userSubscriptionPlan, 
@@ -60,10 +64,12 @@ export const Booking: React.FC = () => {
     const handleCreateBooking = async (startTime: Date ) => {
         if (!sessionData) {
             console.log("No session data");
+            toastError();
             return;
         };
         if (!room?.roomId) {
             console.log("No room ID selected");
+            toastError("Oops! Something went wrong. No room selected.")
             return;
         }
 
@@ -71,6 +77,7 @@ export const Booking: React.FC = () => {
 
         if (!selectedRoom) {
             console.log("Failed to find selected room");
+            toastError("Oops! Something went wrong. Failed to find selected room.")
             return;
         }
 
@@ -83,6 +90,7 @@ export const Booking: React.FC = () => {
             roomId: room.roomId,
         });
 
+        toastSuccess("Success! Your booking has been made.")
         await sleep(1000);
         setDate((prev) => ({ ...prev, dateTime: null}));
     };
@@ -98,6 +106,7 @@ export const Booking: React.FC = () => {
 
         if (!booking) {
             console.log("No booking found in handleDeleteBooking");
+            toastError();
             return;
         }
         
@@ -108,6 +117,7 @@ export const Booking: React.FC = () => {
             });
         } catch (error: any) {
             console.log(error);
+            toastError(`Oops! Something went wrong. Error: ${error}`)
         }
     };
 

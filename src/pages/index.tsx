@@ -3,6 +3,7 @@ import { api } from "~/utils/api";
 import RootLayout from "~/components/RootLayout";
 import { type NextPageWithLayout } from "./_app";
 import { type ReactElement } from 'react';
+import { Alert } from "~/components/Alert";
 
 
 const Home: NextPageWithLayout = () => {
@@ -18,6 +19,9 @@ const Home: NextPageWithLayout = () => {
       <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
         The <span className="text-slate-500">Rokni Office</span> App
       </h1>
+
+      <Alert text={"this is a test"}/>
+
 
       <div className="flex flex-col items-center gap-2">
         <p className="text-2xl text-white">
