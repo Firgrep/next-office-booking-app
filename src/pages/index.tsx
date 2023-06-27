@@ -8,6 +8,11 @@ import { Alert } from "~/components/Alert";
 
 const Home: NextPageWithLayout = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" }, {refetchOnWindowFocus: false,});
+  const sendTask = api.gcloud.task.useMutation();
+
+  const handleTask = () => {
+    sendTask.mutate();
+  }
 
   return (
     <>
@@ -21,6 +26,7 @@ const Home: NextPageWithLayout = () => {
       </h1>
 
       <Alert text={"this is a test"}/>
+      <button className="btn" onClick={handleTask}>Send Task</button>
 
 
       <div className="flex flex-col items-center gap-2">
