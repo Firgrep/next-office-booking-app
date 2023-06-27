@@ -17,6 +17,7 @@ import { env } from "~/env.mjs";
 import { SubscriptionPlan, UserSubscriptionPlan } from "~/types";
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest } from "next/types";
+import { createHttpTaskWithToken, deleteCloudTaskById } from "~/server/gcloud/cloudTasks";
 
 
 const getBaseUrl = (req: NextApiRequest) => {
@@ -386,5 +387,11 @@ export const stripeRouter = createTRPCRouter({
                 },
                 updatedItem ],
             });
+        }),
+    deleteTask: protectedProcedure
+        .input(z.object({ taskId: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            await deleteCloudTaskById(input.taskId);
+            return "mutation complete"
         })
 });

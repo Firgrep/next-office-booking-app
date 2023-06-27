@@ -2,8 +2,38 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 import RootLayout from "~/components/RootLayout";
 import { type NextPageWithLayout } from "./_app";
-import { type ReactElement } from 'react';
+import { useState, type ReactElement } from 'react';
 import { Alert } from "~/components/Alert";
+
+const FormComponent = () => {
+    const [inputValue, setInputValue] = useState('');
+    const deleteTask = api.stripe.deleteTask.useMutation();
+
+    const handleSubmit = async (event: any) => {
+      event.preventDefault();
+
+      // Make an API request to the trpc route
+
+      const result = await deleteTask.mutate({taskId: inputValue});
+
+      // Handle the response
+      console.log(result);
+
+      // Reset the input value
+      setInputValue('');
+    };
+
+    return (
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={inputValue}
+          onChange={(event) => setInputValue(event.target.value)}
+        />
+        <button className="btn btn-secondary" type="submit">Delete Task</button>
+      </form>
+    );
+};
 
 
 const Home: NextPageWithLayout = () => {
@@ -26,7 +56,8 @@ const Home: NextPageWithLayout = () => {
       </h1>
 
       <Alert text={"this is a test"}/>
-      <button className="btn" onClick={handleTask}>Send Task</button>
+      <button className="btn" onClick={handleTask}>Create Task</button>
+      <FormComponent />
 
 
       <div className="flex flex-col items-center gap-2">
