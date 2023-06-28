@@ -12,7 +12,9 @@ interface BtnBookProps {
     date: DateType;
     handleCreateBooking: Function;
     createBookingIsLoading: boolean;
-    room: RoomType
+    room: RoomType;
+    purchaseSessionLoading: boolean;
+    handleCreatePurchaseBookingSession: Function;
 }
 
 export const BtnBook: React.FC<BtnBookProps> = ({
@@ -21,6 +23,8 @@ export const BtnBook: React.FC<BtnBookProps> = ({
     handleCreateBooking,
     createBookingIsLoading,
     room,
+    purchaseSessionLoading,
+    handleCreatePurchaseBookingSession,
 }) => {
     // TODO include check for number of rooms to be capped
     const toastError = useErrorToast();
@@ -54,6 +58,11 @@ export const BtnBook: React.FC<BtnBookProps> = ({
         <button
             className="btn btn-primary"
             type="button"
+            disabled={purchaseSessionLoading}
+            onClick={() => date.dateTime 
+                ? handleCreatePurchaseBookingSession(date.dateTime) 
+                : toastError("Oops! Something went wrong. No date and time selected.")
+            }
         >
             Purchase Booking
         </button>

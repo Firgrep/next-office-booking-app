@@ -54,6 +54,16 @@ export const Booking: React.FC = () => {
         }
     });
 
+    const { 
+        isLoading: purchaseSessionLoading, 
+        mutateAsync: createPurchaseBookingSession 
+    } = api.stripe.createBookingPurchaseCheckoutSession.useMutation({
+        onSuccess() {
+            toastSuccess("Worked!");
+        },
+        onError: (err) => toastError(err.message)
+    });
+
     const deleteBooking = api.booking.deleteBooking.useMutation({
         onSuccess() {
             setIsDeleteBookingSuccess(true);
@@ -72,9 +82,6 @@ export const Booking: React.FC = () => {
             toastError("Oops! Something went wrong. No room selected.")
             return;
         }
-
-        // const selectedRoom = rooms?.find(roomToCheck => roomToCheck.id === room.roomId)
-
         if (!selectedRoom) {
             console.log("Failed to find selected room");
             toastError("Oops! Something went wrong. Failed to find selected room.")
@@ -93,6 +100,41 @@ export const Booking: React.FC = () => {
         toastSuccess("Success! Your booking has been made.")
         await sleep(1000);
         setDate((prev) => ({ ...prev, dateTime: null}));
+    };
+
+    const handleCreatePurchaseBookingSession = async (startTime: Date) => {
+        if (!sessionData) {
+            console.log("No session data");
+            toastError("Must be logged in.");
+            return;
+        };
+        if (!room?.roomId) {
+            console.log("No room ID selected");
+            toastError("Oops! Something went wrong. No room selected.")
+            return;
+        }
+        if (!selectedRoom) {
+            console.log("Failed to find selected room");
+            toastError("Oops! Something went wrong. Failed to find selected room.")
+            return;
+        }
+
+        const endTime = add(startTime, {minutes: selectedRoom.interval});
+
+        const { url } = await createPurchaseBookingSession({
+            userId: sessionData.user.id,
+            startTime: startTime,
+            endTime: endTime,
+            roomId: room.roomId,
+        });
+
+        if (!url) {
+            toastError("Purchase session could not be started. Link not found.");
+            return console.log("Error: no URL");
+        }
+        if (url) {
+            window.location.href = url;
+        }
     };
 
     const handleDeleteBooking = (bookingStartTime: Date) => {
@@ -193,6 +235,8 @@ export const Booking: React.FC = () => {
                         handleCreateBooking={handleCreateBooking}
                         createBookingIsLoading={createBooking.isLoading}
                         room={room}
+                        purchaseSessionLoading={purchaseSessionLoading}
+                        handleCreatePurchaseBookingSession={handleCreatePurchaseBookingSession}
                     />
                     {createBooking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {createBooking.error.message}</p>}
                 </div>

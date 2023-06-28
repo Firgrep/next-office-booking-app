@@ -12,6 +12,11 @@ import {
     plusPlanPhone, 
     basicPlan 
 } from "~/constants/server/subscriptions";
+import {
+    CONFERENCE_ROOM_ID,
+    PHONE_BOOTH_A_ID,
+    PHONE_BOOTH_B_ID
+} from "../../../constants/client/rooms";
 import { getOrCreateStripeCustomerIdForUser } from "~/server/stripe/stripeWebhookHandlers";
 import { env } from "~/env.mjs";
 import { SubscriptionPlan, UserSubscriptionPlan } from "~/types";
@@ -388,10 +393,147 @@ export const stripeRouter = createTRPCRouter({
                 updatedItem ],
             });
         }),
+    createBookingPurchaseCheckoutSession: protectedProcedure
+        .input(z.object({ roomId: z.string(), startTime: z.date(), endTime: z.date(), userId: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            // Preliminary Setup
+            const baseUrl = getBaseUrl(ctx.req);
+            const { prisma, stripe } = ctx;
+
+            // Create booking
+            const booking = await ctx.prisma.booking.create({
+                data: {
+                    roomId: input.roomId,
+                    startTime: input.startTime,
+                    endTime: input.endTime, 
+                    userId: input.userId
+                }
+            });
+            console.log("ROUTE: Booking created...");
+
+            // Create cloud task and retrieve its ID
+            const taskId = await createHttpTaskWithToken().catch(console.error);
+            console.log(`ROUTE: Task created ... ID: ${taskId}`)
+
+            // Store booking ID and task ID in db for future deletion of scheduled deletion
+            let scheduleId = ""
+            if (taskId) {
+                const scheduledDeletion = await ctx.prisma.scheduledBookingDeletion.create({
+                    data: {
+                        taskId: taskId,
+                        bookingId: booking.id,
+                    }
+                });
+                scheduleId = scheduledDeletion.id;
+                console.log(`ROUTE: Scheduled deletion created...`)
+            } else {
+                throw new TRPCError({ 
+                    code: 'PRECONDITION_FAILED',
+                    message: 'Task ID from Cloud could not be retrieved',
+                });
+            }
+
+            // Setup Stripe purchase product
+            const purchase = {
+                price: "",
+                quantity: 1,
+            }
+
+            switch (input.roomId) {
+                case CONFERENCE_ROOM_ID:
+                    purchase.price = env.STRIPE_CONFERENCE_ROOM_ID
+                    break;
+                case PHONE_BOOTH_A_ID:
+                    purchase.price = env.STRIPE_PHONE_BOOTH_ID
+                    break;
+                case PHONE_BOOTH_B_ID:
+                    purchase.price = env.STRIPE_PHONE_BOOTH_ID
+                    break;
+                default:
+                    throw new Error("No room matches any product case in checkout route");
+            }
+            
+            // Get or create Stripe customer
+            const customerId = await getOrCreateStripeCustomerIdForUser({
+                prisma,
+                stripe,
+                userId: ctx.session.user.id
+            })
+
+            if (!customerId) {
+                throw new Error("Could not create customer");
+            }
+
+            // Create Stripe session
+            const expirationTimeInSeconds = 1800;
+            const expirationTimestamp = Math.floor(Date.now() / 1000) + expirationTimeInSeconds;
+
+            const stripeSession = await ctx.stripe.checkout.sessions.create({
+                customer: customerId,
+                client_reference_id: ctx.session.user?.id,
+                payment_method_types: ["card"],
+                mode: "payment",
+                line_items: [ purchase ],
+                success_url: `${baseUrl}/account/booking?status=success&scheduleId=${scheduleId}`,
+                cancel_url: `${baseUrl}/account/booking?status=canceled&scheduleId=${scheduleId}`,
+                metadata: {
+                    userId: ctx.session.user?.id,
+                },
+                expires_at: expirationTimestamp
+            });
+
+            if (!stripeSession) {
+                throw new Error("Could not create checkout session");
+            }
+
+            const sessionId = stripeSession.id;
+            console.log(`Stripe Session ID: ${sessionId}`)
+            // TODO add stripesession id to the scheduled booking so that it can be deleted manually
+            // TODO in the event of a cancel
+
+            return { url: stripeSession.url };
+        }),
+    // TODO to delete after
     deleteTask: protectedProcedure
         .input(z.object({ taskId: z.string() }))
         .mutation(async ({ ctx, input }) => {
             await deleteCloudTaskById(input.taskId);
             return "mutation complete"
+        }),
+    cleanupCanceledPurchaseSession: protectedProcedure
+        .input(z.object({ scheduleId: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            // Retrieve scheduled deletion entry from db
+            const scheduledDeletionEntry = await ctx.prisma.scheduledBookingDeletion.findFirst({
+                where: {
+                    id: input.scheduleId,
+                },
+            })
+            if (!scheduledDeletionEntry) {
+                throw new Error("Expected scheduled deletion entry...");
+            }
+
+            // TODO
+            // Manually Expire Stripe Session
+            // const session = await ctx.stripe.checkout.sessions.expire(
+            //     // ? add session id from db
+            // );
+
+            // Delete Cloud Task
+            await deleteCloudTaskById(scheduledDeletionEntry.taskId);
+
+            // Delete scheduled entry and booking
+            await ctx.prisma.scheduledBookingDeletion.delete({
+                where: {
+                    id: input.scheduleId
+                }
+            });
+
+            await ctx.prisma.booking.delete({
+                where: {
+                    id: scheduledDeletionEntry.bookingId
+                }
+            })
+
         })
 });

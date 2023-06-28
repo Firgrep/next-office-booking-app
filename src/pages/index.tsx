@@ -38,11 +38,6 @@ const FormComponent = () => {
 
 const Home: NextPageWithLayout = () => {
   const hello = api.example.hello.useQuery({ text: "from tRPC" }, {refetchOnWindowFocus: false,});
-  const sendTask = api.gcloud.task.useMutation();
-
-  const handleTask = () => {
-    sendTask.mutate();
-  }
 
   return (
     <>
@@ -56,7 +51,6 @@ const Home: NextPageWithLayout = () => {
       </h1>
 
       <Alert text={"this is a test"}/>
-      <button className="btn" onClick={handleTask}>Create Task</button>
       <FormComponent />
 
 

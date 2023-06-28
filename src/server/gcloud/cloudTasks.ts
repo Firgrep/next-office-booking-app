@@ -1,9 +1,9 @@
 // @ts-nocheck
 
 import { cloudTasksClient } from "./cloudTasksClient";
+import { extractNumbersFromString } from "../../utils/utils";
 
 export async function createHttpTaskWithToken() {
-  // TODO(developer): Uncomment these lines and replace with your values.
   const project = 'rokni-office';
   const queue = 'queue-del';
   const location = 'europe-west2';
@@ -42,14 +42,17 @@ export async function createHttpTaskWithToken() {
     task.httpRequest.body = Buffer.from(JSON.stringify(payload)).toString('base64');
   }
 
-  console.log('Sending task:');
-  console.log(task);
-  // Send create task request.
   const request = {parent: parent, task: task};
-  const [response] = await cloudTasksClient.createTask(request)
-  const name = response.name;
-  const id = response.id;
-  console.log(`Created task ${name}, with ID ${id}`);
+
+  // Send create task request.
+  try {
+    const [response] = await cloudTasksClient.createTask(request);
+    const id = extractNumbersFromString(response.name);
+    return id;
+  } catch(error) {
+    console.log(error);
+    throw new Error(error);
+  }
 }
 
 export async function deleteCloudTaskById(taskId: string) {

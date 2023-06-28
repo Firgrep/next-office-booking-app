@@ -31,6 +31,8 @@ export const env = createEnv({
     STRIPE_BASIC_MONTHLY_PLAN_ID: z.string().min(1),
     STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID: z.string().min(1),
     STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID: z.string().min(1),
+    STRIPE_PHONE_BOOTH_ID: z.string().min(1),
+    STRIPE_CONFERENCE_ROOM_ID: z.string().min(1),
   },
 
   /**
@@ -61,5 +63,7 @@ export const env = createEnv({
     STRIPE_BASIC_MONTHLY_PLAN_ID: process.env.STRIPE_BASIC_MONTHLY_PLAN_ID,
     STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID: process.env.STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID,
     STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID: process.env.STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID,
+    STRIPE_PHONE_BOOTH_ID: process.env.STRIPE_PHONE_BOOTH_ID,
+    STRIPE_CONFERENCE_ROOM_ID: process.env.STRIPE_CONFERENCE_ROOM_ID,
   },
 });
