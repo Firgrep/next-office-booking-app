@@ -1,12 +1,14 @@
 import React, { type ReactNode, createContext, useContext } from "react";
 import { 
     showErrorToast,
-    showGenericSuccessToast,
+    showSuccessToast,
     showSubscriptionUpdateSuccessToast,
+    showInfoToast,
 } from "./Toasts";
 
 const ErrorToastCtx = createContext<(text?: string) => void>(() => {});
 const SuccessToastCtx = createContext<(text?: string) => void>(() => {});
+const InfoToastCtx = createContext<(text?: string) => void>(() => {});
 const SubscriptionUpdateSuccessToastCtx = createContext<() => void>(() => {});
 
 /**
@@ -26,6 +28,14 @@ export function useSuccessToast() {
 };
 
 /**
+ * Call to send generic info notification.
+ * @param text - Optional string for custom message.
+ */
+export function useInfoToast() {
+    return useContext(InfoToastCtx);
+};
+
+/**
  * Call to send subscription update success notification.
  */
 export function useSubUpdateSuccessToast() {
@@ -35,17 +45,20 @@ export function useSubUpdateSuccessToast() {
 /**
  * Context provider for all toasts. For global toast settings, see ToastContainer in RootLayout.
  * Usage via hooks:
- * @function useErrorToast() - Hook to access generic error notification toast.
- * @function useSuccessToast() - Hook to access generic success notificatiion toast. 
+ * @function useErrorToast() - Hook to access error notification toast.
+ * @function useSuccessToast() - Hook to access success notificatiion toast. 
+ * @function useInfoToast() - Hook to access info notification toast.
  * @function useSubUpdateSuccessToast() - Hook to access subscription update sucess notification toast.
  */
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
     return(
         <ErrorToastCtx.Provider value={showErrorToast}>
-            <SuccessToastCtx.Provider value={showGenericSuccessToast}>
+            <SuccessToastCtx.Provider value={showSuccessToast}>
                 <SubscriptionUpdateSuccessToastCtx.Provider value={showSubscriptionUpdateSuccessToast}>
-                    { children }
+                    <InfoToastCtx.Provider value={showInfoToast}>
+                        { children }
+                    </InfoToastCtx.Provider>
                 </SubscriptionUpdateSuccessToastCtx.Provider>
             </SuccessToastCtx.Provider>
         </ErrorToastCtx.Provider>

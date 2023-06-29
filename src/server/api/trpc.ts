@@ -16,15 +16,25 @@
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
+import { NextApiRequestCookies } from "next/dist/server/api-utils";
+import { type GetServerSidePropsContext } from "next";
 
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 import { stripe } from "../stripe/stripeClient";
+import { IncomingMessage, ServerResponse } from "http";
+
 
 type CreateContextOptions = {
   session: Session | null;
   req: NextApiRequest;
   res: NextApiResponse;
+};
+
+type SSGContextOptions = {
+  session: Session | null;
+  req: NextApiRequest;
+  res: ServerResponse;
 };
 
 /**
@@ -47,6 +57,18 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
     res,
   };
 };
+
+export const createSSGContext = (opts: CreateContextOptions) => {
+  const { req, res } = opts;
+  return {
+    session: opts.session,
+    prisma,
+    stripe,
+    req,
+    res,
+  };
+};
+
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request

@@ -1,0 +1,1 @@
+export const SESSION_EXPIRY_TIME = 1800; // Time in Seconds

@@ -59,7 +59,7 @@ export const Booking: React.FC = () => {
         mutateAsync: createPurchaseBookingSession 
     } = api.stripe.createBookingPurchaseCheckoutSession.useMutation({
         onSuccess() {
-            toastSuccess("Worked!");
+            toastSuccess("Sending you to payment site...");
         },
         onError: (err) => toastError(err.message)
     });

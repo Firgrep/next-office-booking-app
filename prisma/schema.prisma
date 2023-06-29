@@ -59,6 +59,8 @@ model User {
     stripeSubscriptionId   String?   @unique
     stripePriceId          String?
     stripeCurrentPeriodEnd DateTime?
+
+    pendingStripeSession PendingStripeSession?
 }
 
 enum Role {
@@ -86,16 +88,17 @@ model Room {
 }
 
 model Booking {
-    id        String                    @id @default(cuid())
-    userId    String
-    startTime DateTime
-    endTime   DateTime
-    createdAt DateTime                  @default(now())
-    updatedAt DateTime                  @updatedAt
-    user      User                      @relation(fields: [userId], references: [id])
-    room      Room                      @relation(fields: [roomId], references: [id])
-    roomId    String
-    deletion  ScheduledBookingDeletion?
+    id                   String                    @id @default(cuid())
+    userId               String
+    startTime            DateTime
+    endTime              DateTime
+    createdAt            DateTime                  @default(now())
+    updatedAt            DateTime                  @updatedAt
+    user                 User                      @relation(fields: [userId], references: [id])
+    room                 Room                      @relation(fields: [roomId], references: [id])
+    roomId               String
+    deletion             ScheduledBookingDeletion?
+    pendingStripeSession PendingStripeSession?
 
     @@unique([roomId, startTime, endTime])
 }
@@ -106,6 +109,18 @@ model ScheduledBookingDeletion {
     taskId    String   @unique
     createdAt DateTime @default(now())
     booking   Booking  @relation(fields: [bookingId], references: [id])
+}
+
+model PendingStripeSession {
+    id            String   @id @default(cuid())
+    stripeSession String   @unique
+    createdAt     DateTime @default(now())
+    productId     String?
+
+    userId    String  @unique
+    bookingId String  @unique
+    user      User    @relation(fields: [userId], references: [id])
+    booking   Booking @relation(fields: [bookingId], references: [id])
 }
 
 model StripeEvent {

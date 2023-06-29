@@ -20,9 +20,10 @@ import {
 import { getOrCreateStripeCustomerIdForUser } from "~/server/stripe/stripeWebhookHandlers";
 import { env } from "~/env.mjs";
 import { SubscriptionPlan, UserSubscriptionPlan } from "~/types";
-import { PrismaClient } from "@prisma/client";
+import { type PrismaClient } from "@prisma/client";
 import { NextApiRequest } from "next/types";
 import { createHttpTaskWithToken, deleteCloudTaskById } from "~/server/gcloud/cloudTasks";
+import { SESSION_EXPIRY_TIME } from "~/constants/server/purchaseConfig";
 
 
 const getBaseUrl = (req: NextApiRequest) => {
@@ -411,27 +412,29 @@ export const stripeRouter = createTRPCRouter({
             });
             console.log("ROUTE: Booking created...");
 
+            // TODO delete
             // Create cloud task and retrieve its ID
-            const taskId = await createHttpTaskWithToken().catch(console.error);
-            console.log(`ROUTE: Task created ... ID: ${taskId}`)
+            // const taskId = await createHttpTaskWithToken().catch(console.error);
+            // console.log(`ROUTE: Task created ... ID: ${taskId}`)
 
+            // TODO delete
             // Store booking ID and task ID in db for future deletion of scheduled deletion
-            let scheduleId = ""
-            if (taskId) {
-                const scheduledDeletion = await ctx.prisma.scheduledBookingDeletion.create({
-                    data: {
-                        taskId: taskId,
-                        bookingId: booking.id,
-                    }
-                });
-                scheduleId = scheduledDeletion.id;
-                console.log(`ROUTE: Scheduled deletion created...`)
-            } else {
-                throw new TRPCError({ 
-                    code: 'PRECONDITION_FAILED',
-                    message: 'Task ID from Cloud could not be retrieved',
-                });
-            }
+            // let scheduleId = ""
+            // if (taskId) {
+            //     const scheduledDeletion = await ctx.prisma.scheduledBookingDeletion.create({
+            //         data: {
+            //             taskId: taskId,
+            //             bookingId: booking.id,
+            //         }
+            //     });
+            //     scheduleId = scheduledDeletion.id;
+            //     console.log(`ROUTE: Scheduled deletion created...`)
+            // } else {
+            //     throw new TRPCError({ 
+            //         code: 'PRECONDITION_FAILED',
+            //         message: 'Task ID from Cloud could not be retrieved',
+            //     });
+            // }
 
             // Setup Stripe purchase product
             const purchase = {
@@ -465,8 +468,7 @@ export const stripeRouter = createTRPCRouter({
             }
 
             // Create Stripe session
-            const expirationTimeInSeconds = 1800;
-            const expirationTimestamp = Math.floor(Date.now() / 1000) + expirationTimeInSeconds;
+            const expirationTimestamp = Math.floor(Date.now() / 1000) + SESSION_EXPIRY_TIME;
 
             const stripeSession = await ctx.stripe.checkout.sessions.create({
                 customer: customerId,
@@ -474,8 +476,8 @@ export const stripeRouter = createTRPCRouter({
                 payment_method_types: ["card"],
                 mode: "payment",
                 line_items: [ purchase ],
-                success_url: `${baseUrl}/account/booking?status=success&scheduleId=${scheduleId}`,
-                cancel_url: `${baseUrl}/account/booking?status=canceled&scheduleId=${scheduleId}`,
+                success_url: `${baseUrl}/account/booking?status=success`,
+                cancel_url: `${baseUrl}/account/booking?status=canceled`,
                 metadata: {
                     userId: ctx.session.user?.id,
                 },
@@ -486,54 +488,48 @@ export const stripeRouter = createTRPCRouter({
                 throw new Error("Could not create checkout session");
             }
 
-            const sessionId = stripeSession.id;
-            console.log(`Stripe Session ID: ${sessionId}`)
-            // TODO add stripesession id to the scheduled booking so that it can be deleted manually
-            // TODO in the event of a cancel
-
-            return { url: stripeSession.url };
-        }),
-    // TODO to delete after
-    deleteTask: protectedProcedure
-        .input(z.object({ taskId: z.string() }))
-        .mutation(async ({ ctx, input }) => {
-            await deleteCloudTaskById(input.taskId);
-            return "mutation complete"
-        }),
-    cleanupCanceledPurchaseSession: protectedProcedure
-        .input(z.object({ scheduleId: z.string() }))
-        .mutation(async ({ ctx, input }) => {
-            // Retrieve scheduled deletion entry from db
-            const scheduledDeletionEntry = await ctx.prisma.scheduledBookingDeletion.findFirst({
-                where: {
-                    id: input.scheduleId,
-                },
-            })
-            if (!scheduledDeletionEntry) {
-                throw new Error("Expected scheduled deletion entry...");
-            }
-
-            // TODO
-            // Manually Expire Stripe Session
-            // const session = await ctx.stripe.checkout.sessions.expire(
-            //     // ? add session id from db
-            // );
-
-            // Delete Cloud Task
-            await deleteCloudTaskById(scheduledDeletionEntry.taskId);
-
-            // Delete scheduled entry and booking
-            await ctx.prisma.scheduledBookingDeletion.delete({
-                where: {
-                    id: input.scheduleId
+            // Store Stripe Session ID attached to present user and this booking
+            await ctx.prisma.pendingStripeSession.create({
+                data: {
+                    stripeSession: stripeSession.id,
+                    userId: ctx.session.user.id,
+                    bookingId: booking.id
                 }
             });
 
+            return { url: stripeSession.url };
+        }),
+    cleanupCanceledPurchaseSession: protectedProcedure
+        .mutation(async ({ ctx }) => {
+            // Retrieve pending stripe entry from db
+            console.log(ctx.session.user.id);
+            const pendingStripeSession = await ctx.prisma.pendingStripeSession.findFirst({
+                where: {
+                    userId: ctx.session.user.id
+                },
+            })
+            if (!pendingStripeSession) {
+                throw new Error("Expected pending session entry...");
+            }
+
+            // Manually expire Stripe Session
+            await ctx.stripe.checkout.sessions.expire(
+                pendingStripeSession.stripeSession
+            );
+
+            // Delete pending session entry and booking
+            await ctx.prisma.pendingStripeSession.delete({
+                where: {
+                    id: pendingStripeSession.id,
+                },
+            });
             await ctx.prisma.booking.delete({
                 where: {
-                    id: scheduledDeletionEntry.bookingId
-                }
-            })
+                    id: pendingStripeSession.bookingId,
+                },
+            });
 
+            console.log("===ROUTE===cleanup complete");
+            return;
         })
 });

@@ -7,7 +7,7 @@ export const showErrorToast = (text?: string) => {
     : toast.error("Oops! Something went wrong. Try refreshing the page.");
 };
 
-export const showGenericSuccessToast = (text?: string) => {
+export const showSuccessToast = (text?: string) => {
     text
     ? toast.success(`${text}`)
     : toast.success("Success!");
@@ -16,3 +16,9 @@ export const showGenericSuccessToast = (text?: string) => {
 export const showSubscriptionUpdateSuccessToast = () => toast.success(
     "Success! Your subscription has been updated."
 );
+
+export const showInfoToast = (text?: string) => {
+    text
+    ? toast.info(`${text}`)
+    : toast.info("Done!");
+}
