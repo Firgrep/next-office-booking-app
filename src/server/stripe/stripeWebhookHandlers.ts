@@ -148,3 +148,71 @@ export const handleCustomerIdDeleted = async ({
         },
     });
 };
+
+interface HandleSessionExpiry {
+    event: Stripe.Event;
+    prisma: PrismaClient
+}
+
+export const handleSessionExpiry = async ({
+    event,
+    prisma
+}: HandleSessionExpiry) => {
+    const expiredSession = event.data.object as Stripe.Checkout.Session;
+    const expiredSessionId = expiredSession.id;
+
+    const pendingStripeSession = await prisma.pendingStripeSession.findFirst({
+        where: {
+            stripeSession: expiredSessionId
+        },
+    });
+
+    if (!pendingStripeSession) {
+        // * In the event pending session is not found, it is likely because
+        // * it is a checkout related to subscription.
+        return;
+    }
+
+    // Delete pending session entry and booking
+    await prisma.pendingStripeSession.delete({
+        where: {
+            id: pendingStripeSession.id,
+        },
+    });
+    await prisma.booking.delete({
+        where: {
+            id: pendingStripeSession.bookingId,
+        },
+    });
+};
+
+interface HandleSessionCompleted {
+    event: Stripe.Event;
+    prisma: PrismaClient
+}
+
+export const handleSessionCompleted = async ({
+    event,
+    prisma
+}: HandleSessionCompleted) => {
+    const completedSession = event.data.object as Stripe.Checkout.Session;
+    const completedSessionId = completedSession.id;
+
+    const pendingStripeSession = await prisma.pendingStripeSession.findFirst({
+        where: {
+            stripeSession: completedSessionId
+        },
+    })
+
+    if (!pendingStripeSession) {
+        // * In the event pending session is not found, it is likely because
+        // * it is a checkout related to subscription.
+        return;
+    }
+
+    await prisma.pendingStripeSession.delete({
+        where: {
+            id: pendingStripeSession.id,
+        },
+    });
+};

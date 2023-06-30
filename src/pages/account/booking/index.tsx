@@ -19,6 +19,8 @@ import { stripe } from "~/server/stripe/stripeClient";
 import { type PrismaClient } from "@prisma/client";
 import { type Session } from "next-auth";
 import type Stripe from "stripe";
+import { createStripeSessionResume, forceSessionExpire } from "~/server/stripe/stripeServerSideHandlers";
+import Link from "next/link";
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -46,42 +48,42 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     //     transformer: superjson,
     // });
 
-    const cleanupCancellation = async ({
-        session,
-        prisma,
-        stripe,
-    }: {
-        session: Session,
-        prisma: PrismaClient,
-        stripe: Stripe,
-    }) => {
-        const pendingStripeSession = await prisma.pendingStripeSession.findFirst({
-            where: {
-                userId: session.user.id
-            },
-        })
-        if (!pendingStripeSession) {
-            throw new Error("Expected pending session entry...");
-        }
+    // const cleanupCancellation = async ({
+    //     session,
+    //     prisma,
+    //     stripe,
+    // }: {
+    //     session: Session,
+    //     prisma: PrismaClient,
+    //     stripe: Stripe,
+    // }) => {
+    //     const pendingStripeSession = await prisma.pendingStripeSession.findFirst({
+    //         where: {
+    //             userId: session.user.id
+    //         },
+    //     })
+    //     if (!pendingStripeSession) {
+    //         throw new Error("Expected pending session entry...");
+    //     }
     
-        // Manually expire Stripe Session
-        await stripe.checkout.sessions.expire(
-            pendingStripeSession.stripeSession
-        );
+    //     // Manually expire Stripe Session
+    //     await stripe.checkout.sessions.expire(
+    //         pendingStripeSession.stripeSession
+    //     );
     
-        // Delete pending session entry and booking
-        await prisma.pendingStripeSession.delete({
-            where: {
-                id: pendingStripeSession.id,
-            },
-        });
-        await prisma.booking.delete({
-            where: {
-                id: pendingStripeSession.bookingId,
-            },
-        });
-        console.log("SERVERSIDE PROPS CLEANUP DONE");
-    };
+    //     // Delete pending session entry and booking
+    //     await prisma.pendingStripeSession.delete({
+    //         where: {
+    //             id: pendingStripeSession.id,
+    //         },
+    //     });
+    //     await prisma.booking.delete({
+    //         where: {
+    //             id: pendingStripeSession.bookingId,
+    //         },
+    //     });
+    //     console.log("SERVERSIDE PROPS CLEANUP DONE");
+    // };
 
     if (status === "success") {
         return {
@@ -92,7 +94,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         };
     }
     if (status === "canceled") {
-        await cleanupCancellation({ session, prisma, stripe});
+        await forceSessionExpire({ session, prisma, stripe});
         return {
             redirect: {
                 destination: "/account/booking?status=cancellation_completed",
@@ -101,24 +103,24 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         };
     }
 
+    const result = await createStripeSessionResume({session, prisma, stripe});
     return {
-        props: {},
+        props: result,
     };
 };
 
-
-const BookingPage: NextPageWithLayout = () => {
+interface BookingPageProps {
+    url?: undefined | null | string;
+    cancelUrl?: undefined | null | string;
+}
+const BookingPage: NextPageWithLayout<BookingPageProps> = (props) => {
+    const { url, cancelUrl } = props;
     const toastSuccess = useSuccessToast();
     const toastError = useErrorToast();
     const toastInfo = useInfoToast();
     const router = useRouter();
     const { status = "default" } = router.query;
     const effectCalled = useRef<boolean>(false);
-
-    // const cleanupCancellation = api.stripe.cleanupCanceledPurchaseSession.useMutation({
-    //     onSuccess: () => {toastInfo("Your booking was successfully cancelled.")},
-    //     onError: (err) => toastError(err.message)
-    // });
 
     useEffect(() => {
         if (effectCalled.current) return;
@@ -131,6 +133,16 @@ const BookingPage: NextPageWithLayout = () => {
             effectCalled.current = true;
         }
     }, [status])
+
+    if (url && cancelUrl) {
+        return(
+            <>
+                <p>Pending Booking Session</p>
+                <Link href={url}><button className="btn">Click to resume</button></Link>
+                <Link href={cancelUrl}><button className="btn btn-neutral">Cancel</button></Link>
+            </>
+        );
+    }
 
     return(
         <>

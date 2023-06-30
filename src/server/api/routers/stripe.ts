@@ -1,7 +1,6 @@
 import { z } from "zod";
 import {
     createTRPCRouter,
-    publicProcedure,
     protectedProcedure
 } from "~/server/api/trpc";
 import { TRPCError } from '@trpc/server';
@@ -22,7 +21,6 @@ import { env } from "~/env.mjs";
 import { SubscriptionPlan, UserSubscriptionPlan } from "~/types";
 import { type PrismaClient } from "@prisma/client";
 import { NextApiRequest } from "next/types";
-import { createHttpTaskWithToken, deleteCloudTaskById } from "~/server/gcloud/cloudTasks";
 import { SESSION_EXPIRY_TIME } from "~/constants/server/purchaseConfig";
 
 
@@ -412,29 +410,7 @@ export const stripeRouter = createTRPCRouter({
             });
             console.log("ROUTE: Booking created...");
 
-            // TODO delete
-            // Create cloud task and retrieve its ID
-            // const taskId = await createHttpTaskWithToken().catch(console.error);
-            // console.log(`ROUTE: Task created ... ID: ${taskId}`)
-
-            // TODO delete
-            // Store booking ID and task ID in db for future deletion of scheduled deletion
-            // let scheduleId = ""
-            // if (taskId) {
-            //     const scheduledDeletion = await ctx.prisma.scheduledBookingDeletion.create({
-            //         data: {
-            //             taskId: taskId,
-            //             bookingId: booking.id,
-            //         }
-            //     });
-            //     scheduleId = scheduledDeletion.id;
-            //     console.log(`ROUTE: Scheduled deletion created...`)
-            // } else {
-            //     throw new TRPCError({ 
-            //         code: 'PRECONDITION_FAILED',
-            //         message: 'Task ID from Cloud could not be retrieved',
-            //     });
-            // }
+            // TODO add check if user is authorized to book this
 
             // Setup Stripe purchase product
             const purchase = {
@@ -499,37 +475,27 @@ export const stripeRouter = createTRPCRouter({
 
             return { url: stripeSession.url };
         }),
-    cleanupCanceledPurchaseSession: protectedProcedure
-        .mutation(async ({ ctx }) => {
-            // Retrieve pending stripe entry from db
-            console.log(ctx.session.user.id);
-            const pendingStripeSession = await ctx.prisma.pendingStripeSession.findFirst({
-                where: {
-                    userId: ctx.session.user.id
-                },
-            })
-            if (!pendingStripeSession) {
-                throw new Error("Expected pending session entry...");
-            }
+    // createSessionResume: protectedProcedure
+    //     .mutation(async ({ ctx }) => {
 
-            // Manually expire Stripe Session
-            await ctx.stripe.checkout.sessions.expire(
-                pendingStripeSession.stripeSession
-            );
+    //         const pendingStripeSessionRecord = await ctx.prisma.pendingStripeSession.findUnique({
+    //             where: {
+    //                 userId: ctx.session.user.id,
+    //             }
+    //         })
 
-            // Delete pending session entry and booking
-            await ctx.prisma.pendingStripeSession.delete({
-                where: {
-                    id: pendingStripeSession.id,
-                },
-            });
-            await ctx.prisma.booking.delete({
-                where: {
-                    id: pendingStripeSession.bookingId,
-                },
-            });
+    //         if (!pendingStripeSessionRecord) {
+    //             return undefined;
+    //         }
 
-            console.log("===ROUTE===cleanup complete");
-            return;
-        })
+    //         const session = await ctx.stripe.checkout.sessions.retrieve(
+    //             pendingStripeSessionRecord.stripeSession
+    //         );
+
+    //         if (!session) {
+    //             throw new Error("Could not create retrieve checkout session");
+    //         }
+
+    //         return { url: session.url };
+    //     })
 });

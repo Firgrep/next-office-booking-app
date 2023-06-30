@@ -16,14 +16,16 @@
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
-import { NextApiRequestCookies } from "next/dist/server/api-utils";
-import { type GetServerSidePropsContext } from "next";
+
 
 import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
 import { stripe } from "../stripe/stripeClient";
-import { IncomingMessage, ServerResponse } from "http";
 
+// TODO delete?
+import { IncomingMessage, ServerResponse } from "http";
+import { NextApiRequestCookies } from "next/dist/server/api-utils";
+import { type GetServerSidePropsContext } from "next";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -31,6 +33,7 @@ type CreateContextOptions = {
   res: NextApiResponse;
 };
 
+// TODO delete?
 type SSGContextOptions = {
   session: Session | null;
   req: NextApiRequest;
@@ -58,6 +61,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   };
 };
 
+// TODO delete?
 export const createSSGContext = (opts: CreateContextOptions) => {
   const { req, res } = opts;
   return {

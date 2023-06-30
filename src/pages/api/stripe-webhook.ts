@@ -6,6 +6,8 @@ import { buffer } from 'micro';
 import { 
     handleCustomerIdDeleted,
     handleInvoicePaid,
+    handleSessionCompleted,
+    handleSessionExpiry,
     handleSubscriptionCanceled,
     handleSubscriptionCreatedOrUpdated,
 } from '../../server/stripe/stripeWebhookHandlers';
@@ -71,12 +73,22 @@ export default async function handler(
                         event, prisma,
                     });
                     break;
+                case "checkout.session.expired":
+                    await handleSessionExpiry({
+                        event, prisma
+                    });
+                    break;
+                case "checkout.session.completed":
+                    await handleSessionCompleted({
+                        event, prisma
+                    });
+                    break;
                 default:
                     // Unexpected event type
             }
 
             if (env.NODE_ENV === "development") {
-                console.log("development mode in stripe webhook -- bypassing stripe event db record");
+                console.log("Development mode in stripe webhook -- bypassing stripe event db record");
             }
 
             // Record the event in the database (unless development mode)
