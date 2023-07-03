@@ -5,19 +5,20 @@ import { type NextPageWithLayout } from "./_app";
 import { useState, type ReactElement } from 'react';
 import { Alert } from "~/components/Alert";
 
+// TODO cleanup
 const FormComponent = () => {
     const [inputValue, setInputValue] = useState('');
-    const deleteTask = api.stripe.deleteTask.useMutation();
+    // const deleteTask = api.stripe.deleteTask.useMutation();
 
     const handleSubmit = async (event: any) => {
       event.preventDefault();
 
       // Make an API request to the trpc route
 
-      const result = await deleteTask.mutate({taskId: inputValue});
+      // const result = await deleteTask.mutate({taskId: inputValue});
 
       // Handle the response
-      console.log(result);
+      // console.log(result);
 
       // Reset the input value
       setInputValue('');
@@ -50,8 +51,7 @@ const Home: NextPageWithLayout = () => {
         The <span className="text-slate-500">Rokni Office</span> App
       </h1>
 
-      <Alert text={"this is a test"}/>
-      <FormComponent />
+      <Alert text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
 
 
       <div className="flex flex-col items-center gap-2">

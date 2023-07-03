@@ -35,8 +35,7 @@ yarn-error.log*
 .env
 .env*.local
 app.yaml
-docker-compose.yml
-docker-compose copy.yml
+docker-compose-copy.yml
 
 # vercel
 .vercel
