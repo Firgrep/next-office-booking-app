@@ -18,9 +18,9 @@ import {
 } from "../../../constants/client/rooms";
 import { getOrCreateStripeCustomerIdForUser } from "~/server/stripe/stripeWebhookHandlers";
 import { env } from "~/env.mjs";
-import { SubscriptionPlan, UserSubscriptionPlan } from "~/types";
+import type { SubscriptionPlan, UserSubscriptionPlan } from "~/types";
 import { type PrismaClient } from "@prisma/client";
-import { NextApiRequest } from "next/types";
+import { type NextApiRequest } from "next/types";
 import { SESSION_EXPIRY_TIME } from "~/constants/server/purchaseConfig";
 
 
@@ -143,7 +143,7 @@ const getUserSubscriptionDetails = async ({
 export const stripeRouter = createTRPCRouter({
     getUserSubscriptionPlan: protectedProcedure
         .query(async ({ ctx }): Promise<UserSubscriptionPlan> => {
-            return getUserSubscriptionDetails({ prisma: ctx.prisma, userId: ctx.session.user.id});
+            return await getUserSubscriptionDetails({ prisma: ctx.prisma, userId: ctx.session.user.id});
         }),
     checkUserStripeCancellation: protectedProcedure
         .input(
@@ -167,80 +167,6 @@ export const stripeRouter = createTRPCRouter({
                 return false;
             }
         }),
-    createBillingOrCheckoutSession: protectedProcedure
-        .mutation(async ({ ctx }) => {
-            const { stripe, session, prisma, req } = ctx;
-
-            const baseUrl = 
-                env.NODE_ENV === "development"
-                    ? `http://${req.headers.host ?? "localhost:3000"}`
-                    : `https://${req.headers.host ?? env.NEXTAUTH_URL}`;
-
-            const userSubscriptionPlan = await getUserSubscriptionDetails({ prisma: ctx.prisma, userId: ctx.session.user.id});
-
-            // If the user is on the pro plan, create a portal session to manage subscription.
-            if (userSubscriptionPlan.isPro && userSubscriptionPlan.stripeCustomerId) {
-                const stripeSession = await stripe.billingPortal.sessions.create({
-                    customer: userSubscriptionPlan.stripeCustomerId,
-                    return_url: `${baseUrl}/account/billing`,
-                });
-
-                if (!stripeSession) {
-                    throw new Error("Could not create billing portal session");
-                }
-
-                return { url: stripeSession.url };
-            }
-
-            // If the user is on the flexPay plan, create a checkout session to upgrade.
-            const customerId = await getOrCreateStripeCustomerIdForUser({
-                prisma,
-                stripe,
-                userId: session.user?.id
-            })
-
-            if (!customerId) {
-                throw new Error("Could not create customer");
-            }
-            
-            const stripeSession = await stripe.checkout.sessions.create({
-                customer: customerId,
-                client_reference_id: session.user?.id,
-                payment_method_types: ["card"],
-                mode: "subscription",
-                line_items: [
-                    {
-                        price: env.STRIPE_PRO_MONTHLY_PLAN_ID,
-                        quantity: 1,
-                    },
-                    {
-                        price: env.STRIPE_PLUS_CONFERENCE_MONTHLY_PLAN_ID,
-                        quantity: 1,
-                    },
-                    {
-                        price: env.STRIPE_PLUS_PHONE_MONTHLY_PLAN_ID,
-                        quantity: 1,
-                    },
-                    {
-                        price: env.STRIPE_BASIC_MONTHLY_PLAN_ID,
-                        quantity: 1,
-                    }
-                ],
-                success_url: `${baseUrl}/account/billing`,
-                cancel_url: `${baseUrl}/account/billing`,
-                subscription_data: {
-                    metadata: {
-                        userId: session.user?.id,
-                    },
-                },
-            });
-
-            if (!stripeSession) {
-                throw new Error("Could not create checkout session");
-            }
-
-            return { url: stripeSession.url };
-        }),
     createBillingSession: protectedProcedure
         .mutation(async ({ ctx }) => {
             const baseUrl = getBaseUrl(ctx.req);
@@ -248,6 +174,8 @@ export const stripeRouter = createTRPCRouter({
             
             if (checkUserSubscriptionPlan(userSubscriptionPlan) && userSubscriptionPlan.stripeCustomerId) {
                 const stripeSession = await ctx.stripe.billingPortal.sessions.create({
+                    // ! fix this linting issue
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     customer: userSubscriptionPlan.stripeCustomerId,
                     return_url: `${baseUrl}/account/billing`,
                 });
@@ -348,6 +276,7 @@ export const stripeRouter = createTRPCRouter({
                 throw new Error("Could not get subscription data from database");
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             const subscription = await stripe.subscriptions.retrieve(userSubscriptionPlan.stripeSubscriptionId);
 
             if (subscription.cancel_at_period_end === true) {
@@ -381,7 +310,7 @@ export const stripeRouter = createTRPCRouter({
                     throw new Error("No subUpdate matches any case in checkout route");
             }
 
-            stripe.subscriptions.update(subscription.id, {
+            await stripe.subscriptions.update(subscription.id, {
                 cancel_at_period_end: false,
                 proration_behavior: 'always_invoice',
                 items: [

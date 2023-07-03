@@ -1,9 +1,9 @@
 import { type GetServerSidePropsContext } from "next";
-import { ReactElement, useEffect, useRef } from "react";
+import { type ReactElement, useEffect, useRef } from "react";
 import AccountLayout from "~/components/AccountLayout";
 import { Booking } from "~/components/Booking";
 import RootLayout from "~/components/RootLayout";
-import { NextPageWithLayout } from "~/pages/_app";
+import { type NextPageWithLayout } from "~/pages/_app";
 import { getServerAuthSession } from "~/server/auth";
 import { useRouter } from "next/router";
 import { useErrorToast, useInfoToast, useSuccessToast } from "~/components/ToastContext";
@@ -48,7 +48,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return {
         props: result,
     };
-};
+}
 
 interface BookingPageProps {
     url?: undefined | null | string;
@@ -73,7 +73,7 @@ const BookingPage: NextPageWithLayout<BookingPageProps> = (props) => {
             toastInfo("Your booking was successfully cancelled.")
             effectCalled.current = true;
         }
-    }, [status])
+    }, [status, toastSuccess, toastInfo])
 
     // TODO create seperate component for below
     if (url && cancelUrl) {

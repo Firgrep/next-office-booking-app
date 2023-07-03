@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 
 interface AccountLayoutProps {
@@ -26,4 +26,4 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
             </section>
         </div>
     );
-};
+}

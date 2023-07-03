@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { NavbarMain } from './NavbarMain';
 import { Footer } from './Footer';
 import { ToastContainer } from 'react-toastify';
@@ -11,7 +11,7 @@ interface RootLayoutProps {
 
 // old color values: #2e026d #15162c
 
-export default function RootLayout({ children }: RootLayoutProps) {
+function RootLayout({ children }: RootLayoutProps) {
     return (
         <div className="flex flex-col">
             <ToastProvider>
@@ -28,4 +28,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
             />
         </div>
     );
-};
+}
+
+export default RootLayout;

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import RootLayout from "~/components/RootLayout";
 import AccountLayout from "~/components/AccountLayout";
 import { type NextPageWithLayout } from "../_app";
@@ -21,7 +20,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return {
         props: {},
     };
-};
+}
 
 const Account: NextPageWithLayout = () => {
 

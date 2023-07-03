@@ -9,4 +9,4 @@ export const Alert: React.FC<AlertProps> = ({ text }) => {
             {text}
         </p>
     );
-};
+}

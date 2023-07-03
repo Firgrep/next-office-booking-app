@@ -3,9 +3,7 @@ import { BtnAccount } from "../components/BtnAccount";
 import Link from "next/link";
 
 
-interface navbarMainProps {}
-
-export const NavbarMain: React.FC<navbarMainProps> = () => {
+export const NavbarMain: React.FC = () => {
     const { data: sessionData } = useSession();
 
     return (

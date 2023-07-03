@@ -2,9 +2,15 @@ import { type ReactNode, createContext, useContext, useState } from "react";
 
 
 const BillingDisabledCtx = createContext<boolean>(false);
-const ToggleBillingDisabledCtx = createContext<React.Dispatch<React.SetStateAction<boolean>>>(() => {});
+const ToggleBillingDisabledCtx = createContext<React.Dispatch<React.SetStateAction<boolean>>>(() => {
+    //placeholder
+    return;
+});
 const QueryIntervalMsCtx = createContext<number | false>(false);
-const UpdateQueryIntervalMsCtx = createContext<React.Dispatch<React.SetStateAction<number | false>>>(() => {});
+const UpdateQueryIntervalMsCtx = createContext<React.Dispatch<React.SetStateAction<number | false>>>(() => {
+    //placeholder
+    return;
+});
 
 /**
  * Hook to access the current billing disabled state.
@@ -18,7 +24,7 @@ export function useBillingDisabled(): boolean {
  * Hook to update the billing disabled state.
  * @param {boolean} newDisabledState - The new billing disabled state.
  */
-export function useBillingDisabledUpdate() {
+export function useBillingDisabledUpdate(): React.Dispatch<React.SetStateAction<boolean>> {
     return useContext(ToggleBillingDisabledCtx);
 }
 
@@ -34,7 +40,7 @@ export function useBillingQueryInterval(): number | false {
  * Hook to update the billing query interval state.
  * @param {number | false} newInterval - The new billing query interval in milliseconds, or `false` to disable the interval.
  */
-export function useBillingQueryIntervalUpdate() {
+export function useBillingQueryIntervalUpdate(): React.Dispatch<React.SetStateAction<number | false>> {
     return useContext(UpdateQueryIntervalMsCtx);
 }
 

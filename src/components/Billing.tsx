@@ -194,7 +194,7 @@ export const Billing: React.FC<BillingProps> = ({
             </>
         );
     }
-};
+}
 
 
 // const { mutateAsync: createStripeSession } = api.stripe.createBillingOrCheckoutSession.useMutation({

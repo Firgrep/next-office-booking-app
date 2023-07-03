@@ -8,7 +8,7 @@ export function formatDate(input: string | number | undefined): string | null{
         day: "numeric",
         year: "numeric",
     });
-};
+}
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

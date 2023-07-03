@@ -1,7 +1,6 @@
 
-interface footerProps {}
 
-export const Footer: React.FC<footerProps> = () => {
+export const Footer: React.FC = () => {
 
     return (
         <footer className="container bg-purple-500">

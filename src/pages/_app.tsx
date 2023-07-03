@@ -13,10 +13,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 
 // RootLayout Setup for Nextjs Pages Router. See https://nextjs.org/docs/pages/building-your-application/routing/pages-and-layouts 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+export type NextPageWithLayout<P = NonNullable<unknown>, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
-type AppPropsWithLayout<P = {}> = AppProps & {
+type AppPropsWithLayout<P = NonNullable<unknown>> = AppProps & {
   Component: NextPageWithLayout<P>;
 };
 
@@ -27,6 +27,7 @@ const MyApp: React.FC<AppPropsWithLayout<{ session: Session | null }>> = ({
   const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     <SessionProvider session={session}>
       {getLayout(<Component {...pageProps} />)}
     </SessionProvider>

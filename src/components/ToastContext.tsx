@@ -6,10 +6,10 @@ import {
     showInfoToast,
 } from "./Toasts";
 
-const ErrorToastCtx = createContext<(text?: string) => void>(() => {});
-const SuccessToastCtx = createContext<(text?: string) => void>(() => {});
-const InfoToastCtx = createContext<(text?: string) => void>(() => {});
-const SubscriptionUpdateSuccessToastCtx = createContext<() => void>(() => {});
+const ErrorToastCtx = createContext<(text?: string) => void>(() => { return });
+const SuccessToastCtx = createContext<(text?: string) => void>(() => { return });
+const InfoToastCtx = createContext<(text?: string) => void>(() => { return });
+const SubscriptionUpdateSuccessToastCtx = createContext<() => void>(() => { return });
 
 /**
  * Call to send generic error notification.
@@ -17,7 +17,7 @@ const SubscriptionUpdateSuccessToastCtx = createContext<() => void>(() => {});
  */
 export function useErrorToast() {
     return useContext(ErrorToastCtx);
-};
+}
 
 /**
  * Call to send generic success notification.
@@ -25,7 +25,7 @@ export function useErrorToast() {
  */
 export function useSuccessToast() {
     return useContext(SuccessToastCtx);
-};
+}
 
 /**
  * Call to send generic info notification.
@@ -33,7 +33,7 @@ export function useSuccessToast() {
  */
 export function useInfoToast() {
     return useContext(InfoToastCtx);
-};
+}
 
 /**
  * Call to send subscription update success notification.
@@ -63,4 +63,4 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
             </SuccessToastCtx.Provider>
         </ErrorToastCtx.Provider>
     );
-};
+}

@@ -1,40 +1,9 @@
 import Head from "next/head";
 import { api } from "~/utils/api";
-import RootLayout from "~/components/RootLayout";
 import { type NextPageWithLayout } from "./_app";
-import { useState, type ReactElement } from 'react';
+import { type ReactElement } from 'react';
 import { Alert } from "~/components/Alert";
-
-// TODO cleanup
-const FormComponent = () => {
-    const [inputValue, setInputValue] = useState('');
-    // const deleteTask = api.stripe.deleteTask.useMutation();
-
-    const handleSubmit = async (event: any) => {
-      event.preventDefault();
-
-      // Make an API request to the trpc route
-
-      // const result = await deleteTask.mutate({taskId: inputValue});
-
-      // Handle the response
-      // console.log(result);
-
-      // Reset the input value
-      setInputValue('');
-    };
-
-    return (
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(event) => setInputValue(event.target.value)}
-        />
-        <button className="btn btn-secondary" type="submit">Delete Task</button>
-      </form>
-    );
-};
+import RootLayout from "~/components/RootLayout";
 
 
 const Home: NextPageWithLayout = () => {
@@ -72,26 +41,3 @@ Home.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default Home;
-
-// const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-//   undefined, // no input
-//   { enabled: sessionData?.user !== undefined },
-// );
-
-const ProductDisplay: React.FC = () => (
-  <section>
-    <div className="product">
-      <div className="description">
-        <h3>Starter plan</h3>
-        <h5>$20.00 / month</h5>
-      </div>
-    </div>
-    <form action="/create-checkout-session" method="POST">
-      {/* Add a hidden field with the lookup_key of your Price */}
-      <input type="hidden" name="lookup_key" value="full_sub" />
-      <button id="checkout-and-portal-button" type="submit">
-        Checkout
-      </button>
-    </form>
-  </section>
-);

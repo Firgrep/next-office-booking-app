@@ -1,4 +1,4 @@
-import { UserSubscriptionPlan } from "~/types";
+import { type UserSubscriptionPlan } from "~/types";
 import { 
     CONFERENCE_ROOM_ID, 
     PHONE_BOOTH_A_ID, 
@@ -10,11 +10,11 @@ import { useErrorToast } from "./ToastContext";
 interface BtnBookProps {
     userSubscriptionPlan: UserSubscriptionPlan;
     date: DateType;
-    handleCreateBooking: Function;
+    handleCreateBooking: (startTime: Date) => Promise<void>;
     createBookingIsLoading: boolean;
     room: RoomType;
     purchaseSessionLoading: boolean;
-    handleCreatePurchaseBookingSession: Function;
+    handleCreatePurchaseBookingSession: (startTime: Date) => Promise<void>;
 }
 
 export const BtnBook: React.FC<BtnBookProps> = ({
@@ -29,14 +29,18 @@ export const BtnBook: React.FC<BtnBookProps> = ({
     // TODO include check for number of rooms to be capped
     const toastError = useErrorToast();
 
+    if (!userSubscriptionPlan) {
+        return <p>Subscription details missing</p>
+    }
+
     // Authorization control for booking. One of the following must be true:
     // IF user is on Pro plan, full access.
     // IF user is on Plus Conference plan, full access if the selected room is conference.
     // IF user is on Plus Phone plan, full access if the selected room is a phone booth.
     if (
-        userSubscriptionPlan?.isPro ||
-        (userSubscriptionPlan?.isPlusConference && room.roomId === CONFERENCE_ROOM_ID) ||
-        (userSubscriptionPlan?.isPlusPhone && room.roomId === PHONE_BOOTH_A_ID || room.roomId === PHONE_BOOTH_B_ID)
+        userSubscriptionPlan.isPro ||
+        (userSubscriptionPlan.isPlusConference && room.roomId === CONFERENCE_ROOM_ID) ||
+        (userSubscriptionPlan.isPlusPhone && room.roomId === PHONE_BOOTH_A_ID || room.roomId === PHONE_BOOTH_B_ID)
     ) {
         return (
             <button 
@@ -67,4 +71,4 @@ export const BtnBook: React.FC<BtnBookProps> = ({
             Purchase Booking
         </button>
     );
-};
+}

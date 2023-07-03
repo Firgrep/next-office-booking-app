@@ -50,7 +50,7 @@ export const Booking: React.FC = () => {
     const createBooking = api.booking.createBooking.useMutation({
         onSuccess() {
             setIsCreateBookingSuccess(true);
-            utils.booking.invalidate();
+            void utils.booking.invalidate();
         }
     });
 
@@ -67,7 +67,7 @@ export const Booking: React.FC = () => {
     const deleteBooking = api.booking.deleteBooking.useMutation({
         onSuccess() {
             setIsDeleteBookingSuccess(true);
-            utils.booking.invalidate();
+            void utils.booking.invalidate();
         }
     });
 
@@ -76,7 +76,7 @@ export const Booking: React.FC = () => {
             console.log("No session data");
             toastError();
             return;
-        };
+        }
         if (!room?.roomId) {
             console.log("No room ID selected");
             toastError("Oops! Something went wrong. No room selected.")
@@ -107,7 +107,7 @@ export const Booking: React.FC = () => {
             console.log("No session data");
             toastError("Must be logged in.");
             return;
-        };
+        }
         if (!room?.roomId) {
             console.log("No room ID selected");
             toastError("Oops! Something went wrong. No room selected.")
@@ -157,9 +157,11 @@ export const Booking: React.FC = () => {
                 bookingId: booking.id,
                 bookingUserId: booking.userId,
             });
-        } catch (error: any) {
-            console.log(error);
-            toastError(`Oops! Something went wrong. Error: ${error}`)
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log(error);
+                toastError(`Oops! Something went wrong. Error: ${error.message}`)
+            }
         }
     };
 
@@ -229,18 +231,22 @@ export const Booking: React.FC = () => {
                         <br></br> 
                         {format(date.dateTime, `EEEE kk:mm, MMMM do, yyyy`)}
                     </p>
-                    <BtnBook 
-                        userSubscriptionPlan={userSubscriptionPlan}
-                        date={date}
-                        handleCreateBooking={handleCreateBooking}
-                        createBookingIsLoading={createBooking.isLoading}
-                        room={room}
-                        purchaseSessionLoading={purchaseSessionLoading}
-                        handleCreatePurchaseBookingSession={handleCreatePurchaseBookingSession}
-                    />
+                    { userSubscriptionPlan ? (
+                        <BtnBook 
+                            userSubscriptionPlan={userSubscriptionPlan}
+                            date={date}
+                            handleCreateBooking={handleCreateBooking}
+                            createBookingIsLoading={createBooking.isLoading}
+                            room={room}
+                            purchaseSessionLoading={purchaseSessionLoading}
+                            handleCreatePurchaseBookingSession={handleCreatePurchaseBookingSession}
+                        />
+                    ) : (
+                         <p>Error: subscription plan could not be loaded</p>
+                    )}
                     {createBooking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {createBooking.error.message}</p>}
                 </div>
             ) : (<div style={{height: "200px"}}></div>)}
         </section>
     );
-};
+}

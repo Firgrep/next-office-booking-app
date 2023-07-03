@@ -18,7 +18,7 @@ export const config = {
     api: {
         bodyParser: false,
     },
-};
+}
 
 const webhookSecret = env.STRIPE_WEBHOOK_SECRET;
 
@@ -124,4 +124,4 @@ export default async function handler(
         res.setHeader("Allow", "POST");
         res.status(405).end("Method Not Allowed");
     }
-};
+}

@@ -1,8 +1,9 @@
+import { type Room } from "@prisma/client";
 import { type ChangeEvent } from "react";
 
 
 type selectRoomsProps = {
-    rooms: undefined | any[],
+    rooms: undefined | Room[],
     setRoom: React.Dispatch<React.SetStateAction<RoomType>>
     setDate: React.Dispatch<React.SetStateAction<DateType>>
 }
@@ -25,9 +26,11 @@ export const SelectRooms: React.FC<selectRoomsProps> = ({rooms, setRoom, setDate
                 onChange={(e) => handleRoomSelection(e)}
             >
                 <option disabled value="DEFAULT">Select room...</option>
-                {rooms?.map(room => 
-                    <option key={room.id} value={room.id}>{room.name}</option>    
-                )}
+                {rooms 
+                    ? rooms.map(room => 
+                    <option key={room.id} value={room.id}>{room.name}</option>)    
+                    : null    
+                }
             </select>
         </div>
     );

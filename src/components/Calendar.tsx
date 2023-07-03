@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactCalendar from 'react-calendar';
 import {add, format} from "date-fns";
 import { useSession } from 'next-auth/react';
+import { type Booking } from '@prisma/client';
 
 
 type calendarProps = {
     selectedRoom: undefined | SelectedRoomType,
-    bookings: undefined | any[],
+    bookings: undefined | Booking[],
     date: DateType,
     setDate: React.Dispatch<React.SetStateAction<DateType>>,
-    handleDeleteBooking: Function,
+    handleDeleteBooking: (bookingStartTime: Date) => void,
 }
 
 /**
@@ -76,18 +77,20 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                     view="month"
                     tileContent={({ activeStartDate, date, view }) => {
                         if (view === "month") {
-                            const hasBooking = bookings?.some(booking => 
-                                booking.startTime.getFullYear() === date.getFullYear() &&
-                                booking.startTime.getMonth() === date.getMonth() &&
-                                booking.startTime.getDate() === date.getDate()    
-                            );
-
-                            if (hasBooking) {
-                                return(
-                                    <div className="flex justify-center">
-                                        <div className="mt-2 bg-yellow-500 w-1/3">&nbsp;</div>
-                                    </div>
-                                )
+                            if (bookings) {
+                                const hasBooking = bookings.some(booking => 
+                                    booking.startTime.getFullYear() === date.getFullYear() &&
+                                    booking.startTime.getMonth() === date.getMonth() &&
+                                    booking.startTime.getDate() === date.getDate()    
+                                );
+    
+                                if (hasBooking) {
+                                    return(
+                                        <div className="flex justify-center">
+                                            <div className="mt-2 bg-yellow-500 w-1/3">&nbsp;</div>
+                                        </div>
+                                    )
+                                }
                             }
                         }
 

@@ -11,7 +11,7 @@ import {
     useBillingQueryInterval, 
     useBillingQueryIntervalUpdate 
 } from "~/components/BillingContext";
-import { useErrorToast, useSubUpdateSuccessToast, useSuccessToast } from "~/components/ToastContext";
+import { useErrorToast, useSubUpdateSuccessToast } from "~/components/ToastContext";
 import AccountLayout from "~/components/AccountLayout";
 
 
@@ -30,7 +30,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return {
         props: {},
     };
-};
+}
 
 function isNumber(value: number | false): value is number {
     return typeof value === "number";
@@ -100,7 +100,8 @@ const BillingPage: NextPageWithLayout = () => {
         isError: stripeIsCancelledError 
     } = api.stripe.checkUserStripeCancellation.useQuery(
         {
-            stripeSubscriptionId: userSubscriptionPlan?.stripeSubscriptionId
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            stripeSubscriptionId: userSubscriptionPlan && userSubscriptionPlan.stripeSubscriptionId
         }
     );
 
@@ -111,7 +112,7 @@ const BillingPage: NextPageWithLayout = () => {
         } else {
             setBillingDisabled(false);
         }
-    }, [billingQueryInterval]);
+    }, [billingQueryInterval, setBillingDisabled]);
 
     // RENDERS
     if (userSubscriptionPlanError || stripeIsCancelledError) {
