@@ -62,6 +62,7 @@ export default async function handler(
                     });
                     break;
                 case "invoice.payment_failed":
+                    console.log("RECEIEVED PAYMENT FAILED");
                     // ! If the payment fails or the customer does not have a valid payment method,
                     // ! an invoice.payment_failed event is sent, the subscription becomes past_due.
                     // ! Use this webhook to notify your user that their payment has failed and

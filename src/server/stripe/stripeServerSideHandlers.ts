@@ -3,12 +3,13 @@ import { type Stripe } from 'stripe';
 import { type Session } from "next-auth";
 
 
-interface ForceSessionExpireProps {
+interface BaseArgs {
     session: Session,
     prisma: PrismaClient,
     stripe: Stripe,
 }
-export const forceSessionExpire = async ({session, prisma, stripe}: ForceSessionExpireProps) => {
+
+export const forceSessionExpire = async ({session, prisma, stripe}: BaseArgs) => {
     // Get pending session details from db
     const pendingStripeSession = await prisma.pendingStripeSession.findFirst({
         where: {
@@ -25,12 +26,7 @@ export const forceSessionExpire = async ({session, prisma, stripe}: ForceSession
     );
 };
 
-interface createStripeSessionResumeProps {
-    session: Session,
-    prisma: PrismaClient,
-    stripe: Stripe,
-}
-export const createStripeSessionResume = async ({session, prisma, stripe}: createStripeSessionResumeProps) => {
+export const createStripeSessionResume = async ({session, prisma, stripe}: BaseArgs) => {
     const pendingStripeSessionRecord = await prisma.pendingStripeSession.findUnique({
         where: {
             userId: session.user.id,
