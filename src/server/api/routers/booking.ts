@@ -7,10 +7,10 @@ import {
 import { TRPCError } from '@trpc/server';
 
 export const bookingRouter = createTRPCRouter({
-    getRooms: publicProcedure.query(({ ctx }) => {
+    getRooms: protectedProcedure.query(({ ctx }) => {
         return ctx.prisma.room.findMany();
     }),
-    getRoomBookings: publicProcedure
+    getRoomBookings: protectedProcedure
         .input(z.object({ roomId: z.string().nullish() }).nullish())
         .query(({ ctx, input }) => {
             return input?.roomId ? (ctx.prisma.booking.findMany({
@@ -20,7 +20,16 @@ export const bookingRouter = createTRPCRouter({
                 }
             })) : (null);
         }),
-    createBooking: publicProcedure
+    getUserBookings: protectedProcedure
+        .query(({ ctx }) => {
+            return ctx.prisma.booking.findMany({
+                where: {
+                    userId: ctx.session.user.id,
+                    startTime: {gte: new Date()},
+                }
+            });
+        }),
+    createBooking: protectedProcedure
         .input(z.object({ roomId: z.string(), startTime: z.date(), endTime: z.date(), userId: z.string() }))
         .mutation(({ ctx, input }) => {
             return ctx.prisma.booking.create({
@@ -32,7 +41,7 @@ export const bookingRouter = createTRPCRouter({
                 }
             });
         }),
-    deleteBooking: publicProcedure
+    deleteBooking: protectedProcedure
         .input(z.object({ bookingId: z.string(), bookingUserId: z.string() }))
         .mutation(({ ctx, input }) => {
             if (ctx.session?.user.id !== input.bookingUserId) {

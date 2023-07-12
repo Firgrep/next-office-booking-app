@@ -81,6 +81,7 @@ const BillingPage: NextPageWithLayout = () => {
                 }
                 setBillingQueryInterval(false);
                 setUserSubPlanQueryRetries(0);
+                // TODO remove after testing
                 // utils.stripe.getUserSubscriptionPlan.invalidate();
                 // utils.stripe.checkUserStripeCancellation.invalidate();
                 return;

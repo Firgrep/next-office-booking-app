@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { useErrorToast, useInfoToast, useSuccessToast } from "~/components/ToastContext";
 import { prisma } from "~/server/db";
 import { stripe } from "~/server/stripe/stripeClient";
-import { createStripeSessionResume, forceSessionExpire } from "~/server/stripe/stripeServerSideHandlers";
+import { createStripeSessionResume, forceStripeSessionExpire } from "~/server/stripe/stripeServerSideHandlers";
 import Link from "next/link";
 
 
@@ -35,7 +35,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         };
     }
     if (status === "canceled") {
-        await forceSessionExpire({ session, prisma, stripe});
+        await forceStripeSessionExpire({ session, prisma, stripe});
         return {
             redirect: {
                 destination: "/account/booking?status=cancellation_completed",

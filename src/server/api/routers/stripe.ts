@@ -276,6 +276,7 @@ export const stripeRouter = createTRPCRouter({
                 throw new Error("Could not get subscription data from database");
             }
 
+            // ! fix linting issue
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             const subscription = await stripe.subscriptions.retrieve(userSubscriptionPlan.stripeSubscriptionId);
 

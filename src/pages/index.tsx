@@ -1,13 +1,22 @@
 import Head from "next/head";
-import { api } from "~/utils/api";
 import { type NextPageWithLayout } from "./_app";
 import { type ReactElement } from 'react';
 import { Alert } from "~/components/Alert";
 import RootLayout from "~/components/RootLayout";
+import { type GetServerSidePropsContext } from "next";
+import { getServerAuthSession } from "~/server/auth";
 
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  // Prefetches the auth session to avoid janky login UI
+  const session = await getServerAuthSession(ctx);
+
+  return {
+    props: { session },
+  };
+}
 
 const Home: NextPageWithLayout = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" }, {refetchOnWindowFocus: false,});
 
   return (
     <>
@@ -25,7 +34,6 @@ const Home: NextPageWithLayout = () => {
 
       <div className="flex flex-col items-center gap-2">
         <p className="text-2xl text-white">
-          {hello.data ? hello.data.greeting : "Loading tRPC query..."}
         </p>
       </div>
     </>

@@ -9,7 +9,7 @@ interface BaseArgs {
     stripe: Stripe,
 }
 
-export const forceSessionExpire = async ({session, prisma, stripe}: BaseArgs) => {
+export const forceStripeSessionExpire = async ({session, prisma, stripe}: BaseArgs) => {
     // Get pending session details from db
     const pendingStripeSession = await prisma.pendingStripeSession.findFirst({
         where: {
