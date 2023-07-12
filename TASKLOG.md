@@ -1,8 +1,5 @@
 
-
-* Build functionality with rooms linked to user
-
-* make dashboard UI
+* fine-grain calendar day selection to remove those that have already passed for today
 
 * block all user interaction on billing page until update refetch completes.CHECK THIS
 

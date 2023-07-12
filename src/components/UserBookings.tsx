@@ -26,7 +26,6 @@ export const UserBookings: React.FC = () => {
         }
     });
 
-
     const handleDeleteBooking = (bookingId: string, bookingUserId: string) => {
         try {
             deleteBooking.mutate({

@@ -9,6 +9,7 @@ import { api } from "~/utils/api";
 import "~/styles/globals.css";
 import "~/styles/Calendar.css";
 import "~/styles/Data-title.css";
+import "~/styles/Site-utils.css";
 import "react-toastify/dist/ReactToastify.css";
 
 
