@@ -5,6 +5,7 @@ import { Alert } from "./Alert";
 import Link from "next/link";
 import { SingleBookingCard } from "./SingleBookingCard";
 import { useErrorToast, useSuccessToast } from "./ToastContext";
+import { LoadingBars } from "./LoadingBars";
 
 
 /**
@@ -50,7 +51,7 @@ export const UserBookings: React.FC = () => {
 
     if(userBookingsLoading) {
         return (
-            <p>Loading...</p>
+            <LoadingBars />
         )
     }
 

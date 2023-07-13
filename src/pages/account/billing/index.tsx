@@ -13,6 +13,7 @@ import {
 } from "~/components/BillingContext";
 import { useErrorToast, useSubUpdateSuccessToast } from "~/components/ToastContext";
 import AccountLayout from "~/components/AccountLayout";
+import { LoadingBars } from "~/components/LoadingBars";
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -128,7 +129,7 @@ const BillingPage: NextPageWithLayout = () => {
         <>
             <h2 className="text-lg">Billing page</h2>
             {userSubscriptionPlanLoading && (
-                <h1>Loading user data...</h1>
+                <LoadingBars />
             )}
             {userSubscriptionPlan &&
             typeof isCanceled === "boolean" && (

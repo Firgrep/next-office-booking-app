@@ -207,8 +207,9 @@ export const Booking: React.FC = () => {
                 setDate={setDate}
             />
 
-            {(bookings) ? (
-            <>
+            {(
+                bookings
+            ) ? (
                 <Calendar 
                     selectedRoom={selectedRoom}
                     bookings={bookings}
@@ -216,15 +217,20 @@ export const Booking: React.FC = () => {
                     setDate={setDate}
                     handleDeleteBooking={handleDeleteBooking}
                 />
-            </>
-            ) : (<div style={{height: "500px"}}></div>)}
+            ) : (
+                <div className="h-500">
+                    <p className="text-xl">☝️ First select the room you would like to book!</p>
+                </div>
+            )}
 
             {isCreateBookingSuccess && <p className="bg-green-500">Success! Successfully booked!</p>}   
             {isDeleteBookingSuccess && <p className="bg-green-500">Success! Booking successfully cancelled.</p>}
 
             {deleteBooking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {deleteBooking.error.message}</p>}
 
-            {date.dateTime ? (
+            {(
+                date.dateTime
+            ) ? (
                 <div className="flex flex-col justify-center items-center mt-5 min-h-[200px] w-full">
                     <p className="bg-gray-100 p-5 m-5 text-center">
                         You have chosen a {rooms && rooms?.find(roomToCheck => roomToCheck.id === room.roomId)?.interval || <span>Error_in_booking_comp</span>}-min booking at the time 
@@ -246,7 +252,17 @@ export const Booking: React.FC = () => {
                     )}
                     {createBooking.error && <p className="bg-red-500 p-5">Oops! Something went wrong! {createBooking.error.message}</p>}
                 </div>
-            ) : (<div style={{height: "200px"}}></div>)}
+            ) : (
+                (
+                    date.justDate
+                ) ? (
+                    <div className="h-350">
+                        <p className="text-xl">🕒 Now pick the time!</p>
+                    </div>
+                ) : (
+                    null
+                )
+            )}
         </section>
     );
 }
