@@ -3,18 +3,8 @@ import { type NextPageWithLayout } from "./_app";
 import { type ReactElement } from 'react';
 import { Alert } from "~/components/Alert";
 import RootLayout from "~/components/RootLayout";
-import { type GetServerSidePropsContext } from "next";
-import { getServerAuthSession } from "~/server/auth";
 import { COMPANY_NAME, ICON_SIZE_SM } from "~/constants/client/site";
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  // Prefetches the auth session to avoid janky login UI
-    const session = await getServerAuthSession(ctx);
-
-    return {
-        props: { session },
-    };
-}
 
 const Pricing: NextPageWithLayout = () => {
 
@@ -35,7 +25,8 @@ const Pricing: NextPageWithLayout = () => {
                 <p className="text-lg text-gray-500 px-4">Need a place to work? A space to hold a meeting? Don't worry, {COMPANY_NAME} has got you covered!</p>
                 <div className="mt-16 mb-16 flex flex-col justify-center items-center">
                     {/* Card */}
-                    <div className="card w-96 bg-base-100 border-2 border-red-500 shadow-[0px_0px_24px_8px_rgba(255,_215,_0,_0.4)]">
+                    <div className="card w-72 sm:w-96 bg-base-100 border-2 border-red-500 shadow-[0px_0px_24px_8px_rgba(255,_215,_0,_0.4)]">
+                        <figure><img src="https://storage.cloud.google.com/rokni-office-media/conference-room.jpg?authuser=3" alt="conference room"></img></figure>
                         <div className="card-body">
                             <h2 className="card-title">
                                 PRO Plan
@@ -69,13 +60,12 @@ const Pricing: NextPageWithLayout = () => {
                                     <span className="text-gray-500">Even More!</span>
                                 </li>
                             </ul>
-                            <div className="bg-red-500">
+                            <div className="bg-red-500 rounded-md p-4">
                                 <p>More stuff!!!</p>
                             </div>
                             <div className="card-actions justify-end">
                                 <button className="btn btn-primary">Buy Now</button>
                             </div>
-                           
                         </div>
                     </div>
                 </div>
