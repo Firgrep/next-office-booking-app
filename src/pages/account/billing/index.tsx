@@ -124,13 +124,16 @@ const BillingPage: NextPageWithLayout = () => {
             </div>
         )
     }
+
+    if (userSubscriptionPlanLoading) {
+        return(
+            <LoadingBars />
+        )
+    }
     
     return(
         <>
             <h2 className="text-lg">Billing page</h2>
-            {userSubscriptionPlanLoading && (
-                <LoadingBars />
-            )}
             {userSubscriptionPlan &&
             typeof isCanceled === "boolean" && (
                 <Billing 

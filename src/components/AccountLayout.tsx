@@ -1,14 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useRouter } from "next/router";
-
+import { ICON_SIZE_SM } from "~/constants/client/site";
 
 interface AccountLayoutProps {
     children: ReactNode;
 }
 
 export default function AccountLayout({ children }: AccountLayoutProps) {
-    const iconHeightAndWidth = 20 // in pixels
     const iconButtonPaddingLeft = 10 // Tailwind numbers
     const router = useRouter();
 
@@ -22,9 +21,9 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                                 <img 
                                     src="/svg/home-svgrepo-com.svg" 
                                     alt="home icon"
-                                    style={{height: `${iconHeightAndWidth}px`, width: `${iconHeightAndWidth}px`}}
+                                    style={{height: `${ICON_SIZE_SM}px`, width: `${ICON_SIZE_SM}px`}}
                                 ></img>
-                                Index
+                                Dashboard
                             </button>
                         </Link>
                     </li>
@@ -34,7 +33,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                                 <img 
                                     src="/svg/calendar-new-svgrepo-com.svg" 
                                     alt="calendar icon"
-                                    style={{height: `${iconHeightAndWidth}px`, width: `${iconHeightAndWidth}px`}}
+                                    style={{height: `${ICON_SIZE_SM}px`, width: `${ICON_SIZE_SM}px`}}
                                 ></img>
                                 Booking
                             </button>
@@ -46,7 +45,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                                 <img 
                                     src="/svg/file-invoice-dollar-solid-svgrepo-com.svg" 
                                     alt="billing icon"
-                                    style={{height: `${iconHeightAndWidth}px`, width: `${iconHeightAndWidth}px`}}
+                                    style={{height: `${ICON_SIZE_SM}px`, width: `${ICON_SIZE_SM}px`}}
                                 ></img>
                                 Billing
                             </button>
@@ -58,7 +57,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                                 <img 
                                     src="/svg/settings-2-svgrepo-com.svg" 
                                     alt="settings icon"
-                                    style={{height: `${iconHeightAndWidth}px`, width: `${iconHeightAndWidth}px`}}
+                                    style={{height: `${ICON_SIZE_SM}px`, width: `${ICON_SIZE_SM}px`}}
                                 ></img>
                                 Settings
                             </button>

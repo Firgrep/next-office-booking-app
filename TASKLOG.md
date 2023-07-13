@@ -1,3 +1,6 @@
+* build out billing page. make it nice
+
+* install git extensions 
 
 * fine-grain calendar day selection to remove those that have already passed for today
 

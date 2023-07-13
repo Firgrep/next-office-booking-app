@@ -17,7 +17,7 @@ function RootLayout({ children }: RootLayoutProps) {
             <ToastProvider>
                 <NavbarMain />
                     <main className="flex flex-col min-h-screen items-center bg-gradient-to-b from-[#e2e8f0] to-[#334155]">
-                        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+                        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-8">
                             {children}
                         </div>
                     </main>

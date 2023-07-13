@@ -12,8 +12,12 @@ export const NavbarMain: React.FC = () => {
                     <Link href="/">
                         <p>LOGO</p>
                     </Link>
-                    <p>Item 1</p>
-                    <p>Item 2</p>
+                    <Link href="/">
+                        <p>Home</p>
+                    </Link>
+                    <Link href="/pricing">
+                        <p>Pricing</p>
+                    </Link>
                 </div>
                 <nav className="flex gap-6 items-center">
                     {(
@@ -43,7 +47,7 @@ export const NavbarMain: React.FC = () => {
                             className="btn"
                             onClick={() => void signIn()}
                         >
-                            Login
+                            Sign In / Up
                         </button>
                     )}
                 </nav>
