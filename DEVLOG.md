@@ -36,3 +36,21 @@ Generics in types - Multiple generics in types/types
 
 You can use generics in types to make them more flexible. It turns them into a kind of function, which can return different types depending on what you pass in.
 https://www.typescriptlang.org/docs/handbook/2/generics.html
+
+### Dynamic class input into tailwind css
+Tailwind CSS does not support dynamic input. When I attempted to insert width sizes dynamically into components, as so:
+
+```ts
+className={`card w-64 sm:w-${size} bg-base-100 border-2 border-red-500`}
+```
+
+But injecting entire classes using a ternary operator controlled by a bool appears to do the trick.
+
+```ts
+className={`card w-64 ${wider ? "sm:w-96" : "sm:w-80"} bg-base-100 border-2 border-red-500`}
+```
+
+More information:
+https://stackoverflow.com/questions/71818458/why-wont-tailwind-find-my-dynamic-class
+https://stackoverflow.com/questions/71063619/react-and-tailwind-css-dynamically-generated-classes-are-not-being-applied/71068925#71068925
+

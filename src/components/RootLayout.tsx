@@ -3,6 +3,7 @@ import { NavbarMain } from './NavbarMain';
 import { Footer } from './Footer';
 import { ToastContainer } from 'react-toastify';
 import { ToastProvider } from './ToastContext';
+import { siteConfig } from '~/constants/client/site';
 
 
 interface RootLayoutProps {
@@ -16,10 +17,11 @@ function RootLayout({ children }: RootLayoutProps) {
         <div className="flex flex-col">
             <ToastProvider>
                 <NavbarMain />
-                    <main className="flex flex-col min-h-screen items-center bg-gradient-to-b from-[#e2e8f0] to-[#334155]">
-                        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-8">
-                            {children}
-                        </div>
+                    <main className={`flex flex-col min-h-screen items-center ${siteConfig.colors.main}`}>
+                        {children}
+                        {/* <div className="container flex flex-col items-center justify-center gap-12 px-4 py-8">
+                            
+                        </div> */}
                     </main>
                 <Footer />
             </ToastProvider>

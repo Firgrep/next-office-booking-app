@@ -2,7 +2,6 @@
 // * Enums must be explicitly export and imported where used.
 // TypeScript will not throw warnings when export/import are removed,
 // but app will crash in runtime.
-// TODO change to const enum
 //
 
 export enum SubTier {

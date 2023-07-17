@@ -3,3 +3,15 @@
     cursor: default;
     opacity: 0.6;
 }
+
+.spacer {
+    aspect-ratio: 900/450;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.layer1 {
+    background-image: url("../../public/svg/layer1.svg");
+}

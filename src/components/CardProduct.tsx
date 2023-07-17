@@ -1,6 +1,8 @@
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { ICON_SIZE_SM } from "~/constants/client/site"
+import { SubTier } from "~/constants/client/subscriptionTiers";
 
-type Cardsizes = "largest" | "normal";
 
 interface CardProps {
     title: string,
@@ -9,28 +11,39 @@ interface CardProps {
     bulletPoints?: string[],
     priceTag?: string,
     imgUrl?: string,
-    size?: Cardsizes,
+    wider?: boolean,
     priceDescription?: string,
+    purchaseTier?: SubTier,
+    purchaseBtnDescription?: string,
 }
 
-export const Card: React.FC<CardProps> = ({
+export const CardProduct: React.FC<CardProps> = ({
     title, 
     badgeText, 
     description, 
     bulletPoints = [], 
     priceTag,
     imgUrl,
-    size = "normal",
+    wider,
     priceDescription = "Billed monthly. Cancel anytime.",
+    purchaseTier,
+    purchaseBtnDescription = "Buy Now",
 }) => {
-    let widthNumber = 80;
+    const { data: session } = useSession();
+    const router = useRouter();
 
-    if (size === "largest") {
-        widthNumber = 96;
+    // To make it a bit easier, the user is sent to the billing page (if logged)
+    // or to the login page.
+    const purchaseHandler = () => {
+        if (session) {
+            router.push("/account/billing")
+        } else {
+            router.push("/login")
+        }
     }
-
+    // ${size}
     return (
-        <div className={`card w-64 sm:w-${widthNumber} bg-base-100 border-2 border-red-500 shadow-[0px_0px_24px_8px_rgba(255,_215,_0,_0.4)]`}>
+        <div className={`card w-64 ${wider ? "sm:w-96" : "sm:w-80"} bg-base-100 border-2 border-red-500 shadow-[0px_0px_24px_8px_rgba(255,_215,_0,_0.4)]`}>
             {imgUrl && <figure><img src={imgUrl} alt="conference room"></img></figure>}
             <div className="card-body">
                 <h2 className="card-title grow-0">
@@ -59,7 +72,10 @@ export const Card: React.FC<CardProps> = ({
                     <p className="text-sm text-gray-500 mt-2">{priceDescription}</p>
                 </div>}
                 <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Buy Now</button>
+                    <button 
+                        className="btn btn-primary"
+                        onClick={purchaseHandler}
+                    >{purchaseBtnDescription}</button>
                 </div>
             </div>
         </div>

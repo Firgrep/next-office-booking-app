@@ -5,19 +5,19 @@ import { Alert } from "~/components/Alert";
 import RootLayout from "~/components/RootLayout";
 import { siteConfig } from "~/constants/client/site";
 import { Fade } from "react-awesome-reveal";
-import { Card } from "~/components/Card";
+import { CardProduct } from "~/components/CardProduct";
 
 
 const Pricing: NextPageWithLayout = () => {
 
   return (
-    <>
+    <div className="container flex flex-col items-center justify-center gap-12 px-4 py-8">
         <Head>
             <title>Pricing</title>
             <meta name="description" content="// TODO" />
             <link rel="icon" href="/favicon.ico" />
         </Head>
-
+                        
         <div className="bg-gradient-to-b from-blue-700 from-10% via-sky-500 via-30% via-emerald-500 to-75% rounded-t-2xl">
             <div className="flex flex-col justify-center items-center">
                 <p className="mt-20 text-yellow-500 text-md">Pricing Plans</p>
@@ -31,14 +31,14 @@ const Pricing: NextPageWithLayout = () => {
                         delay={500}
                         triggerOnce={true}
                     >
-                        <Card 
+                        <CardProduct 
                             title="PRO Plan"
                             description="For serious office workers"
                             imgUrl={siteConfig.imgUrls.conferenceRoom}
                             badgeText="BEST DEAL"
                             bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
                             priceTag="30"
-                            size="largest"
+                            wider={true}
                         />
                     </Fade>
                 </div>
@@ -51,12 +51,12 @@ const Pricing: NextPageWithLayout = () => {
                         triggerOnce={true}
                         className="flex grow items-stretch justify-center"
                     >
-                        <Card 
+                        <CardProduct 
                             title="Conference+ Plan"
                             description="For serious office workers"
                             imgUrl={siteConfig.imgUrls.conferenceRoom}
                             bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
-                            priceTag="30"
+                            priceTag="25"
                         />
                     </Fade>
                     <Fade
@@ -64,12 +64,12 @@ const Pricing: NextPageWithLayout = () => {
                         triggerOnce={true}
                         className="flex grow items-stretch justify-center"
                     >
-                        <Card 
+                        <CardProduct 
                             title="Phone Booth+ Plan"
                             description="For serious office workers"
                             imgUrl={siteConfig.imgUrls.conferenceRoom}
                             bulletPoints={["For hardworking workers only!", "Mega ez!"]}
-                            priceTag="30"
+                            priceTag="25"
                         />
                     </Fade>
                     <Fade
@@ -77,12 +77,12 @@ const Pricing: NextPageWithLayout = () => {
                         triggerOnce={true}
                         className="flex grow items-stretch justify-center"
                     >
-                        <Card 
+                        <CardProduct 
                             title="Basic Plan"
                             description="For serious office workers"
                             imgUrl={siteConfig.imgUrls.conferenceRoom}
                             bulletPoints={["For hardworking workers only!", "Mega ez!"]}
-                            priceTag="30"
+                            priceTag="10"
                         />
                     </Fade>
                     <Fade
@@ -90,13 +90,14 @@ const Pricing: NextPageWithLayout = () => {
                         triggerOnce={true}
                         className="flex grow items-stretch justify-center"
                     >
-                        <Card 
+                        <CardProduct 
                             title="FlexPay Plan"
-                            description="For the most flexible office workers"
+                            description="Most flexible workers"
                             imgUrl={siteConfig.imgUrls.conferenceRoom}
                             bulletPoints={["Purchase only what you need!", "Mega ez!"]}
                             priceTag="0"
                             priceDescription="Individual purchases."
+                            purchaseBtnDescription="Sign Up"
                         />
                     </Fade>
                 </div>
@@ -106,15 +107,14 @@ const Pricing: NextPageWithLayout = () => {
             </div>
             
         </div>
-        <div style={{height: "1500px"}}></div>
+        <div style={{height: "500px"}}></div>
         
         
 
         
 
 
-        
-        </>
+        </div>
     );
 };
 
