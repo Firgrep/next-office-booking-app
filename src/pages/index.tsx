@@ -5,6 +5,8 @@ import { Alert } from "~/components/Alert";
 import RootLayout from "~/components/RootLayout";
 import { type GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
+import { siteConfig } from "~/constants/client/site";
+import Image from 'next/image'
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -26,19 +28,76 @@ const Home: NextPageWithLayout = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="spacer layer1">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-32">
-          <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
-            The <span className="text-sky-200">Rokni Office</span> App
+        <div className="container flex flex-col items-center justify-center gap-12 px-4 pt-16 md:pt-32">
+          <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-[5rem]">
+            The <span className="text-sky-200">Modern Office</span> App
           </h1>
+          <div className="flex flex-col justify-center items-center spacer layer3 rounded-b-2xl -translate-y-32">
+            <h1 className="text-white text-3xl md:text-[4rem] font-extrabold translate-y-10 md:font-extrabold translate-y-28">Looking for Office Space?</h1>
+            <div className="translate-y-20 flex gap-12 md:gap-24 md:translate-y-36 md:text-2xl text-lg text-violet-800">
+              <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Central</p>
+              <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Flexible</p>
+              <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Convenient</p>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div className="spacer layer4 flex flex-col justify-center items-center">
+        <div className="flex container" style={{transform: "rotateX(180deg)"}}>
+          <div className="bg-white shadow-xl rounded-md p-4">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+          </div>
+          <div>
+            
+          </div>
+        </div>
+          
+        
+
+      </div>
+
+      {/* <div className="custom-shape-divider-bottom-1689603675">
+          <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" className="shape-fill"></path>
+          </svg>
+          
+        </div> */}
+
+
+      <div className="w-full bg-blue-700">
+        <div className="h-300 container">
+          <Alert text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
+        </div>
+      </div>
+
+      <div className="custom-shape-divider-top-1689603545">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" className="shape-fill"></path>
+          <path d="M1200 0L0 103.52V120H1200V0z" fill="#334155"></path>    
+        </svg>
+      </div>
+
+      <div className="w-full bg-slate-700">
+        <div className="h-300 container">
+          <Alert text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
+        </div>
+      </div>
+
+      <div className="custom-shape-divider-top-1689603991">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" className="shape-fill"></path>
+        </svg>
+      </div>  
+      
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-8">
         <Alert text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
-                            
+                       
       </div>
 
 
-      
+      <div className="spacer layer2"></div>
     </>
   );
 };

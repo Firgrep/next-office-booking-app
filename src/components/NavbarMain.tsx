@@ -10,15 +10,15 @@ export const NavbarMain: React.FC = () => {
         <header className={`${siteConfig.colors.nav}`}>
             <div className="container">
                 <div className="flex h-20 items-center justify-between py-6">
-                    <div className="flex gap-6 md:gap-10">
+                    <div className="flex gap-6 md:gap-10 text-xl font-bold">
                         <Link href="/">
-                            <p>LOGO</p>
+                            <p className="bg-white rounded-full px-2">LOGO</p>
                         </Link>
                         <Link href="/">
-                            <p className="text-white font-bold">Home</p>
+                            <p className="text-white">Home</p>
                         </Link>
                         <Link href="/pricing">
-                            <p className="text-white font-bold">Pricing</p>
+                            <p className="text-white">Pricing</p>
                         </Link>
                     </div>
                     <nav className="flex gap-6 items-center">
