@@ -58,7 +58,7 @@ export const UserBookings: React.FC = () => {
     if(userBookingsData && userBookingsData.length === 0) {
         return(
             <div>
-                <Alert text={"You currently have no future bookings. Get started by going to the booking page."}/>
+                <Alert dark={true} text={"ℹ️ You currently have no future bookings. Get started by going to the booking page."}/>
                 <div className="flex justify-center p-4">
                     <Link href="/account/booking"><button className="btn">Go to Booking</button></Link>
                 </div>

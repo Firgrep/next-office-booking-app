@@ -24,7 +24,7 @@ const Pricing: NextPageWithLayout = () => {
                 <h1 className="mt-10 px-4 text-2xl font-bold tracking-tight text-slate-100 leading-loose sm:text-[3rem]">
                     Invest in fuss-free, <span className="text-slate-800 rounded-md bg-gradient-to-r from-pink-500 to-yellow-500 px-2 pb-1">quality</span> office space
                 </h1>
-                <p className="text-lg text-slate-300 px-4">Need a place to work? A space to hold a meeting? Don't worry, {siteConfig.companyName} has got you covered!</p>
+                <p className="text-lg text-slate-300 px-4">Need a place to work? A space to hold a meeting? Don&apos;t worry, {siteConfig.companyName} has got you covered!</p>
                 <div className="mt-16 mb-32 flex flex-col justify-center items-center">
                     {/* Card */}
                     <Fade
@@ -34,10 +34,10 @@ const Pricing: NextPageWithLayout = () => {
                         <CardProduct 
                             title="PRO Plan"
                             description="For serious office workers"
-                            imgUrl={siteConfig.imgUrls.conferenceRoom}
+                            imgUrl={siteConfig.imgUrls.businessPeople}
                             badgeText="BEST DEAL"
                             bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
-                            priceTag="30"
+                            priceTag={siteConfig.price.subscriptions.pro}
                             wider={true}
                         />
                     </Fade>
@@ -52,11 +52,11 @@ const Pricing: NextPageWithLayout = () => {
                         className="flex grow items-stretch justify-center"
                     >
                         <CardProduct 
-                            title="Conference+ Plan"
+                            title="+Conference Plan"
                             description="For serious office workers"
                             imgUrl={siteConfig.imgUrls.conferenceRoom}
                             bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
-                            priceTag="25"
+                            priceTag={siteConfig.price.subscriptions.plusConference}
                         />
                     </Fade>
                     <Fade
@@ -65,11 +65,11 @@ const Pricing: NextPageWithLayout = () => {
                         className="flex grow items-stretch justify-center"
                     >
                         <CardProduct 
-                            title="Phone Booth+ Plan"
+                            title="+Phone Plan"
                             description="For serious office workers"
                             imgUrl={siteConfig.imgUrls.conferenceRoom}
                             bulletPoints={["For hardworking workers only!", "Mega ez!"]}
-                            priceTag="25"
+                            priceTag={siteConfig.price.subscriptions.plusPhone}
                         />
                     </Fade>
                     <Fade
@@ -82,7 +82,7 @@ const Pricing: NextPageWithLayout = () => {
                             description="For serious office workers"
                             imgUrl={siteConfig.imgUrls.conferenceRoom}
                             bulletPoints={["For hardworking workers only!", "Mega ez!"]}
-                            priceTag="10"
+                            priceTag={siteConfig.price.subscriptions.basic}
                         />
                     </Fade>
                     <Fade
@@ -95,7 +95,7 @@ const Pricing: NextPageWithLayout = () => {
                             description="Most flexible workers"
                             imgUrl={siteConfig.imgUrls.conferenceRoom}
                             bulletPoints={["Purchase only what you need!", "Mega ez!"]}
-                            priceTag="0"
+                            priceTag={siteConfig.price.subscriptions.flexPay}
                             priceDescription="Individual purchases."
                             purchaseBtnDescription="Sign Up"
                         />

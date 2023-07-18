@@ -231,7 +231,7 @@ export const Booking: React.FC = () => {
             {(
                 date.dateTime
             ) ? (
-                <div className="flex flex-col justify-center items-center mt-5 min-h-[200px] w-full">
+                <div className="flex flex-col justify-center items-center mt-5 h-64 min-h-[200px] w-full">
                     <p className="bg-gray-100 p-5 m-5 text-center">
                         You have chosen a {rooms && rooms?.find(roomToCheck => roomToCheck.id === room.roomId)?.interval || <span>Error_in_booking_comp</span>}-min booking at the time 
                         <br></br> 
@@ -256,8 +256,8 @@ export const Booking: React.FC = () => {
                 (
                     date.justDate
                 ) ? (
-                    <div className="h-350">
-                        <p className="text-xl">🕒 Now pick the time!</p>
+                    <div className="h-64 mt-5">
+                        <p className="text-xl p-4">🕒 Now pick the time!</p>
                     </div>
                 ) : (
                     null

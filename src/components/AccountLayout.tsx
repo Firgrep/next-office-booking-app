@@ -12,12 +12,12 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
     const router = useRouter();
 
     return(
-        <div className="container grid flex-1 gap-12 md:grid-cols-[200px_1fr]">
+        <div className="container grid flex-1 gap-12 pt-12 md:grid-cols-[200px_1fr]">
             <aside className="hidden w-[200px] flex-col md:flex">
                 <ul className="flex flex-col gap-4">
                     <li>
                         <Link href="/account">
-                            <button className={`btn btn-block no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account" ? "btn-active" : ""}`}>
+                            <button className={`btn btn-block shadow-lg no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account" ? "btn-active" : ""}`}>
                                 <img 
                                     src="/svg/home-svgrepo-com.svg" 
                                     alt="home icon"
@@ -29,7 +29,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                     </li>
                     <li>
                         <Link href="/account/booking">
-                            <button className={`btn btn-block no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/booking" ? "btn-active" : ""}`}>
+                            <button className={`btn btn-block shadow-md no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/booking" ? "btn-active" : ""}`}>
                                 <img 
                                     src="/svg/calendar-new-svgrepo-com.svg" 
                                     alt="calendar icon"
@@ -41,7 +41,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                     </li>
                     <li>
                         <Link href="/account/billing">
-                            <button className={`btn btn-block no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/billing" ? "btn-active" : ""}`}>
+                            <button className={`btn btn-block shadow-lg no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/billing" ? "btn-active" : ""}`}>
                                 <img 
                                     src="/svg/file-invoice-dollar-solid-svgrepo-com.svg" 
                                     alt="billing icon"
@@ -53,7 +53,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                     </li>
                     <li>
                         <Link href="/account/settings">
-                            <button className={`btn btn-block no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/settings" ? "btn-active" : ""}`}>
+                            <button className={`btn btn-block shadow-md no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/settings" ? "btn-active" : ""}`}>
                                 <img 
                                     src="/svg/settings-2-svgrepo-com.svg" 
                                     alt="settings icon"

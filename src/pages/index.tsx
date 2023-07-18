@@ -6,7 +6,6 @@ import RootLayout from "~/components/RootLayout";
 import { type GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
 import { siteConfig } from "~/constants/client/site";
-import Image from 'next/image'
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -19,6 +18,19 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 const Home: NextPageWithLayout = () => {
+
+  // interface LoaderProps {
+  //   src: string
+  // }
+  // const loaderProp = ({ src }: LoaderProps) => {
+  //   return src;
+  // }
+  // <Image 
+  //   src={siteConfig.imgUrls.conferenceRoom}
+  //   alt="conference room image"
+  //   fill={true}
+  //   loader={loaderProp}
+  // /> 
 
   return (
     <>
@@ -34,7 +46,7 @@ const Home: NextPageWithLayout = () => {
           </h1>
           <div className="flex flex-col justify-center items-center spacer layer3 rounded-b-2xl -translate-y-32">
             <h1 className="text-white text-3xl md:text-[4rem] font-extrabold translate-y-10 md:font-extrabold translate-y-28">Looking for Office Space?</h1>
-            <div className="translate-y-20 flex gap-12 md:gap-24 md:translate-y-36 md:text-2xl text-lg text-violet-800">
+            <div className="translate-y-32 flex gap-12 md:gap-24 md:translate-y-36 md:text-2xl text-lg text-violet-800">
               <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Central</p>
               <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Flexible</p>
               <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Convenient</p>
@@ -44,18 +56,19 @@ const Home: NextPageWithLayout = () => {
       </div>
 
       <div className="spacer layer4 flex flex-col justify-center items-center">
-        <div className="flex container" style={{transform: "rotateX(180deg)"}}>
+        <div className="flex flex-col md:flex-row items-center justify-center container gap-16" style={{transform: "rotateX(180deg)"}}>
           <div className="bg-white shadow-xl rounded-md p-4">
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
           </div>
-          <div>
-            
+          <div className="w-[20rem] md:w-[200rem]">
+            <img 
+              src={siteConfig.imgUrls.conferenceRoom}
+              alt="conference room image"
+              className="object-cover w-full h-auto rounded-2xl shadow-xl"
+            /> 
           </div>
+           
         </div>
-          
-        
-
       </div>
 
       {/* <div className="custom-shape-divider-bottom-1689603675">

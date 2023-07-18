@@ -36,9 +36,9 @@ export const CardProduct: React.FC<CardProps> = ({
     // or to the login page.
     const purchaseHandler = () => {
         if (session) {
-            router.push("/account/billing")
+            void router.push("/account/billing")
         } else {
-            router.push("/login")
+            void router.push("/login")
         }
     }
     // ${size}

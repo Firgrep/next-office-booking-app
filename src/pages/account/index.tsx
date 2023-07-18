@@ -29,7 +29,15 @@ const Account: NextPageWithLayout = () => {
 
     return(
         <>
-            {session.data && session.data.user.name && <p className="text-3xl text-white font-medium">Welcome {session.data.user.name}</p>}
+            <div className="flex w-full flex-start flex-col">
+                <h2 className="text-4xl font-bold text-slate-800">Dashboard</h2>
+                <p className="text-xl text-slate-500">View and manage your bookings.</p>
+            </div>
+            {session.data && 
+            session.data.user.name && 
+            <p className="text-3xl text-slate-800 font-medium">
+                Welcome {session.data.user.name}
+            </p>}
             <UserBookings />
         </>
     )

@@ -197,8 +197,8 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                         ))}
                     </div>
                 ) : (
-                    <div className="h-200">
-                        <p className="text-xl">📅 Then select the date!</p>
+                    <div className="h-[30rem]">
+                        <p className="text-xl p-4">📅 Then select the date!</p>
                     </div>
                 )}
             </div>

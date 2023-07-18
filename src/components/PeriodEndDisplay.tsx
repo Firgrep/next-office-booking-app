@@ -8,7 +8,7 @@ interface PeriodEndDisplayProps {
 export const PeriodEndDisplay: React.FC<PeriodEndDisplayProps> = ({isCanceled, stripeCurrentPeriodEnd}) => {
 
     return (
-        <p className="rounded-full text-xs font-medium">
+        <p className="rounded-full text-md text-slate-800 font-medium ml-8">
         {isCanceled 
             ? "Your plan will be canceled on "
             : "Your plan renews on "}
