@@ -30,8 +30,8 @@ const Account: NextPageWithLayout = () => {
     return(
         <>
             <div className="flex w-full flex-start flex-col">
-                <h2 className="text-4xl font-bold text-slate-800">Dashboard</h2>
-                <p className="text-xl text-slate-500">View and manage your bookings.</p>
+                <h2 className="text-4xl font-bold text-custom-black">Dashboard</h2>
+                <p className="text-xl text-custom-brown">View and manage your bookings.</p>
             </div>
             {session.data && 
             session.data.user.name && 

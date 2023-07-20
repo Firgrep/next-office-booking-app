@@ -10,12 +10,32 @@ export default {
         "2xl": "1400px",
       },
     },
-    extend: {},
+    extend: {
+      colors: {
+        "custom-black": "#0a1121",
+        "custom-brown": "#863a12",
+        "custom-pink": "#f68961",
+        "custom-yellow": "#febe6b",
+        "custom-lightpink": "#ffc9a7",
+        "custom-gray": "#efefe9",
+      }
+    },
   },
   plugins: [
     require("daisyui"),
   ],
   daisyui: {
     logs: false,
+    themes: [
+      {
+        rokni: {
+          "primary": "#febe6b",
+          "secondary": "#ffc9a7",
+          "accent": "#f68961",
+          "neutral": "#efefe9",
+          "base-100": "#ffffff",
+        }
+      }
+    ],
   }
 } satisfies Config;

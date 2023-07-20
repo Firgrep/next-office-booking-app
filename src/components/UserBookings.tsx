@@ -60,7 +60,7 @@ export const UserBookings: React.FC = () => {
             <div>
                 <Alert dark={true} text={"ℹ️ You currently have no future bookings. Get started by going to the booking page."}/>
                 <div className="flex justify-center p-4">
-                    <Link href="/account/booking"><button className="btn">Go to Booking</button></Link>
+                    <Link href="/account/booking"><button className="btn btn-primary">Go to Booking</button></Link>
                 </div>
             </div>
         )

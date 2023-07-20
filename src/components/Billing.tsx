@@ -46,8 +46,8 @@ export const Billing: React.FC<BillingProps> = ({
     const profileMainBox = "w-full"
     const profileHeader = "border-2 border-dotted border-slate-600 p-4 rounded-xl"
     const subPlanTitle = "text-xl font-medium text-slate-800"
-    const subPlanTitleFragment = "rounded-md bg-gradient-to-r from-sky-300 to-violet-300 px-2 pb-1"
-    const subPlanDescription = "mt-2 text-slate-500 text-lg"
+    const subPlanTitleFragment = "rounded-md bg-gradient-to-r from-custom-lightpink to-violet-300 px-2 pb-1"
+    const subPlanDescription = "mt-2 text-custom-brown text-lg"
     const profileHeaderInterior = "flex mt-4 justify-between items-end"
 
     const profileSecondBox = "mt-12 mb-64 flex flex-col w-full gap-8"
@@ -224,10 +224,23 @@ export const Billing: React.FC<BillingProps> = ({
 
                         <div className={upgradeCardToPro}>
                             <h2 className={upgradeCardTitle}>{upgradeCardTitleToPro}
-                                <button 
-                                    className="ml-2 badge badge-info"
-                                    // onClick={() => dialog41.show()}
-                                >Info</button>
+                            <div className="dropdown dropdown-start dropdown-hover dropdown-right">
+                                <label tabIndex={0} className="ml-2 btn btn-circle btn-ghost btn-xs text-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </label>
+                                <div tabIndex={0} className="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
+                                    <CardProduct 
+                                        title="PRO Plan"
+                                        description="For serious office workers"
+                                        imgUrl={siteConfig.imgUrls.businessPeople}
+                                        badgeText="BEST DEAL"
+                                        bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
+                                        priceTag={siteConfig.price.subscriptions.pro}
+                                        wider={true}
+                                        active={false}
+                                    />
+                                </div>
+                            </div>
                             </h2>
                             <p className={upgradeCardDescription}>{upgradeCardDescriptionToPro}</p>
                             <BtnUpdateSubscription

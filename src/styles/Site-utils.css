@@ -5,7 +5,7 @@
 }
 
 .spacer {
-    aspect-ratio: 900/450;
+    aspect-ratio: 900/400;
     width: 100%;
     background-repeat: no-repeat;
     background-position: center;
@@ -13,15 +13,15 @@
 }
 
 .layer1 {
-    background-image: url("../../public/svg/layer1.svg");
+    background-image: url("../../public/static/svg/layer1.svg");
 }
 
 .layer2 {
-    background-image: url("../../public/svg/layer2.svg");
+    background-image: url("../../public/static/svg/layer2.svg");
 }
 
 .layer3 {
-    background-image: url("../../public/svg/layer3.svg");
+    background-image: url("../../public/static/svg/layer3.svg");
 }
 
 .layer4 {
@@ -29,7 +29,7 @@
     height: 500px;
     transform: rotateX(180deg);
     overflow: hidden;
-    background-image: url("../../public/svg/layerblue1.svg");
+    background-image: url("../../public/static/svg/layerblue1.svg");
 }
 
 .custom-shape-divider-top-1689603545 {

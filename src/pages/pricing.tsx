@@ -18,13 +18,13 @@ const Pricing: NextPageWithLayout = () => {
             <link rel="icon" href="/favicon.ico" />
         </Head>
                         
-        <div className="bg-gradient-to-b from-blue-700 from-10% via-sky-500 via-30% via-emerald-500 to-75% rounded-t-2xl">
+        <div className="bg-gradient-to-b from-custom-black from-10% via-custom-brown via-30% via-custom-yellow to-75% rounded-t-2xl">
             <div className="flex flex-col justify-center items-center">
-                <p className="mt-20 text-sky-200 text-md">Pricing Plans</p>
+                <p className="mt-20 text-custom-pink text-md">Pricing Plans</p>
                 <h1 className="mt-10 px-4 text-2xl font-bold tracking-tight text-slate-100 leading-loose sm:text-[3rem]">
                     Invest in fuss-free, <span className="text-slate-800 rounded-md bg-gradient-to-r from-pink-500 to-yellow-500 px-2 pb-1">quality</span> office space
                 </h1>
-                <p className="text-lg text-slate-300 px-4">Need a place to work? A space to hold a meeting? Don&apos;t worry, {siteConfig.companyName} has got you covered!</p>
+                <p className="text-lg text-custom-lightpink px-4">Need a place to work? A space to hold a meeting? Don&apos;t worry, {siteConfig.companyName} has got you covered!</p>
                 <div className="mt-16 mb-32 flex flex-col justify-center items-center">
                     {/* Card */}
                     <Fade
@@ -43,7 +43,7 @@ const Pricing: NextPageWithLayout = () => {
                     </Fade>
                 </div>
                 <div className="p-8 mb-16">
-                    <Alert text="Looking for something else? We have extensively tailored our offerings to fit exactly what you need." />
+                    <Alert dark={true} text="Looking for something else? We have extensively tailored our offerings to fit exactly what you need." />
                 </div>
                 <div className="flex flex-wrap gap-8 mb-36">
                     <Fade

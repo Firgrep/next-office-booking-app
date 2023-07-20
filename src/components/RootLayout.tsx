@@ -14,7 +14,7 @@ interface RootLayoutProps {
 
 function RootLayout({ children }: RootLayoutProps) {
     return (
-        <div className="flex flex-col">
+        <div data-theme="rokni" className="flex flex-col">
             <ToastProvider>
                 <NavbarMain />
                     <main className={`flex flex-col min-h-screen items-center ${siteConfig.colors.main}`}>

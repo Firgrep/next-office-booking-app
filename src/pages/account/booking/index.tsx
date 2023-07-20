@@ -89,8 +89,8 @@ const BookingPage: NextPageWithLayout<BookingPageProps> = (props) => {
     return(
         <>
             <div className="flex w-full flex-start flex-col">
-                <h2 className="text-4xl font-bold text-slate-800">Booking</h2>
-                <p className="text-xl text-slate-500">Create new booking.</p>
+                <h2 className="text-4xl font-bold text-custom-black">Booking</h2>
+                <p className="text-xl text-custom-brown">Create new booking.</p>
             </div>
             <Booking />
         </>

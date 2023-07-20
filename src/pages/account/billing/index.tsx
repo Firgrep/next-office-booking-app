@@ -134,8 +134,8 @@ const BillingPage: NextPageWithLayout = () => {
     return(
         <>
             <div className="flex w-full flex-start flex-col">
-                <h2 className="text-4xl font-bold text-slate-800">Billing</h2>
-                <p className="text-xl text-slate-500">Manage your billing and subscription plan.</p>
+                <h2 className="text-4xl font-bold text-custom-black">Billing</h2>
+                <p className="text-xl text-custom-brown">Manage your billing and subscription plan.</p>
             </div>
             {userSubscriptionPlan &&
             typeof isCanceled === "boolean" && (

@@ -1,7 +1,5 @@
 * build out billing page. make it nice
 
-* install git extensions 
-
 * fine-grain calendar day selection to remove those that have already passed for today
 
 * block all user interaction on billing page until update refetch completes.CHECK THIS
@@ -11,6 +9,8 @@
 * change enums to const enums in subscriptionTiers.ts
 
 * build invoice failed for subscriptions. Revert user's subscription to flexplay upon invoice failed. 
+
+* build refund for purchased bookings up until 48 hours before the meeting
 
 ## BUGS
 * app does not display bookings for today, even though they are there in db. It is Monday 30/07/2023 and it's not showing for Monday. 

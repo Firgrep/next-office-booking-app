@@ -10,17 +10,35 @@ export const NavbarMain: React.FC = () => {
         <header className={`${siteConfig.colors.nav}`}>
             <div className="container">
                 <div className="flex h-20 items-center justify-between py-6">
-                    <div className="flex gap-6 md:gap-10 text-xl font-bold">
+                    {/* Mobile Menu */}
+                    <div className={`md:hidden ${siteConfig.colors.navText}`}>
+                        <div className="dropdown dropdown-bottom dropdown-start">
+                            <label tabIndex={1} className="btn btn-ghost btn-circle">
+                                <div className="w-12 rounded-full">
+                                    <img src="/static/svg/menu.svg" alt=""/>
+                                </div>
+                            </label>
+                            <ul tabIndex={1} className="menu dropdown-content z-[1] p-2 shadow bg-custom-gray w-52 rounded-sm drop-shadow-2xl text-custom-black font-semibold">
+                                <li><Link href="/">Home</Link></li> 
+                                <li><Link href="/pricing">Booking</Link></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* Desktop Menu */}
+                    <div className={`hidden md:flex gap-6 md:gap-10 text-xl ${siteConfig.colors.navText} font-bold`}>
                         <Link href="/">
-                            <p className="bg-white rounded-full px-2">LOGO</p>
+                            <p className="bg-white text-black rounded-full px-2">LOGO</p>
                         </Link>
                         <Link href="/">
-                            <p className="text-white">Home</p>
+                            <p>Home</p>
                         </Link>
                         <Link href="/pricing">
-                            <p className="text-white">Pricing</p>
+                            <p>Pricing</p>
                         </Link>
                     </div>
+
+
                     <nav className="flex gap-6 items-center">
                         {(
                             sessionData
@@ -33,7 +51,7 @@ export const NavbarMain: React.FC = () => {
                                         </div>
                                     </div>
                                 </label>
-                                <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 drop-shadow-2xl">
+                                <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-custom-gray rounded-box w-52 drop-shadow-2xl text-custom-black">
                                     <li><a className="fake-disabled text-lg pb-0">{sessionData && sessionData.user?.name}</a></li>
                                     <li><a className="fake-disabled">{sessionData && sessionData.user?.email}</a></li>
                                     <li className="border-t my-1"></li>
@@ -46,7 +64,7 @@ export const NavbarMain: React.FC = () => {
                             </div>
                         ) : (
                             <button
-                                className="btn"
+                                className="btn btn-primary"
                                 onClick={() => void signIn()}
                             >
                                 Sign In / Up

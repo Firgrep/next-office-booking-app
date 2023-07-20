@@ -19,7 +19,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                         <Link href="/account">
                             <button className={`btn btn-block shadow-lg no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account" ? "btn-active" : ""}`}>
                                 <img 
-                                    src="/svg/home-svgrepo-com.svg" 
+                                    src="/static/svg/home-svgrepo-com.svg" 
                                     alt="home icon"
                                     style={{height: `${ICON_SIZE_SM}px`, width: `${ICON_SIZE_SM}px`}}
                                 ></img>
@@ -31,7 +31,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                         <Link href="/account/booking">
                             <button className={`btn btn-block shadow-md no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/booking" ? "btn-active" : ""}`}>
                                 <img 
-                                    src="/svg/calendar-new-svgrepo-com.svg" 
+                                    src="/static/svg/calendar-new-svgrepo-com.svg" 
                                     alt="calendar icon"
                                     style={{height: `${ICON_SIZE_SM}px`, width: `${ICON_SIZE_SM}px`}}
                                 ></img>
@@ -43,7 +43,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                         <Link href="/account/billing">
                             <button className={`btn btn-block shadow-lg no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/billing" ? "btn-active" : ""}`}>
                                 <img 
-                                    src="/svg/file-invoice-dollar-solid-svgrepo-com.svg" 
+                                    src="/static/svg/file-invoice-dollar-solid-svgrepo-com.svg" 
                                     alt="billing icon"
                                     style={{height: `${ICON_SIZE_SM}px`, width: `${ICON_SIZE_SM}px`}}
                                 ></img>
@@ -55,7 +55,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                         <Link href="/account/settings">
                             <button className={`btn btn-block shadow-md no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/settings" ? "btn-active" : ""}`}>
                                 <img 
-                                    src="/svg/settings-2-svgrepo-com.svg" 
+                                    src="/static/svg/settings-2-svgrepo-com.svg" 
                                     alt="settings icon"
                                     style={{height: `${ICON_SIZE_SM}px`, width: `${ICON_SIZE_SM}px`}}
                                 ></img>
