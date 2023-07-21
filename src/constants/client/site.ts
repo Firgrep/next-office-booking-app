@@ -1,5 +1,7 @@
 export const ICON_SIZE_SM = 20; // in pixels
 
+export const REFUND_TIME_LIMIT = 172_800_000; // in milliseonds
+
 // * See tailwind.config.ts for the implementation of these colors.
 // const customBlack = "#0a1121"
 // const customBrown = "#863a12"

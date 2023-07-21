@@ -47,7 +47,7 @@ export const NavbarMain: React.FC = () => {
                                 <label tabIndex={0} className="btn btn-ghost btn-circle">
                                     <div className="avatar">
                                         <div className="w-12 rounded-full">
-                                            <img src={sessionData?.user.image ?? "/avatar_placeholder.png"} />
+                                            <img src={sessionData?.user.image ?? "/static/images/avatar_placeholder.png"} />
                                         </div>
                                     </div>
                                 </label>

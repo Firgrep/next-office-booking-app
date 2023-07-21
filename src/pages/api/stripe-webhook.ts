@@ -84,6 +84,11 @@ export default async function handler(
                         event, prisma
                     });
                     break;
+                // TODO cleanup
+                // case "charge.succeeded":
+                //     await handleChargeSucceeded({
+                //         event, prisma
+                //     });
                 default:
                     // Unexpected event type
             }

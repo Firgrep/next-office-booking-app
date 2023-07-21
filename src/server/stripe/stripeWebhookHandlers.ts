@@ -2,17 +2,17 @@ import { type PrismaClient } from "@prisma/client";
 import { type Stripe } from 'stripe';
 
 
-interface GetOrCreateStripeCustomerIdForUserObject {
-    stripe: Stripe,
-    prisma: PrismaClient,
-    userId: string,
+interface GetOrCreateStripeCustomerIdForUserProps {
+    stripe: Stripe;
+    prisma: PrismaClient;
+    userId: string;
 }
 
 export const getOrCreateStripeCustomerIdForUser = async ({
     stripe,
     prisma,
     userId,
-}: GetOrCreateStripeCustomerIdForUserObject) => {
+}: GetOrCreateStripeCustomerIdForUserProps) => {
     const user = await prisma.user.findUnique({
         where: {
             id: userId,
@@ -50,7 +50,7 @@ export const getOrCreateStripeCustomerIdForUser = async ({
     }
 };
 
-interface HandleInvoicePaidObject {
+interface HandleInvoicePaidProps {
     event: Stripe.Event;
     stripe: Stripe;
     prisma: PrismaClient;
@@ -60,7 +60,7 @@ export const handleInvoicePaid = async ({
     event,
     stripe,
     prisma,
-}: HandleInvoicePaidObject) => {
+}: HandleInvoicePaidProps) => {
     const invoice = event.data.object as Stripe.Invoice;
     const subscriptionId = invoice.subscription;
     const subscription = await stripe.subscriptions.retrieve(
@@ -78,7 +78,7 @@ export const handleInvoicePaid = async ({
     });
 };
 
-interface HandleSubscriptionCreatedOrUpdatedObject {
+interface HandleSubscriptionCreatedOrUpdatedProps {
     event: Stripe.Event;
     prisma: PrismaClient;
 }
@@ -86,7 +86,7 @@ interface HandleSubscriptionCreatedOrUpdatedObject {
 export const handleSubscriptionCreatedOrUpdated = async({
     event,
     prisma
-}: HandleSubscriptionCreatedOrUpdatedObject) => {
+}: HandleSubscriptionCreatedOrUpdatedProps) => {
     const subscription = event.data.object as Stripe.Subscription;
     const userId = subscription.metadata.userId;
 
@@ -103,7 +103,7 @@ export const handleSubscriptionCreatedOrUpdated = async({
     });
 };
 
-interface HandleSubscriptionCanceledObject {
+interface HandleSubscriptionCanceledProps {
     event: Stripe.Event;
     prisma: PrismaClient;
 }
@@ -111,7 +111,7 @@ interface HandleSubscriptionCanceledObject {
 export const handleSubscriptionCanceled = async ({
     event,
     prisma
-}: HandleSubscriptionCanceledObject) => {
+}: HandleSubscriptionCanceledProps) => {
     const subscription = event.data.object as Stripe.Subscription;
     const userId = subscription.metadata.userId;
 
@@ -127,7 +127,7 @@ export const handleSubscriptionCanceled = async ({
     });
 };
 
-interface HandleCustomerIdDeletedOject {
+interface HandleCustomerIdDeletedProps {
     event: Stripe.Event;
     prisma: PrismaClient;
 }
@@ -135,7 +135,7 @@ interface HandleCustomerIdDeletedOject {
 export const handleCustomerIdDeleted = async ({
     event,
     prisma
-}: HandleCustomerIdDeletedOject) => {
+}: HandleCustomerIdDeletedProps) => {
     const subscription = event.data.object as Stripe.Subscription;
     const userId = subscription.metadata.userId;
 
@@ -149,15 +149,15 @@ export const handleCustomerIdDeleted = async ({
     });
 };
 
-interface HandleSessionExpiry {
+interface HandleSessionExpiryProps {
     event: Stripe.Event;
-    prisma: PrismaClient
+    prisma: PrismaClient;
 }
 
 export const handleSessionExpiry = async ({
     event,
     prisma
-}: HandleSessionExpiry) => {
+}: HandleSessionExpiryProps) => {
     const expiredSession = event.data.object as Stripe.Checkout.Session;
     const expiredSessionId = expiredSession.id;
 
@@ -186,17 +186,18 @@ export const handleSessionExpiry = async ({
     });
 };
 
-interface HandleSessionCompleted {
+interface HandleSessionCompletedProps {
     event: Stripe.Event;
-    prisma: PrismaClient
+    prisma: PrismaClient;
 }
 
 export const handleSessionCompleted = async ({
     event,
     prisma
-}: HandleSessionCompleted) => {
+}: HandleSessionCompletedProps) => {
     const completedSession = event.data.object as Stripe.Checkout.Session;
     const completedSessionId = completedSession.id;
+    const paymentIntentId = completedSession.payment_intent;
 
     const pendingStripeSession = await prisma.pendingStripeSession.findFirst({
         where: {
@@ -210,9 +211,39 @@ export const handleSessionCompleted = async ({
         return;
     }
 
+    // Upon successfully completed session, the payment_intent ID is retrieved from the
+    // completed session object and stored on the booking entry (using the ID from the
+    // pending stripe session entry) to use for future potential refunds. 
+    if (typeof paymentIntentId === "string") {
+        await prisma.booking.update({
+            where: {
+                id: pendingStripeSession.bookingId,
+            },
+            data: {
+                paymentIntentId: paymentIntentId,
+            }
+        });
+    }
+
+    // Finally, delete the pending stripe session entry as all business has been concluded.
     await prisma.pendingStripeSession.delete({
         where: {
             id: pendingStripeSession.id,
         },
     });
 };
+
+// TODO cleanup
+// interface HandleChargeSucceededProps {
+//     event: Stripe.Event;
+//     prisma: PrismaClient;
+// }
+
+// export const handleChargeSucceeded = async ({
+//     event,
+//     prisma,
+// }: HandleChargeSucceededProps ) => {
+//     const succeededCharge = event.data.object as Stripe.Charge;
+//     console.log("---SUCCESS CHARGE OBJECT \n", succeededCharge)
+//     return
+// }

@@ -149,21 +149,44 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                                                 </button>
                                             </div>
 
-                                            <dialog id={`modal_confirm_delete_${i}`} className="backdrop:bg-slate-600/[.5]">
+                                            <dialog id={`modal_confirm_delete_${i}`} className="bg-custom-gray backdrop:bg-slate-600/[.5]">
                                                 <form method="dialog">
                                                     <h3 className="font-bold text-lg text-center">Cancel booking?</h3>
-                                                    <p className="py-4">Confirm cancellation of
+                                                    <p className="py-4">
+                                                        Confirm cancellation of
                                                         <span className="font-medium"> {selectedRoom && selectedRoom.name} </span> 
                                                         booking on 
-                                                        <span className="font-medium"> {format(time, `EEEE, MMMM do, yyyy, kk:mm`)}</span>?</p>
+                                                        <span className="font-medium"> {format(time, `EEEE, MMMM do, yyyy, kk:mm`)}</span>
+                                                        ?
+                                                    </p>
+                                                    {/* // TODO */}
+                                                    {/* <div className="flex justify-center">
+                                                    {(
+                                                        booking.paymentIntentId &&
+                                                        (booking.startTime.getTime() - new Date().getTime()) > REFUND_TIME_LIMIT
+                                                    ) ? (
+                                                        <p className="bg-green-200 p-2 rounded-md mb-4">This cancellation will refund your purchase.</p>
+                                                    ) : (
+                                                        <p className="bg-red-200 p-2 rounded-md mb-4 max-w-md">This cancellation is within the {REFUND_TIME_LIMIT / 3_600_000}-hour window before the booking start time and can longer be refunded.</p>
+                                                    )}
+                                                    </div> */}
+
+                                                    <div className="flex justify-between">
                                                     <button
                                                         type="button"
-                                                        className="btn bg-sky-500"
+                                                        className="btn btn-primary hover:bg-red-500"
                                                         onClick={() => handleDeleteBooking(time)}
                                                     >
                                                         Confirm Cancellation
                                                     </button>
-                                                    <button type="button" onClick={() => handleCloseModal(i)}>Close</button>
+                                                    <button 
+                                                        className="btn btn-secondary"
+                                                        type="button" 
+                                                        onClick={() => handleCloseModal(i)}
+                                                    >
+                                                        Close
+                                                    </button>
+                                                    </div>
                                                 </form>
                                             </dialog>
                                         </>

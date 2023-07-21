@@ -2,6 +2,7 @@
 
 import { type Booking } from "@prisma/client"
 import { format } from "date-fns";
+import { REFUND_TIME_LIMIT } from "~/constants/client/site";
 import { checkWhatRoom } from "~/utils/utils";
 
 
@@ -49,15 +50,15 @@ export const SingleBookingCard: React.FC<SingleBookingCardProps> = ({booking, ha
 
     return(
         <div>
-            <div className="flex bg-gradient-to-r from-purple-500 to-pink-500 rounded-md p-4 gap-6">
+            <div className="flex justify-between bg-gradient-to-r from-custom-yellow to-custom-pink rounded-md p-4 gap-6">
                 <p>You have a {meetingDuration}-minute booking in {roomName} at {format(booking.startTime, `EEEE, MMMM do, yyyy, kk:mm`)}</p>
                 <button 
                     type="button" 
                     onClick={() => handleOpenModal(booking.id)}
-                    className="btn btn-sm btn-neutral bg-red-500 text-black hover:bg-violet-600"
+                    className="btn btn-sm btn-primary text-black"
                 >Cancel</button>
             </div>
-            <dialog id={`modal_confirm_delete_${booking.id}`} className="backdrop:bg-slate-600/[.5]">
+            <dialog id={`modal_confirm_delete_${booking.id}`} className="bg-custom-gray backdrop:bg-slate-600/[.5]">
                 <form method="dialog">
                     <h3 className="font-bold text-lg text-center">Cancel booking?</h3>
                     <p className="py-4">
@@ -67,14 +68,34 @@ export const SingleBookingCard: React.FC<SingleBookingCardProps> = ({booking, ha
                         <span className="font-medium"> {format(booking.startTime, `EEEE, MMMM do, yyyy, kk:mm`)}</span>
                         ?
                     </p>
-                    <button
-                        type="button"
-                        className="btn bg-sky-500"
-                        onClick={() => handleDeleteBooking(booking.id, booking.userId)}
-                    >
-                        Confirm Cancellation
-                    </button>
-                    <button type="button" onClick={() => handleCloseModal(booking.id)}>Close</button>
+
+                    <div className="flex justify-center">
+                        {(
+                            booking.paymentIntentId &&
+                            (booking.startTime.getTime() - new Date().getTime()) > REFUND_TIME_LIMIT
+                        ) ? (
+                            <p className="bg-green-200 p-2 rounded-md mb-4">This cancellation will refund your purchase.</p>
+                        ) : (
+                            <p className="bg-red-200 p-2 rounded-md mb-4 max-w-md">This cancellation is within the {REFUND_TIME_LIMIT / 3_600_000}-hour window before the booking start time and can longer be refunded.</p>
+                        )}
+                    </div>
+
+                    <div className="flex justify-between">
+                        <button
+                            type="button"
+                            className="btn btn-primary hover:bg-red-500"
+                            onClick={() => handleDeleteBooking(booking.id, booking.userId)}
+                        >
+                            Confirm Cancellation
+                        </button>
+                        <button 
+                            className="btn btn-secondary"
+                            type="button" 
+                            onClick={() => handleCloseModal(booking.id)}
+                        >
+                            Close
+                        </button>
+                    </div>
                 </form>
             </dialog>
         </div>

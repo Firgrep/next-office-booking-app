@@ -68,8 +68,8 @@ export const UserBookings: React.FC = () => {
 
     return(
         <>
-            <div className="border-2 rounded-sm p-2 flex flex-col gap-2">
-                <p className="text-xl text-white">Upcoming Meetings</p>
+            <div className="border-2 border-custom-brown rounded-sm p-4 flex flex-col gap-2">
+                <p className="text-xl">Upcoming Meetings</p>
                 {userBookingsData && userBookingsData.length > 0 && userBookingsData.map(booking =>
                     <div key={booking.id}>
                         <SingleBookingCard 

@@ -237,7 +237,9 @@ export const Booking: React.FC = () => {
                         <br></br> 
                         {format(date.dateTime, `EEEE kk:mm, MMMM do, yyyy`)}
                     </p>
-                    { userSubscriptionPlan ? (
+                    {(
+                        userSubscriptionPlan
+                    ) ? (
                         <BtnBook 
                             userSubscriptionPlan={userSubscriptionPlan}
                             date={date}
