@@ -3,13 +3,13 @@ import { type Stripe } from 'stripe';
 import { type Session } from "next-auth";
 
 
-interface BaseArgs {
+interface SessionPrismaStripeProps {
     session: Session,
     prisma: PrismaClient,
     stripe: Stripe,
 }
 
-export const forceStripeSessionExpire = async ({session, prisma, stripe}: BaseArgs) => {
+export const forceStripeSessionExpire = async ({session, prisma, stripe}: SessionPrismaStripeProps) => {
     // Get pending session details from db
     const pendingStripeSession = await prisma.pendingStripeSession.findFirst({
         where: {
@@ -26,7 +26,7 @@ export const forceStripeSessionExpire = async ({session, prisma, stripe}: BaseAr
     );
 };
 
-export const createStripeSessionResume = async ({session, prisma, stripe}: BaseArgs) => {
+export const createStripeSessionResume = async ({session, prisma, stripe}: SessionPrismaStripeProps) => {
     const pendingStripeSessionRecord = await prisma.pendingStripeSession.findUnique({
         where: {
             userId: session.user.id,
@@ -52,4 +52,19 @@ export const createStripeSessionResume = async ({session, prisma, stripe}: BaseA
         url: stripeSession.url,
         cancelUrl: stripeSession.cancel_url,
     };
+}
+
+interface CreateStripeRefundProps {
+    paymentIntentId: string,
+    stripe: Stripe
+}
+export const createStripeRefund = async ({ paymentIntentId, stripe }: CreateStripeRefundProps) => {
+    try {
+        const refund = await stripe.refunds.create({
+            payment_intent: paymentIntentId
+        });
+        return refund;
+    } catch(err) {
+        if (err instanceof Error) return err.message;
+    }
 }

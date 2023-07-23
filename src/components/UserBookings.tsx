@@ -9,7 +9,7 @@ import { LoadingBars } from "./LoadingBars";
 
 
 /**
- * Container component for displaying user bookings.
+ * Container component for displaying user bookings on account dashboard.
  */
 export const UserBookings: React.FC = () => {
     const toastError = useErrorToast();

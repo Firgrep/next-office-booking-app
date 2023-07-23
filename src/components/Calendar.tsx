@@ -3,6 +3,7 @@ import ReactCalendar from 'react-calendar';
 import {add, format} from "date-fns";
 import { useSession } from 'next-auth/react';
 import { type Booking } from '@prisma/client';
+import { REFUND_TIME_LIMIT } from '~/constants/client/site';
 
 
 type calendarProps = {
@@ -49,7 +50,7 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
         }
     };
 
-    const getTimes = () => {
+    const getTimes = (): Date[] | undefined => {
         if(!date.justDate) return;
 
         const {justDate} = date;
@@ -66,8 +67,8 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
         return times;
     };
 
-    const times = getTimes();
-    
+    const times = getTimes(); // becomes defined once `date.justDate` is defined.
+
     return (
         <>
             <div>
@@ -75,7 +76,9 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                     minDate={new Date()}
                     className="REACT-CALENDAR p-2"
                     view="month"
+                    value={date.justDate} // added to reset the date whenever the user switches between already-rendered calendars
                     tileContent={({ activeStartDate, date, view }) => {
+                        // Calendar tile content display control.
                         if (view === "month") {
                             if (bookings) {
                                 const hasBooking = bookings.some(booking => 
@@ -83,7 +86,8 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                                     booking.startTime.getMonth() === date.getMonth() &&
                                     booking.startTime.getDate() === date.getDate()    
                                 );
-    
+                                
+                                // If there is booking on the day, indicate this in the UI.
                                 if (hasBooking) {
                                     return(
                                         <div className="flex justify-center">
@@ -94,6 +98,7 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                             }
                         }
 
+                        // Anything past yesterday has no indications to make in the tile content. 
                         const yesterday = new Date();
                         yesterday.setDate(yesterday.getDate() - 1); 
                         if (date < yesterday) {
@@ -102,6 +107,9 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                             )
                         }
 
+                        // TODO implement fully booked day indicator. Compare two arrays?
+
+                        // Otherwise, the day is entirely free and indicate this in the UI.
                         return(
                             <div className="flex justify-center">
                                 <div className="mt-2 bg-green-500 w-1/3">&nbsp;</div>
@@ -111,6 +119,17 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                     onClickDay={(date) => setDate((prev) => ({ ...prev, justDate: date}))}
                 />
 
+                {/*
+                    Times display kicks in once `date.justdate` has been selected and defined. It then 
+                    loops through the times array, which is an array of Date objects. Each Date object has its
+                    time checked against the time of a booking object, and if there is a match, a second check
+                    is performed to match this booking to the currently logged in user. If second check matches
+                    booking to the logged in user, the individual time display becomes interactive, if not, the
+                    individual time display is a booking that belongs to another user and no interactivity is
+                    made available. If the first check has no match, an interactive time display is rendered,
+                    which sets the hourly time, which allows the next step to render.
+                    If `date.justDate` remains undefined, a flavour text below is rendered.
+                */}
                 {(
                     date.justDate
                 ) ? (
@@ -119,15 +138,19 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                             <div 
                                 key={`time-${i}`}
                             >
+                                {/* Checking for a time match between Date and booking. */}
                                 {(bookings?.some( booking => 
                                     booking.startTime.getFullYear() === time.getFullYear() &&
                                     booking.startTime.getMonth() === time.getMonth() &&
                                     booking.startTime.getDate() === time.getDate() &&
-                                    booking.startTime.getHours() === time.getHours()) 
+                                    booking.startTime.getHours() === time.getHours() &&
+                                    booking.startTime.getMinutes() === time.getMinutes()) 
                                 ) ? (
+                                    // Second check to match booking to the logged in user.
                                     (bookings?.some( booking =>
                                         booking.userId === sessionData?.user.id)
                                     ) ? (
+                                        // Booking matches logged user and interactivity is rendered  with this time display.
                                         <>
                                             <div className="indicator">
                                                 <div className="indicator-item indicator-top">
@@ -159,38 +182,50 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                                                         <span className="font-medium"> {format(time, `EEEE, MMMM do, yyyy, kk:mm`)}</span>
                                                         ?
                                                     </p>
-                                                    {/* // TODO */}
-                                                    {/* <div className="flex justify-center">
-                                                    {(
+
+                                                    {/* 
+                                                        If booking contains a paymentIntentId, it means that it was individually purchased,
+                                                        and that therefore it can be potentially refunded upon cancellation.
+                                                    */}
+                                                    {bookings?.some(booking =>
+                                                        booking.userId === sessionData?.user.id &&
+                                                        booking.paymentIntentId) 
+                                                    &&
+                                                    <div className="flex justify-center">
+                                                    {(  
+                                                        bookings?.some(booking =>
+                                                        booking.userId === sessionData?.user.id &&
+                                                        booking.startTime.getTime() === times[i]?.getTime() &&
                                                         booking.paymentIntentId &&
-                                                        (booking.startTime.getTime() - new Date().getTime()) > REFUND_TIME_LIMIT
+                                                        (booking.startTime.getTime() - new Date().getTime()) > REFUND_TIME_LIMIT)
                                                     ) ? (
                                                         <p className="bg-green-200 p-2 rounded-md mb-4">This cancellation will refund your purchase.</p>
                                                     ) : (
                                                         <p className="bg-red-200 p-2 rounded-md mb-4 max-w-md">This cancellation is within the {REFUND_TIME_LIMIT / 3_600_000}-hour window before the booking start time and can longer be refunded.</p>
                                                     )}
-                                                    </div> */}
+                                                    </div>}
 
                                                     <div className="flex justify-between">
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-primary hover:bg-red-500"
-                                                        onClick={() => handleDeleteBooking(time)}
-                                                    >
-                                                        Confirm Cancellation
-                                                    </button>
-                                                    <button 
-                                                        className="btn btn-secondary"
-                                                        type="button" 
-                                                        onClick={() => handleCloseModal(i)}
-                                                    >
-                                                        Close
-                                                    </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-primary hover:bg-red-500"
+                                                            onClick={() => handleDeleteBooking(time)}
+                                                        >
+                                                            Confirm Cancellation
+                                                        </button>
+                                                        <button 
+                                                            className="btn btn-secondary"
+                                                            type="button" 
+                                                            onClick={() => handleCloseModal(i)}
+                                                        >
+                                                            Close
+                                                        </button>
                                                     </div>
                                                 </form>
                                             </dialog>
                                         </>
                                     ) : (
+                                        // Booking does not match logged in user, a static red time display is rendered.
                                         <button 
                                             className="flex rounded-sm bg-red-500 p-5"
                                             type="button"
@@ -200,15 +235,20 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                                         </button>
                                     )
                                 ) : (
+                                    // No booking is found that matches the time, therefore active button is rendered
+                                    // to set the new hourly time for the next step.
                                     <button className={`flex rounded-sm p-5 ${(
+                                        // This checks if the user has selected a time display, and if so, 
+                                        // should render a different set of button colors.
                                         date.dateTime?.getFullYear() === time.getFullYear() &&
                                         date.dateTime?.getMonth() === time.getMonth() &&
                                         date.dateTime?.getDate() === time.getDate() &&
-                                        date.dateTime?.getHours() === time.getHours()
+                                        date.dateTime?.getHours() === time.getHours() &&
+                                        date.dateTime?.getMinutes() === time.getMinutes()
                                         ) ? (
-                                            "bg-yellow-500 hover:bg-yellow-800"     
+                                            "bg-custom-yellow hover:bg-custom-brown"     
                                         ) : (       
-                                            "bg-gray-100 hover:bg-violet-600" 
+                                            "bg-white hover:bg-custom-pink" 
                                         )}`}
                                         type="button"
                                         onClick={() => setDate((prev) => ({ ...prev, dateTime: time }))}
@@ -220,8 +260,10 @@ export const Calendar: React.FC<calendarProps> = ({bookings, date, setDate, sele
                         ))}
                     </div>
                 ) : (
+                    // `date.justDate` remains undefined (or unselected), and therefore the follow is rendered
+                    // until the user makes a date selection on the calendar.
                     <div className="h-[30rem]">
-                        <p className="text-xl p-4">📅 Then select the date!</p>
+                        <p className="text-xl text-center p-4">📅 Then select the date!</p>
                     </div>
                 )}
             </div>

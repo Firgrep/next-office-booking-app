@@ -218,8 +218,8 @@ export const Booking: React.FC = () => {
                     handleDeleteBooking={handleDeleteBooking}
                 />
             ) : (
-                <div className="h-500">
-                    <p className="text-xl">☝️ First select the room you would like to book!</p>
+                <div className="h-[900px]">
+                    <p className="text-xl ml-10">☝️ First select the room you would like to book!</p>
                 </div>
             )}
 
@@ -232,7 +232,7 @@ export const Booking: React.FC = () => {
                 date.dateTime
             ) ? (
                 <div className="flex flex-col justify-center items-center mt-5 h-64 min-h-[200px] w-full">
-                    <p className="bg-gray-100 p-5 m-5 text-center">
+                    <p className="bg-white shadow-lg p-5 m-5 text-center">
                         You have chosen a {rooms && rooms?.find(roomToCheck => roomToCheck.id === room.roomId)?.interval || <span>Error_in_booking_comp</span>}-min booking at the time 
                         <br></br> 
                         {format(date.dateTime, `EEEE kk:mm, MMMM do, yyyy`)}
@@ -258,8 +258,8 @@ export const Booking: React.FC = () => {
                 (
                     date.justDate
                 ) ? (
-                    <div className="h-64 mt-5">
-                        <p className="text-xl p-4">🕒 Now pick the time!</p>
+                    <div className="h-64 mt-5 w-full">
+                        <p className="text-xl p-4 text-center">🕒 Now pick the time!</p>
                     </div>
                 ) : (
                     null

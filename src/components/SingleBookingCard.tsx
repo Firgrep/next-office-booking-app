@@ -69,6 +69,11 @@ export const SingleBookingCard: React.FC<SingleBookingCardProps> = ({booking, ha
                         ?
                     </p>
 
+                    {/* 
+                        If booking contains a paymentIntentId, it means that it was individually purchased,
+                        and that therefore it can be potentially refunded upon cancellation.
+                    */}
+                    {booking.paymentIntentId &&
                     <div className="flex justify-center">
                         {(
                             booking.paymentIntentId &&
@@ -78,7 +83,7 @@ export const SingleBookingCard: React.FC<SingleBookingCardProps> = ({booking, ha
                         ) : (
                             <p className="bg-red-200 p-2 rounded-md mb-4 max-w-md">This cancellation is within the {REFUND_TIME_LIMIT / 3_600_000}-hour window before the booking start time and can longer be refunded.</p>
                         )}
-                    </div>
+                    </div>}
 
                     <div className="flex justify-between">
                         <button

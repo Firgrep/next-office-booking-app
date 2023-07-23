@@ -54,3 +54,13 @@ More information:
 https://stackoverflow.com/questions/71818458/why-wont-tailwind-find-my-dynamic-class
 https://stackoverflow.com/questions/71063619/react-and-tailwind-css-dynamically-generated-classes-are-not-being-applied/71068925#71068925
 
+### Bug where display for phone booths was double
+Error was on the frontend, particularly the condition needed additional parameters, such as checking for minutes.
+
+### Bug where react-calendar would retain the previous selection after first-render when switching between rooms
+Resolved with putting the `date.justDate` state into the Calendar's `value` prop. This makes it so that when the calendar renders, it takes its inital value from the `date.justDate`, which will be reset to null upon switching rooms. 
+```ts
+<ReactCalendar
+    value={date.justDate}
+/>
+```

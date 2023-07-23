@@ -53,7 +53,7 @@ export const Billing: React.FC<BillingProps> = ({
     const profileSecondBox = "mt-12 mb-64 flex flex-col w-full gap-8"
     const upgradeCardBase = "w-full p-4 shadow-xl rounded-md"
     const upgradeCardDescription = "text-slate-300 text-xl py-2"
-    const upgradeCardTitle = "text-xl text-white"
+    const upgradeCardTitle = "text-xl text-white flex justify-between"
 
     const upgradeCardToPro = `${upgradeCardBase} bg-gradient-to-r from-slate-800 to-slate-600 hover:to-amber-500`
     const upgradeCardToPlusConference = `${upgradeCardBase} bg-gradient-to-r from-slate-600 to-slate-500 hover:to-emerald-600`
@@ -224,23 +224,23 @@ export const Billing: React.FC<BillingProps> = ({
 
                         <div className={upgradeCardToPro}>
                             <h2 className={upgradeCardTitle}>{upgradeCardTitleToPro}
-                            <div className="dropdown dropdown-start dropdown-hover dropdown-right">
-                                <label tabIndex={0} className="ml-2 btn btn-circle btn-ghost btn-xs text-info">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                </label>
-                                <div tabIndex={0} className="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
-                                    <CardProduct 
-                                        title="PRO Plan"
-                                        description="For serious office workers"
-                                        imgUrl={siteConfig.imgUrls.businessPeople}
-                                        badgeText="BEST DEAL"
-                                        bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
-                                        priceTag={siteConfig.price.subscriptions.pro}
-                                        wider={true}
-                                        active={false}
-                                    />
+                                <div className="dropdown dropdown-start dropdown-hover dropdown-right">
+                                    <label tabIndex={0} className="ml-2 btn btn-circle btn-ghost btn-xs text-info">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    </label>
+                                    <div tabIndex={0} className="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
+                                        <CardProduct 
+                                            title="PRO Plan"
+                                            description="For serious office workers"
+                                            imgUrl={siteConfig.imgUrls.businessPeople}
+                                            badgeText="BEST DEAL"
+                                            bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
+                                            priceTag={siteConfig.price.subscriptions.pro}
+                                            wider={true}
+                                            active={false}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
                             </h2>
                             <p className={upgradeCardDescription}>{upgradeCardDescriptionToPro}</p>
                             <BtnUpdateSubscription
@@ -286,10 +286,24 @@ export const Billing: React.FC<BillingProps> = ({
                 <div className={profileSecondBox}>
                     <div className={upgradeCardToPro}>
                         <h2 className={upgradeCardTitle}>{upgradeCardTitleToPro}
-                            <button 
-                                className="ml-2 badge badge-info"
-                                // onClick={() => dialog41.show()}
-                            >Info</button>
+                            <div className="dropdown dropdown-start dropdown-hover dropdown-left">
+                                <label tabIndex={0} className="ml-2 btn btn-circle btn-ghost btn-xs text-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </label>
+                                <div tabIndex={0} className="w-52 sm:w-64 card compact dropdown-content z-[1] shadow bg-transparent">
+                                    {/* //TODO fix fix fix  */}
+                                    <CardProduct 
+                                        title="PRO Plan"
+                                        description="For serious office workers"
+                                        imgUrl={siteConfig.imgUrls.businessPeople}
+                                        badgeText="BEST DEAL"
+                                        bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
+                                        priceTag={siteConfig.price.subscriptions.pro}
+                                        active={false}
+                                        wider={true}
+                                    />
+                                </div>
+                            </div>
                         </h2>
                         <p className={upgradeCardDescription}>{upgradeCardDescriptionToPro}</p>
                         <BtnSubscriptionCheckout

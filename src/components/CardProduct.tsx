@@ -45,7 +45,7 @@ export const CardProduct: React.FC<CardProps> = ({
     }
     // ${size}
     return (
-        <div className={`card w-64 ${wider ? "sm:w-96" : "sm:w-80"} bg-white border-2 border-custom-brown shadow-[0px_0px_24px_8px_rgba(254,190,_107,_0.4)]`}>
+        <div className={`card w-52 sm:w-64 ${wider ? "md:w-96" : "md:w-80"} bg-white border-2 border-custom-brown shadow-[0px_0px_24px_8px_rgba(254,190,_107,_0.4)]`}>
             {imgUrl && <figure><img src={imgUrl} alt="conference room"></img></figure>}
             <div className="card-body">
                 <h2 className="card-title grow-0">

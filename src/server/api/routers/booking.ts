@@ -1,10 +1,11 @@
 import { z } from "zod";
 import {
     createTRPCRouter,
-    publicProcedure,
     protectedProcedure
 } from "~/server/api/trpc";
 import { TRPCError } from '@trpc/server';
+import { REFUND_TIME_LIMIT_SHORTER } from "~/constants/client/site";
+import { createStripeRefund } from "~/server/stripe/stripeServerSideHandlers";
 
 export const bookingRouter = createTRPCRouter({
     getRooms: protectedProcedure.query(({ ctx }) => {
@@ -43,7 +44,8 @@ export const bookingRouter = createTRPCRouter({
         }),
     deleteBooking: protectedProcedure
         .input(z.object({ bookingId: z.string(), bookingUserId: z.string() }))
-        .mutation(({ ctx, input }) => {
+        .mutation(async ({ ctx, input }) => {
+            // TODO this check is likely a redundancy
             if (ctx.session?.user.id !== input.bookingUserId) {
                 console.log("CTX User ID does not match booking User ID");
                 throw new TRPCError({ 
@@ -51,7 +53,36 @@ export const bookingRouter = createTRPCRouter({
                     message: 'Logged user ID does not match User ID on target booking',
                 });
             }
-            return ctx.prisma.booking.delete({
+            // TODO implement refund procedure here
+            const purchasedBooking = await ctx.prisma.booking.findFirst({
+                where: {
+                    AND: [
+                        {
+                            id: input.bookingId,
+                        },
+                        {
+                            paymentIntentId: {
+                                not: {
+                                    equals: null,
+                                }
+                            }
+                        }
+                    ]
+                }
+            });
+            
+            console.log("===> PURCHASED BOOKING\n", purchasedBooking);
+            if (
+                purchasedBooking && 
+                purchasedBooking.paymentIntentId &&
+                (purchasedBooking.startTime.getTime() - new Date().getTime()) > REFUND_TIME_LIMIT_SHORTER
+            ) {
+                console.log("===> Condition fires!!");
+                const refund = await createStripeRefund({paymentIntentId: purchasedBooking.paymentIntentId, stripe: ctx.stripe});
+                console.log("==> REFUND OBJECT\n", refund);
+            }
+
+            return await ctx.prisma.booking.delete({
                 where: {
                     id: input.bookingId,
                 }
