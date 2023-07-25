@@ -10,6 +10,12 @@
 
 * build login page
 
+* When a subscription invoice fails, there is currently no interaction on the server to deal with this. The idea was to first build out the email system before implementing this route on the webhook, which itself first required a domain to be set up. 
+
+* SEO and metadata lacking.
+
+* Service contact for registered users.
+
 
 ## BUGS
 * app does not display bookings for today, even though they are there in db. It is Monday 30/07/2023 and it's not showing for Monday. 
