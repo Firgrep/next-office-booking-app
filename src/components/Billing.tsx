@@ -8,7 +8,7 @@ import { PeriodEndDisplay } from "./PeriodEndDisplay";
 import { SubTier, UpdateSubTier } from "../constants/client/subscriptionTiers";
 import { Alert } from "./Alert";
 import { CardProduct } from "./CardProduct";
-import { siteConfig } from "~/constants/client/site";
+import { cardsConfig } from "~/constants/client/cards";
 
 
 interface BillingProps extends React.HTMLAttributes<HTMLFormElement> {
@@ -16,11 +16,6 @@ interface BillingProps extends React.HTMLAttributes<HTMLFormElement> {
         isCanceled: boolean
     };
 }
-
-// interface DialogHTMLElement extends HTMLElement{
-//     show: () => void;
-//     close: () => void;
-// }
 
 /**
  * Container component for billing-related logic. Renders appropriate components based on
@@ -30,6 +25,7 @@ interface BillingProps extends React.HTMLAttributes<HTMLFormElement> {
 export const Billing: React.FC<BillingProps> = ({
     userSubscriptionPlan,
 }) => {
+    // Content for page
     const upgradeSubString = "To upgrade your subscription, please renew it first."
     const preTitleBlurb = "You are currently on the "
     const upgradeCardTitleToPro = "The Professional"
@@ -60,127 +56,244 @@ export const Billing: React.FC<BillingProps> = ({
     const upgradeCardToPlusPhone = `${upgradeCardBase} bg-gradient-to-r from-slate-600 to-slate-500 hover:to-pink-600`
     const upgradeCardToBasic = `${upgradeCardBase} bg-gradient-to-r from-slate-500 to-slate-400 hover:to-blue-600`
 
-    // const dialog41 = document.getElementById("d41") as DialogHTMLElement;
+    // The control flow is a simple if / else if / else that determines the user "profile"
+    // 
+    // |--- IF subscription-is-pro
+    // |    |--- render UI profile for pro
+    // |
+    // |--- ELSE IF subscription-is-plus-phone
+    // |    |--- render UI profile for plus-phone
+    // |
+    // |--- ELSE IF subscription-is-plus-conference
+    // |    |--- render UI profile for plus-conference
+    // |
+    // |--- ELSE IF subscription-is-basic
+    // |    |--- render UI profile for basic
+    // |
+    // |--- ELSE
+    // |    |--- render UI profile for flexpay
 
     if (userSubscriptionPlan.isPro) {
         return(
-            <>
-                <h2>{userSubscriptionPlan.name}</h2>
-                <p>{userSubscriptionPlan.description}</p>
-                <BtnManageBilling />
-                <PeriodEndDisplay 
-                    isCanceled={userSubscriptionPlan.isCanceled}
-                    stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
-                />
-                {userSubscriptionPlan.isCanceled ? (
-                    <Alert text={upgradeSubString} dark={true} />
-                ) : (
-                    <>
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toPlusConference}
-                            btnText="Downgrade to"
-                        />
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toPlusPhone}
-                            btnText="Downgrade to"
-                        />
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toBasic}
-                            btnText="Downgrade to"
-                        />
-                    </>
-                )}
-            </>
-        );
-    } else if (userSubscriptionPlan.isPlusConference) {
-        return(
-            <>
-                <h2>{userSubscriptionPlan.name}</h2>
-                <p>{userSubscriptionPlan.description}</p>
-                <BtnManageBilling />
-                <PeriodEndDisplay 
-                    isCanceled={userSubscriptionPlan.isCanceled}
-                    stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
-                />
-                {userSubscriptionPlan.isCanceled ? (
-                    <Alert text={upgradeSubString} dark={true} />
-                ) : (
-                    <>
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toPro}
-                            btnText="Upgrade to"
-                        />
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toPlusPhone}
-                            btnText="Change to"
-                        />
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toBasic}
-                            btnText="Downgrade to"
-                        />
-                    </>
-                )}
-            </>
+            <div className={profileMainBox}>
+                <div className={profileHeader}>
+                   <h2 className={subPlanTitle}>{preTitleBlurb}
+                        <span className={subPlanTitleFragment}>{userSubscriptionPlan.name}</span></h2>
+                    <p className={subPlanDescription}>{userSubscriptionPlan.description}</p>
+                    <div className={profileHeaderInterior}>
+                        <BtnManageBilling />
+                        <PeriodEndDisplay 
+                            isCanceled={userSubscriptionPlan.isCanceled}
+                            stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
+                        />  
+                    </div>
+                </div>
+
+                <div className={profileSecondBox}>
+                    {userSubscriptionPlan.isCanceled ? (
+                        <Alert text={upgradeSubString} dark={true} />
+                    ) : (
+                        <>
+                            <div className={upgradeCardToPlusConference}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusConference}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusConference}</p>
+                                <CardProduct 
+                                    data={cardsConfig.conference}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                            subTierToUpdate={UpdateSubTier.toPlusConference}
+                                            btnText="Downgrade to"
+                                        />
+                                </CardProduct>
+                            </div>
+
+                            <div className={upgradeCardToPlusPhone}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusPhone}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusPhone}</p>
+                                <CardProduct 
+                                    data={cardsConfig.phone}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toPlusPhone}
+                                        btnText="Downgrade to"
+                                    />
+                                </CardProduct>
+                            </div>
+
+                            <div className={upgradeCardToBasic}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToBasic}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToBasic}</p>
+                                <CardProduct 
+                                    data={cardsConfig.basic}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toBasic}
+                                        btnText="Downgrade to"
+                                    />
+                                </CardProduct>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
         );
     } else if (userSubscriptionPlan.isPlusPhone) {
         return(
-            <>
-                <h2>{userSubscriptionPlan.name}</h2>
-                <p>{userSubscriptionPlan.description}</p>
-                <BtnManageBilling />
-                <PeriodEndDisplay 
-                    isCanceled={userSubscriptionPlan.isCanceled}
-                    stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
-                />
-                {userSubscriptionPlan.isCanceled ? (
-                    <Alert text={upgradeSubString} dark={true} />
-                ) : (
-                    <>
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toPro}
-                            btnText="Upgrade to"
-                        />
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toPlusConference}
-                            btnText="Change to"
-                        />
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toBasic}
-                            btnText="Downgrade to"
-                        />
-                    </>
-                )}
-            </>
+            <div className={profileMainBox}>
+                <div className={profileHeader}>
+                   <h2 className={subPlanTitle}>{preTitleBlurb}
+                        <span className={subPlanTitleFragment}>{userSubscriptionPlan.name}</span></h2>
+                    <p className={subPlanDescription}>{userSubscriptionPlan.description}</p>
+                    <div className={profileHeaderInterior}>
+                        <BtnManageBilling />
+                        <PeriodEndDisplay 
+                            isCanceled={userSubscriptionPlan.isCanceled}
+                            stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
+                        />  
+                    </div>
+                </div>
+
+                <div className={profileSecondBox}>
+                    {userSubscriptionPlan.isCanceled ? (
+                        <Alert text={upgradeSubString} dark={true} />
+                    ) : (
+                        <>  
+                            <div className="flex flex-col justify-center items-center">
+                                <div className="w-64">
+                                    <Alert text="Need more? Or perhaps less? Consider updating your plan!" dark={true} />
+                                </div>
+                            </div>
+
+                            <div className={upgradeCardToPro}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToPro}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToPro}</p>
+                                <CardProduct 
+                                    data={cardsConfig.pro}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toPro}
+                                        btnText="Upgrade to"
+                                    />
+                                </CardProduct>
+                            </div>
+
+                            <div className={upgradeCardToPlusConference}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusConference}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusConference}</p>
+                                <CardProduct 
+                                    data={cardsConfig.conference}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toPlusConference}
+                                        btnText="Change to"
+                                    />
+                                </CardProduct>
+                            </div>
+
+                            <div className={upgradeCardToBasic}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToBasic}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToBasic}</p>
+                                <CardProduct 
+                                    data={cardsConfig.basic}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toBasic}
+                                        btnText="Downgrade to"
+                                    />
+                                </CardProduct>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
         );
     } else if (userSubscriptionPlan.isPlusConference) {
         return(
-            <>
-                <h2 className={subPlanTitle}>{userSubscriptionPlan.name}</h2>
-                <p>{userSubscriptionPlan.description}</p>
-                <BtnManageBilling />
-                <PeriodEndDisplay 
-                    isCanceled={userSubscriptionPlan.isCanceled}
-                    stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
-                />
-                {userSubscriptionPlan.isCanceled ? (
-                    <Alert text={upgradeSubString} dark={true} />
-                ) : (
-                    <>  
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toPro}
-                            btnText="Upgrade to"
-                        />
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toPlusPhone}
-                            btnText="Change to"
-                        />
-                        <BtnUpdateSubscription
-                            subTierToUpdate={UpdateSubTier.toBasic}
-                            btnText="Downgrade to"
-                        />
-                    </>
-                )}
-            </>
+            <div className={profileMainBox}>
+                <div className={profileHeader}>
+                   <h2 className={subPlanTitle}>{preTitleBlurb}
+                        <span className={subPlanTitleFragment}>{userSubscriptionPlan.name}</span></h2>
+                    <p className={subPlanDescription}>{userSubscriptionPlan.description}</p>
+                    <div className={profileHeaderInterior}>
+                        <BtnManageBilling />
+                        <PeriodEndDisplay 
+                            isCanceled={userSubscriptionPlan.isCanceled}
+                            stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
+                        />  
+                    </div>
+                </div>
+
+                <div className={profileSecondBox}>
+                    {userSubscriptionPlan.isCanceled ? (
+                        <Alert text={upgradeSubString} dark={true} />
+                    ) : (
+                        <>  
+                            <div className="flex flex-col justify-center items-center">
+                                <div className="w-64">
+                                    <Alert text="Need more? Or perhaps less? Consider updating your plan!" dark={true} />
+                                </div>
+                            </div>
+
+                            <div className={upgradeCardToPro}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToPro}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToPro}</p>
+                                <CardProduct 
+                                    data={cardsConfig.pro}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toPro}
+                                        btnText="Upgrade to"
+                                    />
+                                </CardProduct>
+                            </div>
+
+                            <div className={upgradeCardToPlusPhone}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusPhone}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusPhone}</p>
+                                <CardProduct 
+                                    data={cardsConfig.phone}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toPlusPhone}
+                                        btnText="Change to"
+                                    />
+                                </CardProduct>
+                            </div>
+                            
+                            <div className={upgradeCardToBasic}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToBasic}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToBasic}</p>
+                                <CardProduct 
+                                    data={cardsConfig.basic}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toBasic}
+                                        btnText="Downgrade to"
+                                    />
+                                </CardProduct>
+                            </div>
+                        </>
+                    )}
+                </div>
+            </div>
         );
     } else if (userSubscriptionPlan.isBasic) {
         return(
@@ -190,7 +303,7 @@ export const Billing: React.FC<BillingProps> = ({
                         <span className={subPlanTitleFragment}>{userSubscriptionPlan.name}</span></h2>
                     <p className={subPlanDescription}>{userSubscriptionPlan.description}</p>
                     <div className={profileHeaderInterior}>
-                       <BtnManageBilling />
+                        <BtnManageBilling />
                         <PeriodEndDisplay 
                             isCanceled={userSubscriptionPlan.isCanceled}
                             stripeCurrentPeriodEnd={userSubscriptionPlan.stripeCurrentPeriodEnd}
@@ -199,75 +312,62 @@ export const Billing: React.FC<BillingProps> = ({
                 </div>
                 
                 <div className={profileSecondBox}>
-                {userSubscriptionPlan.isCanceled ? (
-                    <Alert text={upgradeSubString} dark={true} />
-                ) : (
-                    <>  
-                        <div className="flex flex-col justify-center items-center">
-                            <div className="w-64">
-                                <Alert text="Need more? Or perhaps less? Consider updating your plan!" dark={true} />
-                            </div>
-                        </div>
-
-                        {/* <dialog id="d41" className="bg-transparent fixed  z-index-20">
-                            <CardProduct 
-                                title="PRO Plan"
-                                description="For serious office workers"
-                                imgUrl={siteConfig.imgUrls.businessPeople}
-                                badgeText="BEST DEAL"
-                                bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
-                                priceTag={siteConfig.price.subscriptions.pro}
-                                wider={true}
-                            />
-                            <button onClick={() => dialog41.close()}>Close</button>
-                        </dialog> */}
-
-                        <div className={upgradeCardToPro}>
-                            <h2 className={upgradeCardTitle}>{upgradeCardTitleToPro}
-                                <div className="dropdown dropdown-start dropdown-hover dropdown-right">
-                                    <label tabIndex={0} className="ml-2 btn btn-circle btn-ghost btn-xs text-info">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                    </label>
-                                    <div tabIndex={0} className="card compact dropdown-content z-[1] shadow bg-base-100 rounded-box w-64">
-                                        <CardProduct 
-                                            title="PRO Plan"
-                                            description="For serious office workers"
-                                            imgUrl={siteConfig.imgUrls.businessPeople}
-                                            badgeText="BEST DEAL"
-                                            bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
-                                            priceTag={siteConfig.price.subscriptions.pro}
-                                            wider={true}
-                                            active={false}
-                                        />
-                                    </div>
+                    {userSubscriptionPlan.isCanceled ? (
+                        <Alert text={upgradeSubString} dark={true} />
+                    ) : (
+                        <>  
+                            <div className="flex flex-col justify-center items-center">
+                                <div className="w-64">
+                                    <Alert text="Need more? Or perhaps less? Consider updating your plan!" dark={true} />
                                 </div>
-                            </h2>
-                            <p className={upgradeCardDescription}>{upgradeCardDescriptionToPro}</p>
-                            <BtnUpdateSubscription
-                                subTierToUpdate={UpdateSubTier.toPro}
-                                btnText="Upgrade to"
-                            />
-                        </div>
-                        
-                        <div className={upgradeCardToPlusConference}>
-                            <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusConference}</h2>
-                            <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusConference}</p>
-                            <BtnUpdateSubscription
-                                subTierToUpdate={UpdateSubTier.toPlusConference}
-                                btnText="Upgrade to"
-                            />
-                        </div>
+                            </div>
 
-                        <div className={upgradeCardToPlusPhone}>
-                            <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusPhone}</h2>
-                            <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusPhone}</p>
-                            <BtnUpdateSubscription
-                                subTierToUpdate={UpdateSubTier.toPlusPhone}
-                                btnText="Upgrade to"
-                            />
-                        </div>
-                    </>
-                )}
+                            <div className={upgradeCardToPro}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToPro}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToPro}</p>
+                                <CardProduct 
+                                    data={cardsConfig.pro}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toPro}
+                                        btnText="Upgrade to"
+                                    />
+                                </CardProduct>
+                            </div>
+                            
+                            <div className={upgradeCardToPlusConference}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusConference}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusConference}</p>
+                                <CardProduct 
+                                    data={cardsConfig.conference}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toPlusConference}
+                                        btnText="Upgrade to"
+                                    />
+                                </CardProduct>
+                            </div>
+
+                            <div className={upgradeCardToPlusPhone}>
+                                <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusPhone}</h2>
+                                <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusPhone}</p>
+                                <CardProduct 
+                                    data={cardsConfig.phone}
+                                    active={false}
+                                    wider={true}
+                                >
+                                    <BtnUpdateSubscription
+                                        subTierToUpdate={UpdateSubTier.toPlusPhone}
+                                        btnText="Upgrade to"
+                                    />
+                                </CardProduct>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         );
@@ -285,54 +385,60 @@ export const Billing: React.FC<BillingProps> = ({
 
                 <div className={profileSecondBox}>
                     <div className={upgradeCardToPro}>
-                        <h2 className={upgradeCardTitle}>{upgradeCardTitleToPro}
-                            <div className="dropdown dropdown-start dropdown-hover dropdown-left">
-                                <label tabIndex={0} className="ml-2 btn btn-circle btn-ghost btn-xs text-info">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                </label>
-                                <div tabIndex={0} className="w-52 sm:w-64 card compact dropdown-content z-[1] shadow bg-transparent">
-                                    {/* //TODO fix fix fix  */}
-                                    <CardProduct 
-                                        title="PRO Plan"
-                                        description="For serious office workers"
-                                        imgUrl={siteConfig.imgUrls.businessPeople}
-                                        badgeText="BEST DEAL"
-                                        bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
-                                        priceTag={siteConfig.price.subscriptions.pro}
-                                        active={false}
-                                        wider={true}
-                                    />
-                                </div>
-                            </div>
-                        </h2>
+                        <h2 className={upgradeCardTitle}>{upgradeCardTitleToPro}</h2>
                         <p className={upgradeCardDescription}>{upgradeCardDescriptionToPro}</p>
-                        <BtnSubscriptionCheckout
-                            subTier={SubTier.pro}
-                        />
+                        <CardProduct 
+                            data={cardsConfig.pro}
+                            active={false}
+                            wider={true}
+                        >
+                            <BtnSubscriptionCheckout
+                                subTier={SubTier.pro}
+                            />
+                        </CardProduct>
+                        
                     </div>
                     
                     <div className={upgradeCardToPlusConference}>
                         <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusConference}</h2>
                         <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusConference}</p>
-                        <BtnSubscriptionCheckout
-                            subTier={SubTier.plusConference}
-                        />
+                        <CardProduct 
+                            data={cardsConfig.conference}
+                            active={false}
+                            wider={true}
+                        >
+                            <BtnSubscriptionCheckout
+                                subTier={SubTier.plusConference}
+                            />
+                        </CardProduct>
                     </div>
 
                     <div className={upgradeCardToPlusPhone}>
                         <h2 className={upgradeCardTitle}>{upgradeCardTitleToPlusPhone}</h2>
                         <p className={upgradeCardDescription}>{upgradeCardDescriptionToPlusPhone}</p>
-                        <BtnSubscriptionCheckout
-                            subTier={SubTier.plusPhone}
-                        />
+                        <CardProduct 
+                            data={cardsConfig.phone}
+                            active={false}
+                            wider={true}
+                        >
+                            <BtnSubscriptionCheckout
+                                subTier={SubTier.plusPhone}
+                            />
+                        </CardProduct>
                     </div>
 
                     <div className={upgradeCardToBasic}>
                         <h2 className={upgradeCardTitle}>{upgradeCardTitleToBasic}</h2>
                         <p className={upgradeCardDescription}>{upgradeCardDescriptionToBasic}</p>
-                        <BtnSubscriptionCheckout
-                            subTier={SubTier.basic}
-                        />
+                        <CardProduct 
+                            data={cardsConfig.basic}
+                            active={false}
+                            wider={true}
+                        >
+                            <BtnSubscriptionCheckout
+                                subTier={SubTier.basic}
+                            />
+                        </CardProduct>
                     </div>
                 </div>
             </div>

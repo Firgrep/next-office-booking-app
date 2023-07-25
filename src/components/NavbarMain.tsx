@@ -28,7 +28,7 @@ export const NavbarMain: React.FC = () => {
                     {/* Desktop Menu */}
                     <div className={`hidden md:flex gap-6 md:gap-10 text-xl ${siteConfig.colors.navText} font-bold`}>
                         <Link href="/">
-                            <p className="bg-white text-black rounded-full px-2">LOGO</p>
+                            <p className="bg-custom-pink text-black text-xs rounded-full px-2">LO<br></br>GO</p>
                         </Link>
                         <Link href="/">
                             <p>Home</p>

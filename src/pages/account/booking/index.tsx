@@ -11,6 +11,8 @@ import { prisma } from "~/server/db";
 import { stripe } from "~/server/stripe/stripeClient";
 import { createStripeSessionResume, forceStripeSessionExpire } from "~/server/stripe/stripeServerSideHandlers";
 import Link from "next/link";
+import Head from "next/head";
+import { siteConfig } from "~/constants/client/site";
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -78,7 +80,12 @@ const BookingPage: NextPageWithLayout<BookingPageProps> = (props) => {
     // TODO create seperate component for below
     if (url && cancelUrl) {
         return(
-            <>
+            <>  
+                <Head>
+                    <title>Complete Booking?</title>
+                    <meta name="description" content={`Booking for ${siteConfig.companyName}`}/>
+                    <link rel="icon" href="/favicon.ico" />
+                </Head>
                 <p>Pending Booking Session</p>
                 <Link href={url}><button className="btn">Click to resume</button></Link>
                 <Link href={cancelUrl}><button className="btn btn-neutral">Cancel</button></Link>
@@ -88,6 +95,11 @@ const BookingPage: NextPageWithLayout<BookingPageProps> = (props) => {
 
     return(
         <>
+            <Head>
+                <title>Booking</title>
+                <meta name="description" content={`Booking for ${siteConfig.companyName}`}/>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
             <div className="flex w-full flex-start flex-col">
                 <h2 className="text-4xl font-bold text-custom-black">Booking</h2>
                 <p className="text-xl text-custom-brown">Create new booking.</p>

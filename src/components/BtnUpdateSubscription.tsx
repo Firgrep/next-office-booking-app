@@ -34,15 +34,34 @@ export const BtnUpdateSubscription: React.FC<BtnUpdateSubscriptionProps> = ({
         }
     }
 
+    let btnSubTierText = ""
+
+    switch (subTierToUpdate) {
+        case "toPro":
+            btnSubTierText = "PRO";
+            break;
+        case "toPlusConference":
+            btnSubTierText = "+Conference";
+            break;
+        case "toPlusPhone":
+            btnSubTierText = "+Phone";
+            break;
+        case "toBasic":
+            btnSubTierText = "Basic";
+            break;
+        default:
+            break;
+    }
+
     return (
         <button
-            className="btn"
+            className="btn btn-primary"
             onClick={handleClick}
             disabled={updateIsLoading || btnDisabled}
         >
             {btnDisabled 
                 ? <><span className="loading loading-bars loading-md"></span><span>&nbsp;Processing...</span></>
-                : `${btnText} ${subTierToUpdate}`}
+                : `${btnText} ${btnSubTierText}`}
         </button>
     );
 };

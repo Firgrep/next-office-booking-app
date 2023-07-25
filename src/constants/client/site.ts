@@ -12,7 +12,7 @@ export const REFUND_TIME_LIMIT_SHORTER = REFUND_TIME_LIMIT - 600_000 // minus 10
 // const customGray = "#efefe9"
 
 export const siteConfig = {
-    companyName: "Rokni Office",
+    companyName: "Pocket Office",
     webpageTagline: "The Modern Office",
     imgUrls: {
         conferenceRoom: "https://storage.cloud.google.com/rokni-office-media/conference-room.jpg?authuser=3",
@@ -36,5 +36,3 @@ export const siteConfig = {
         },
     },
 }
-
-// at end of conference room imgae ?authuser=3

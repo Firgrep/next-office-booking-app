@@ -36,7 +36,7 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <Head>
-        <title>Rokni Office</title>
+        <title>{siteConfig.companyName}</title>
         <meta name="description" content={siteConfig.webpageTagline} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -45,7 +45,7 @@ const Home: NextPageWithLayout = () => {
         <div className="container flex items-end md:items-center justify-center md:justify-start gap-12 px-4 pt-1 md:pt-2">
           <div className="bg-white rounded-md shadow-xl p-4 z-index-20 absolute w-96">
             <h1 className="text-2xl leading-normal font-bold tracking-tight text-custom-brown lg:text-[5rem]">
-              Office Labs
+              {siteConfig.companyName}
             </h1>
             <p className="text-custom-black text-lg lg:text-2xl">
               Centrally located in London. Explore memberships and move-in ready offices for individuals or companies of all sizes.
@@ -86,9 +86,9 @@ const Home: NextPageWithLayout = () => {
       </div>
 
 
-      <div className="flex flex-col justify-center items-center spacer layer3 -translate-y-32">
-        <h1 className="text-white text-3xl md:text-[4rem] font-extrabold translate-y-10 md:font-extrabold translate-y-28">Looking for Office Space?</h1>
-        <div className="translate-y-32 flex gap-12 md:gap-24 md:translate-y-36 md:text-2xl text-lg text-violet-800">
+      <div className="flex flex-col justify-center items-center spacer layer3 md:-translate-y-32 mb-32 sm:mb-16 md:mb-0">
+        <h1 className="text-white text-2xl md:text-[3rem] xl:text-[4rem] font-extrabold translate-y-10 md:font-extrabold translate-y-28">Looking for a great place to work?</h1>
+        <div className="translate-y-32 flex gap-12 md:gap-24 md:translate-y-36 md:text-2xl text-md text-custom-brown">
           <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Central</p>
           <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Flexible</p>
           <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Convenient</p>
@@ -112,41 +112,42 @@ const Home: NextPageWithLayout = () => {
         </div>
       </div>
 
-      {/* <div className="custom-shape-divider-bottom-1689603675">
-          <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-            <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" className="shape-fill"></path>
-          </svg>
-          
-        </div> */}
-
-
-      <div className="w-full bg-blue-700">
+      <div className="w-full bg-custom-yellow py-20">
         <div className="h-300 container">
-          <Alert text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
+          <Alert dark={true} text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
         </div>
       </div>
 
       <div className="custom-shape-divider-top-1689603545">
         <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
           <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" className="shape-fill"></path>
-          <path d="M1200 0L0 103.52V120H1200V0z" fill="#334155"></path>    
+          <path d="M1200 0L0 103.52V120H1200V0z" fill="#863a12"></path>    
         </svg>
       </div>
 
-      <div className="w-full bg-slate-700">
+      <div className="w-full bg-custom-brown py-20">
         <div className="h-300 container">
           <Alert text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
         </div>
       </div>
 
-      <div className="custom-shape-divider-top-1689603991">
-        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-          <path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" className="shape-fill"></path>
-        </svg>
+      <div className="spacer layer5">
+        <div className="flex flex-col md:flex-row items-center justify-center container gap-16">
+          <div className="w-[20rem] md:w-[200rem]">
+            <img 
+              src={siteConfig.imgUrls.conferenceRoom}
+              alt="conference room image"
+              className="object-cover w-full h-auto rounded-2xl shadow-xl"
+            /> 
+          </div>
+          <div className="bg-white shadow-xl rounded-md p-4">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          </div>
+        </div>
       </div>  
       
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-8">
-        <Alert text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
+      <div className="container flex flex-col items-center justify-center gap-12 px-16 py-16">
+        <Alert dark={true} text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
                        
       </div>
 

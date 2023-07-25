@@ -14,6 +14,8 @@ import {
 import { useErrorToast, useSubUpdateSuccessToast } from "~/components/ToastContext";
 import AccountLayout from "~/components/AccountLayout";
 import { LoadingBars } from "~/components/LoadingBars";
+import Head from "next/head";
+import { siteConfig } from "~/constants/client/site";
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -132,7 +134,12 @@ const BillingPage: NextPageWithLayout = () => {
     }
     
     return(
-        <>
+        <>  
+            <Head>
+                <title>Billing</title>
+                <meta name="description" content={`Booking for ${siteConfig.companyName}`}/>
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
             <div className="flex w-full flex-start flex-col">
                 <h2 className="text-4xl font-bold text-custom-black">Billing</h2>
                 <p className="text-xl text-custom-brown">Manage your billing and subscription plan.</p>

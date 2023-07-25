@@ -30,7 +30,7 @@ export const BtnSubscriptionCheckout: React.FC<BtnSubscriptionCheckoutProps> = (
 
     return(
         <button
-            className="btn btn-md bg-green-500"
+            className="btn btn-md btn-primary"
             onClick={handleClick}
             disabled={checkoutIsLoading || btnDisabled}
         >

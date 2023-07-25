@@ -6,6 +6,7 @@ import RootLayout from "~/components/RootLayout";
 import { siteConfig } from "~/constants/client/site";
 import { Fade } from "react-awesome-reveal";
 import { CardProduct } from "~/components/CardProduct";
+import { cardsConfig } from "~/constants/client/cards";
 
 
 const Pricing: NextPageWithLayout = () => {
@@ -14,7 +15,7 @@ const Pricing: NextPageWithLayout = () => {
     <div className="container flex flex-col items-center justify-center gap-12 px-4 py-8">
         <Head>
             <title>Pricing</title>
-            <meta name="description" content="// TODO" />
+            <meta name="description" content={`Pricing options for ${siteConfig.companyName}`}/>
             <link rel="icon" href="/favicon.ico" />
         </Head>
                         
@@ -32,12 +33,7 @@ const Pricing: NextPageWithLayout = () => {
                         triggerOnce={true}
                     >
                         <CardProduct 
-                            title="PRO Plan"
-                            description="For serious office workers"
-                            imgUrl={siteConfig.imgUrls.businessPeople}
-                            badgeText="BEST DEAL"
-                            bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
-                            priceTag={siteConfig.price.subscriptions.pro}
+                            data={cardsConfig.pro}
                             wider={true}
                         />
                     </Fade>
@@ -51,69 +47,39 @@ const Pricing: NextPageWithLayout = () => {
                         triggerOnce={true}
                         className="flex grow items-stretch justify-center"
                     >
-                        <CardProduct 
-                            title="+Conference Plan"
-                            description="For serious office workers"
-                            imgUrl={siteConfig.imgUrls.conferenceRoom}
-                            bulletPoints={["Superfast!", "For hardworking workers only!", "Mega ez!"]}
-                            priceTag={siteConfig.price.subscriptions.plusConference}
-                        />
+                        <CardProduct data={cardsConfig.conference} />
                     </Fade>
                     <Fade
                         delay={800}
                         triggerOnce={true}
                         className="flex grow items-stretch justify-center"
                     >
-                        <CardProduct 
-                            title="+Phone Plan"
-                            description="For serious office workers"
-                            imgUrl={siteConfig.imgUrls.conferenceRoom}
-                            bulletPoints={["For hardworking workers only!", "Mega ez!"]}
-                            priceTag={siteConfig.price.subscriptions.plusPhone}
-                        />
+                        <CardProduct data={cardsConfig.phone} />
                     </Fade>
                     <Fade
                         delay={1200}
                         triggerOnce={true}
                         className="flex grow items-stretch justify-center"
                     >
-                        <CardProduct 
-                            title="Basic Plan"
-                            description="For serious office workers"
-                            imgUrl={siteConfig.imgUrls.conferenceRoom}
-                            bulletPoints={["For hardworking workers only!", "Mega ez!"]}
-                            priceTag={siteConfig.price.subscriptions.basic}
-                        />
+                        <CardProduct data={cardsConfig.basic} />
                     </Fade>
                     <Fade
                         delay={1600}
                         triggerOnce={true}
                         className="flex grow items-stretch justify-center"
                     >
-                        <CardProduct 
-                            title="FlexPay Plan"
-                            description="Most flexible workers"
-                            imgUrl={siteConfig.imgUrls.conferenceRoom}
-                            bulletPoints={["Purchase only what you need!", "Mega ez!"]}
-                            priceTag={siteConfig.price.subscriptions.flexPay}
-                            priceDescription="Individual purchases."
-                            purchaseBtnDescription="Sign Up"
-                        />
+                        <CardProduct data={cardsConfig.flexpay} />
                     </Fade>
                 </div>
-                <Alert text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
-                
+                <div className="p-4 md:p-36">
+                    <Alert dark={true} text={"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."}/>
+
+                </div>
 
             </div>
             
         </div>
-        <div style={{height: "500px"}}></div>
-        
-        
-
-        
-
-
+        <div className="h-64"></div>
         </div>
     );
 };

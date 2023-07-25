@@ -52,8 +52,8 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/account/settings">
-                            <button className={`btn btn-block shadow-md no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/settings" ? "btn-active" : ""}`}>
+                        {/* <Link href=""> // TODO */}
+                            <button className={`btn btn-disabled btn-block shadow-md no-animation justify-start pl-${iconButtonPaddingLeft} ${router.pathname == "/account/settings" ? "btn-active" : ""}`}>
                                 <img 
                                     src="/static/svg/settings-2-svgrepo-com.svg" 
                                     alt="settings icon"
@@ -61,7 +61,7 @@ export default function AccountLayout({ children }: AccountLayoutProps) {
                                 ></img>
                                 Settings
                             </button>
-                        </Link>
+                        {/* </Link> */}
                     </li>
                 </ul>
             </aside>
