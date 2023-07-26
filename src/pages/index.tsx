@@ -38,6 +38,10 @@ const Home: NextPageWithLayout = () => {
       <Head>
         <title>{siteConfig.companyName}</title>
         <meta name="description" content={siteConfig.webpageTagline} />
+        <meta property="og:title" content={siteConfig.companyName} />
+        <meta property="og:description" content={siteConfig.webpageTagline} />
+        <meta property="og:image" content={siteConfig.webImg} />
+        <meta property="og:url" content={siteConfig.webUrl} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

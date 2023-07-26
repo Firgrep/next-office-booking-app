@@ -5,7 +5,10 @@
 - [Features](#features)
 - [Specs](#specs)
 - [Tech Stack Rationale](#tech-stack-rationale)
-- [Notably Outstanding Features](#notably-outstanding-features)
+- [Missing Features](#missing-features)
+- [Known Bugs](#known-bugs)
+- [Environmental Variables](#environmental-variables)
+- [Resources](#resources)
 
 # Overview
 
@@ -30,12 +33,12 @@ npm i
 touch .env #`ni .env` if you are using powershell
 ```
 
-See below for more information about the environment variables.
-
 To run a local server.
 ```shell
 npm run dev
 ```
+
+>See below for more information about the environment variables in case server does not start up locally.
 
 In order to make stripe work locally with the webhook, you must run a stripe listener instance in a separate terminal. This requires that you install the Stripe CLI and log in to authenticate your account. For more information, see: https://stripe.com/docs/webhooks/test
 ```shell
@@ -83,12 +86,47 @@ For payment, `Stripe` was selected owing to its extensive API and testing capabi
 
 For all matters styling and design, `TailwindCSS` already comes with the territory, and, once learned, it makes UI development much, much better. `DaisyUI` was chosen for certain class styles and because it is built on TailwindCSS, making such that one can modify its classes by overwriting it using TailwindCSS. Since animations were used very sparingly, `react-awesome-reveal` was considered sufficient. `react-toaster` was implemented for handy pop-up notifications to the end user. 
 
-Finally, `CockroachDB` and `Google Cloud` were selected for the database and hosting owing to their linear price scaling models as well as scaling overall capabilities. `Google Cloud` takes some getting used to, but once the basics are in place it is extremely convenient and flexible, as well as offering a host of other services and tools should one require additional features for the app.
+Finally, `CockroachDB` and `Google Cloud` were selected for the database and hosting owing to their linear price scaling models as well as scaling overall capabilities. `Google Cloud` takes some getting used to, but once the basics are in place it is extremely convenient and flexible, as well as offering a host of other services and tools should one require additional features for the app. Additionally, since the app would first serve a regional purpose rather than something international, both services above had physical locations either in at the client's destination or not far away, this would have aided in the web request speed of the app.
 
-# Notably Outstanding Features
+# Missing Features
 - Email login option
+- Seperate login page
 - Suspense and UI indicators during load in certain places
 - When a subscription invoice fails, there is currently no interaction on the server to deal with this. The idea was to first build out the email system before implementing this route on the webhook, which itself first required a domain to be set up. 
 - SEO and metadata lacking.
 - Service contact for registered users.
 - See `/TASKLOG.md` for more.
+
+# Known Bugs 🐞
+-  App did not display bookings for the relevant day, even though entries were checked out in db. Has not been able to replicate this bug, but something to look out for.
+
+# Environmental Variables
+A local server will likely not start without a database connection. There are many stateless database providers out there (CockroachDB, Planetscale, Supabase, Firebase, Google, AWS, etc.). Once you have picked a database, input the connection to `DATABASE_URL` in the `.env` file located in the root folder.
+
+>**Warning** *Make sure to change the `datasource db.provider` in `/prisma/schema.prisma` to fit your database. See [datasource providers at Prima](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#datasource) for more information.
+
+NextAuth will require a secret made for the app. Generate one using the steps outlined in the `.env.example` file.
+
+Several login providers for NextAuth have been implemented in the app. For documentation and configuration, please find the relevant providers at https://next-auth.js.org/providers/ .
+
+Stripe will not work without the necessary API and webhook keys along with the required product IDs. But Stripe has extensive and thorough documentation available at: https://stripe.com/docs . 
+
+# Resources
+### Documentation
+
+- [Next.js](https://nextjs.org/docs)
+- [Prisma](https://www.prisma.io/docs)
+- [create-t3-app](https://create.t3.gg/en/introduction)
+- [TanStack Query](https://tanstack.com/query/latest/docs/react/overview)
+- [tRPC](https://trpc.io/docs)
+- [NextAuth](https://next-auth.js.org/getting-started/introduction)
+- [Stripe](https://stripe.com/docs)
+- [TailwindCSS](https://tailwindcss.com/docs/installation)
+
+### Video Tutorials
+Shoutout to these amazing developers and their super helpful tutorials. You can find practically everything you need regarding web development, TypeScript, Next.js, Prisma, tRPC, Stripe and much more from these wonderful people!
+- [Josh tried coding](https://www.youtube.com/@joshtriedcoding)
+- [Christopher Ehrlich](https://www.youtube.com/@ccccjjjjeeee)
+- [Matt Pocock](https://www.youtube.com/@mattpocockuk)
+- [ByteMonk](https://www.youtube.com/@ByteMonk)
+- [Web Dev Simplified](https://www.youtube.com/@WebDevSimplified)
