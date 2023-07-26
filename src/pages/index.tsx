@@ -44,14 +44,14 @@ const Home: NextPageWithLayout = () => {
       <div className="spacer layer1 3xl:mb-[-5%]">
         <div className="container flex items-end md:items-center justify-center md:justify-start gap-12 px-4 pt-1 md:pt-2">
           <div className="bg-white rounded-md shadow-xl p-4 z-index-20 absolute w-64 sm:w-96">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-[5rem] font-bold tracking-tight text-custom-brown">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-8xl font-bold tracking-tight text-custom-brown">
               {siteConfig.companyName}
             </h1>
             <p className="text-custom-black text-md sm:text-lg lg:text-2xl">
               Centrally located in your city. Explore memberships and move-in ready offices for individuals or companies of all sizes.
             </p>
           </div>
-          <div className="w-full  md:w-[75rem] md:ml-64 invisible sm:visible">
+          <div className="w-full  md:w-[75rem] md:ml-64">
             <img 
               src="/static/images/conference-room.jpg"
               alt="conference room"

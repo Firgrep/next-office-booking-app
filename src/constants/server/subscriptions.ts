@@ -29,7 +29,7 @@ export const basicPlan: SubscriptionPlan = {
 }
 
 export const flexPayPlan: SubscriptionPlan = {
-    name: "Flex Plan",
+    name: "FlexPay Plan",
     description: "The flex plan allows for purchase of bookings. Upgrade to the PRO plan for unlimited use of community space and included booking of conference space.",
     stripePriceId: "",
 }
