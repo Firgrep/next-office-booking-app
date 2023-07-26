@@ -16,6 +16,8 @@ export const siteConfig = {
     webpageTagline: "Office Booking App built in Next.js & TypeScript",
     webUrl: "https://next-office-booking-app-gdwefi7iga-ew.a.run.app",
     webImg: "https://firebasestorage.googleapis.com/v0/b/portfolio-d0330.appspot.com/o/next-office-booking-app%2Fnext-office-booking-app-social-media.png?alt=media&token=4f608d86-48a6-49a9-b5a0-fd1c397a7f70",
+    siteAuthor: "Filip Niklas",
+    siteDate: "2023-07-26",
     imgUrls: {
         conferenceRoom: "https://storage.cloud.google.com/rokni-office-media/conference-room.jpg?authuser=3",
         businessPeople: "https://storage.cloud.google.com/rokni-office-media/business-people.jpg?authuser=3",

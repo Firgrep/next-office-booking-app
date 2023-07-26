@@ -88,6 +88,49 @@ For all matters styling and design, `TailwindCSS` already comes with the territo
 
 Finally, `CockroachDB` and `Google Cloud` were selected for the database and hosting owing to their linear price scaling models as well as scaling overall capabilities. `Google Cloud` takes some getting used to, but once the basics are in place it is extremely convenient and flexible, as well as offering a host of other services and tools should one require additional features for the app. Additionally, since the app would first serve a regional purpose rather than something international, both services above had physical locations either in at the client's destination or not far away, this would have aided in the web request speed of the app.
 
+# Backend Logic
+### Individual Purchases
+
+<img src="https://firebasestorage.googleapis.com/v0/b/portfolio-d0330.appspot.com/o/next-office-booking-app%2Fnext-office-booking-app-diagram-purchase.png?alt=media&token=2b102214-d081-49fd-aff8-84d96fc923b3" alt="purchase diagram" width="800" />
+
+* GREEN PATHS - User's UI (what the user sees)
+* RED PATHS - Backend logic (server)
+
+After `Purchase Booking` has been initiated, the server will proceed with purchaseBooking route, from there there are 4 possible options.
+- Successful payment
+- Cancellation
+- Inactive / Expiry
+- Inactive / Resume
+
+The booking page will need to first check whether the user has any pending Stripe sessions. If the user has pending sessions, the booking will be blocked until the user decides what to do with the current session (either cancel it manually or continue purchase) - or until the 30min timeout at which point the session naturally expires. 
+
+### Subscription
+
+<img src="https://firebasestorage.googleapis.com/v0/b/portfolio-d0330.appspot.com/o/next-office-booking-app%2Fnext-office-booking-app-diagram-subscriptions.png?alt=media&token=ea821e65-212d-49cb-898f-607ea96cf003" alt="subscription diagram" width="800" />
+
+**Back End Routes**
+- BillingPortal/Cancel `createBillingSession `
+- Update To Pro `updateSubscription("toPro") `
+- Update To PlusC.` updateSubscription("toPlusC")` 
+- Update To PlusP. `updateSubscription("toPlusP")` 
+- Update To Basic `updateSubscription("toBasic")` 
+- Purchase Basic `createSubscriptionCheckoutSession("basic")` 
+- Purchase PlusC. `createSubscriptionCheckoutSession("plusC")` 
+- Purchase PlusP. `createSubscriptionCheckoutSession("plusP")` 
+- Purchase Pro `createSubscriptionCheckoutSession("pro")` 
+
+**Front End "Profiles"**
+The front will first retrieve user data from backend and then display the possible options based on the relevant "profile" setup.
+- FlexPay
+- Basic
+- PlusConference
+- PlusPhone
+- Pro
+
+What if the user has cancelled their subscription?
+If the user has cancelled their subscription, they are only able to manage their billing, through which they can renew their subscription. Downgrading/Upgrading subscriptions on-site are suspended if a subscription has been cancelled (but it's possible to renew and switch immediately into another subscription via the stripe billing portal, but the options here are limited).  If no renewal takes place before the subscription expiry date, the profile will revert back to FlexPay. 
+
+
 # Missing Features
 - Email login option
 - Seperate login page

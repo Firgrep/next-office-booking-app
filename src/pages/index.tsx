@@ -42,6 +42,8 @@ const Home: NextPageWithLayout = () => {
         <meta property="og:description" content={siteConfig.webpageTagline} />
         <meta property="og:image" content={siteConfig.webImg} />
         <meta property="og:url" content={siteConfig.webUrl} />
+        <meta name="author" content={siteConfig.siteAuthor} />
+        <meta name="date" content={siteConfig.siteDate} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
