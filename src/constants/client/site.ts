@@ -28,10 +28,10 @@ export const siteConfig = {
     },
     price: {
         subscriptions: {
-            pro: "30",
+            pro: "40",
             plusConference: "25",
             plusPhone: "25",
-            basic: "20",
+            basic: "10",
             flexPay: "0",
         },
     },

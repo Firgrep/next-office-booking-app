@@ -43,15 +43,15 @@ const Home: NextPageWithLayout = () => {
 
       <div className="spacer layer1 3xl:mb-[-5%]">
         <div className="container flex items-end md:items-center justify-center md:justify-start gap-12 px-4 pt-1 md:pt-2">
-          <div className="bg-white rounded-md shadow-xl p-4 z-index-20 absolute w-96">
-            <h1 className="text-2xl leading-normal font-bold tracking-tight text-custom-brown lg:text-[5rem]">
+          <div className="bg-white rounded-md shadow-xl p-4 z-index-20 absolute w-64 sm:w-96">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-[5rem] font-bold tracking-tight text-custom-brown">
               {siteConfig.companyName}
             </h1>
-            <p className="text-custom-black text-lg lg:text-2xl">
-              Centrally located in London. Explore memberships and move-in ready offices for individuals or companies of all sizes.
+            <p className="text-custom-black text-md sm:text-lg lg:text-2xl">
+              Centrally located in your city. Explore memberships and move-in ready offices for individuals or companies of all sizes.
             </p>
           </div>
-          <div className="w-full  md:w-[75rem] md:ml-64">
+          <div className="w-full  md:w-[75rem] md:ml-64 invisible sm:visible">
             <img 
               src="/static/images/conference-room.jpg"
               alt="conference room"
@@ -67,19 +67,19 @@ const Home: NextPageWithLayout = () => {
 
           <CardOfferings
             title="Communal Work Space"
-            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            text="This is a demo, consectetur adipiscing elit."
           />
           <CardOfferings
             title="Meeting Room"
-            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            text="This is a demo, consectetur adipiscing elit."
           />
           <CardOfferings
             title="Phone Booth"
-            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            text="This is a demo, consectetur adipiscing elit."
           />
           <CardOfferings
             title="Personalized"
-            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            text="This is a demo, lorem, consectetur adipiscing elit."
           />
 
         </div>
@@ -87,8 +87,8 @@ const Home: NextPageWithLayout = () => {
 
 
       <div className="flex flex-col justify-center items-center spacer layer3 md:-translate-y-32 mb-32 sm:mb-16 md:mb-0">
-        <h1 className="text-white text-2xl md:text-[3rem] xl:text-[4rem] font-extrabold translate-y-10 md:font-extrabold translate-y-28">Looking for a great place to work?</h1>
-        <div className="translate-y-32 flex gap-12 md:gap-24 md:translate-y-36 md:text-2xl text-md text-custom-brown">
+        <h1 className="text-center text-white text-2xl md:text-[3rem] xl:text-[4rem] font-extrabold translate-y-[65px] md:font-extrabold translate-y-28">Looking for a great place to work?</h1>
+        <div className="translate-y-32 flex gap-2 sm:gap-12 md:gap-24 md:translate-y-36 md:text-2xl text-md text-custom-brown">
           <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Central</p>
           <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Flexible</p>
           <p className="bg-slate-100 p-4 rounded-md shadow-xl font-bold">Convenient</p>
@@ -96,9 +96,9 @@ const Home: NextPageWithLayout = () => {
       </div>
 
         
-      <div className="spacer layer4 flex flex-col justify-center items-center">
+      <div className="spacer layer4 flex flex-col justify-center items-center h-[750px] sm:h-[500px]">
         <div className="flex flex-col md:flex-row items-center justify-center container gap-16" style={{transform: "rotateX(180deg)"}}>
-          <div className="bg-white shadow-xl rounded-md p-4">
+          <div className="bg-white shadow-xl rounded-md p-4 ">
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
           </div>
           <div className="w-[20rem] md:w-[200rem]">
@@ -131,7 +131,7 @@ const Home: NextPageWithLayout = () => {
         </div>
       </div>
 
-      <div className="spacer layer5">
+      <div className="spacer layer5 h-[750px] sm:h-[500px]">
         <div className="flex flex-col md:flex-row items-center justify-center container gap-16">
           <div className="w-[20rem] md:w-[200rem]">
             <img 

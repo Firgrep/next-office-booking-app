@@ -34,7 +34,7 @@ See below for more information about the environment variables.
 
 To run a local server.
 ```shell
-npm start
+npm run dev
 ```
 
 In order to make stripe work locally with the webhook, you must run a stripe listener instance in a separate terminal. This requires that you install the Stripe CLI and log in to authenticate your account. For more information, see: https://stripe.com/docs/webhooks/test
@@ -87,6 +87,7 @@ Finally, `CockroachDB` and `Google Cloud` were selected for the database and hos
 
 # Notably Outstanding Features
 - Email login option
+- Suspense and UI indicators during load in certain places
 - When a subscription invoice fails, there is currently no interaction on the server to deal with this. The idea was to first build out the email system before implementing this route on the webhook, which itself first required a domain to be set up. 
 - SEO and metadata lacking.
 - Service contact for registered users.

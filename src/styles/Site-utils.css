@@ -26,7 +26,6 @@
 
 .layer4 {
     width: calc(100%);
-    height: 500px;
     transform: rotateX(180deg);
     overflow: hidden;
     background-image: url("../../public/static/svg/layerblue1.svg");
@@ -93,7 +92,6 @@
 }
 .layer5 {
     width: calc(100%);
-    height: 500px;
     overflow: hidden;
     background-image: url("../../public/static/svg/layer5.svg");
 }

@@ -86,9 +86,11 @@ const BookingPage: NextPageWithLayout<BookingPageProps> = (props) => {
                     <meta name="description" content={`Booking for ${siteConfig.companyName}`}/>
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
-                <p>Pending Booking Session</p>
-                <Link href={url}><button className="btn">Click to resume</button></Link>
-                <Link href={cancelUrl}><button className="btn btn-neutral">Cancel</button></Link>
+                <div className="flex flex-col gap-4 justify-center items-center border-[2px] border-dotted border-custom-black w-full p-6 rounded-lg">
+                    <p className="text-xl text-custom-black">Pending Booking Session</p>
+                    <Link href={url}><button className="btn btn-primary">Click to resume</button></Link>
+                    <Link href={cancelUrl}><button className="btn btn-accent">Cancel</button></Link>
+                </div>
             </>
         );
     }

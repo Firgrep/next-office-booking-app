@@ -87,28 +87,19 @@ model Room {
 }
 
 model Booking {
-    id                   String                    @id @default(cuid())
+    id                   String                @id @default(cuid())
     userId               String
     startTime            DateTime
     endTime              DateTime
-    createdAt            DateTime                  @default(now())
-    updatedAt            DateTime                  @updatedAt
-    user                 User                      @relation(fields: [userId], references: [id])
-    room                 Room                      @relation(fields: [roomId], references: [id])
+    createdAt            DateTime              @default(now())
+    updatedAt            DateTime              @updatedAt
+    user                 User                  @relation(fields: [userId], references: [id])
+    room                 Room                  @relation(fields: [roomId], references: [id])
     roomId               String
-    deletion             ScheduledBookingDeletion?
     pendingStripeSession PendingStripeSession?
-    paymentIntentId      String?                   @unique
+    paymentIntentId      String?               @unique
 
     @@unique([roomId, startTime, endTime])
-}
-
-model ScheduledBookingDeletion {
-    id        String   @id @default(cuid())
-    bookingId String   @unique
-    taskId    String   @unique
-    createdAt DateTime @default(now())
-    booking   Booking  @relation(fields: [bookingId], references: [id])
 }
 
 model PendingStripeSession {
