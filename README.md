@@ -5,6 +5,7 @@
 - [Features](#features)
 - [Specs](#specs)
 - [Tech Stack Rationale](#tech-stack-rationale)
+- [Backend Logic](#backend-logic)
 - [Missing Features](#missing-features)
 - [Known Bugs](#known-bugs)
 - [Environmental Variables](#environmental-variables)
