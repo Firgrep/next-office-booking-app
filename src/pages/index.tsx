@@ -20,19 +20,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 const Home: NextPageWithLayout = () => {
 
-  // interface LoaderProps {
-  //   src: string
-  // }
-  // const loaderProp = ({ src }: LoaderProps) => {
-  //   return src;
-  // }
-  // <Image 
-  //   src={siteConfig.imgUrls.conferenceRoom}
-  //   alt="conference room image"
-  //   fill={true}
-  //   loader={loaderProp}
-  // /> 
-
   return (
     <>
       <Head>
@@ -104,10 +91,17 @@ const Home: NextPageWithLayout = () => {
         
       <div className="spacer layer4 flex flex-col justify-center items-center h-[750px] sm:h-[500px]">
         <div className="flex flex-col md:flex-row items-center justify-center container gap-16" style={{transform: "rotateX(180deg)"}}>
-          <div className="bg-white shadow-xl rounded-md p-4 ">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          <div className="bg-white shadow-xl rounded-md p-4">
+            <p className="text-xl">Want to try the booking system? 🎮</p>
+            <ul className="list-disc p-6">
+              <li>Sign in on the top right with any of the currently accepted providers.</li>
+              <li>Once you have succesfully signed in, a new menu is available when you click your picture/icon.</li>
+              <li>Navigate to the dashboard or booking.</li>
+              <li>And follow the wizard there to book some rooms! Use the <a className="text-blue-500 underline underline-offset-1 hover:text-red-500 duration-1000" href="https://stripe.com/docs/testing">test card details</a>.</li>
+              <li>Hint: you can upgrade your account on the billing page to see how the various services work.</li>
+            </ul> 
           </div>
-          <div className="w-[20rem] md:w-[200rem]">
+          <div className="hidden lg:flex">
             <img 
               src={siteConfig.imgUrls.conferenceRoom}
               alt="conference room image"

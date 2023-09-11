@@ -19,8 +19,8 @@ export const siteConfig = {
     siteAuthor: "Filip Niklas",
     siteDate: "2023-07-26",
     imgUrls: {
-        conferenceRoom: "https://storage.cloud.google.com/rokni-office-media/conference-room.jpg?authuser=3",
-        businessPeople: "https://storage.cloud.google.com/rokni-office-media/business-people.jpg?authuser=3",
+        conferenceRoom: "https://firebasestorage.googleapis.com/v0/b/portfolio-d0330.appspot.com/o/next-office-booking-app%2Fconference-room.jpg?alt=media&token=8592f797-1851-4322-8e78-86c6e3edad82",
+        businessPeople: "https://firebasestorage.googleapis.com/v0/b/portfolio-d0330.appspot.com/o/next-office-booking-app%2Fbusiness-people.jpg?alt=media&token=d283314a-63d6-4703-97c5-6ae9d94621db",
     },
     colors: {
         nav: "bg-custom-black",
